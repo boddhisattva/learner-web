@@ -6,3 +6,54 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 # # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
 # Layout/SpaceInsideArrayLiteralBrackets:
 #   Enabled: false
+# Self adds readability
+Style/RedundantSelf:
+  Enabled: false
+
+# Keep extra line detected around block body for better readability
+Style/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+# A line with 80 characters length is generally too small
+Metrics/LineLength:
+  Max: 120
+
+# Indent internal methods like that those under private for better readability
+Layout/IndentationConsistency:
+  EnforcedStyle: indented_internal_methods
+
+# This cop doesn't seem to add much value, hence disabling the same
+Style/Documentation:
+  Enabled: false
+
+# This cop doesn't seem to add much value, hence disabling the same
+Metrics/BlockLength:
+  Enabled: false
+
+require:
+  - rubocop-rspec
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-factory_bot
+  - rubocop-rspec_rails
+
+### Rspec Cops
+
+# This cop doesn't seem to add much value, hence disabling the same
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Max: 10
+
+Metrics/MethodLength:
+  Max: 15
+
+RSpec/NestedGroups:
+  Max: 4
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 7
+
+Metrics/AbcSize:
+  Max: 20

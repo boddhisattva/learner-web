@@ -45,10 +45,38 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem 'bullet', '~> 7.2' # help to kill N+1 queries and unused eager loading.
+
+  gem 'factory_bot_rails' # DSL for defining and using factories
+
+  gem 'pry-byebug', '~> 3.10', '>= 3.10.1' # Useful for debugging purposes
+
+  gem 'rspec-rails' # For Automated tests
+
+  gem 'rubocop', require: false # Ruby code style checking and code formatting tool.
+
+  gem 'rubocop-factory_bot', require: false # Code style checking for factory_bot files
+
+  gem 'rubocop-performance', require: false # Write code that's more performant
+
+  gem 'rubocop-rails', require: false # Automate usage of best Rails practices
+
+  gem 'rubocop-rspec', require: false # Code style checking for RSpec files.
+
+  gem 'rubocop-rspec_rails', require: false # RSpec Rails-specific analysis for one's projects
+
+  gem 'shoulda-matchers' # Simple One-Liner Tests for Rails
+
+  gem 'strong_migrations' # Catch unsafe migrations in development
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  gem 'fasterer' # Write more performant code
+
+  gem 'flog', require: false # Flog reports the most tortured code in an easy to read pain report
 end
 

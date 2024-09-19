@@ -11,11 +11,11 @@ Style/RedundantSelf:
   Enabled: false
 
 # Keep extra line detected around block body for better readability
-Style/EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
 # A line with 80 characters length is generally too small
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
 # Indent internal methods like that those under private for better readability

@@ -1,7 +1,8 @@
 class CreateUsers < ActiveRecord::Migration[7.2]
   def change
     create_table :users do |t|
-      t.string :name, comment: 'User name'
+      t.string :first_name, null: false, comment: 'User first name'
+      t.string :last_name, null: false, comment: 'User last name'
       t.string :email, comment: 'User email'
       t.string :password_digest, comment: 'User password'
 

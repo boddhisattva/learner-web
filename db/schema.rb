@@ -10,16 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_19_110430) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_21_042605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "memberships", force: :cascade do |t|
+    t.bigint "member_id", null: false, comment: "This references the user associated with the membership"
+    t.bigint "organization_id", null: false, comment: "This references the organisation associated with the membership"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id"], name: "index_memberships_on_member_id"
+    t.index ["organization_id"], name: "index_memberships_on_organization_id"
+  end
+
+  create_table "organizations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
-    t.string "name", comment: "User name"
+    t.string "first_name", null: false, comment: "User first name"
+    t.string "last_name", null: false, comment: "User last name"
     t.string "email", comment: "User email"
     t.string "password_digest", comment: "User password"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end
+
+  add_foreign_key "memberships", "organizations"
+  add_foreign_key "memberships", "users", column: "member_id"
 end

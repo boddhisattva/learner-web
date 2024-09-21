@@ -4,7 +4,8 @@
 #
 #  id                             :bigint           not null, primary key
 #  email(User email)              :string
-#  name(User name)                :string
+#  first_name(User first name)    :string           not null
+#  last_name(User last name)      :string           not null
 #  password_digest(User password) :string
 #  created_at                     :datetime         not null
 #  updated_at                     :datetime         not null
@@ -15,8 +16,9 @@
 #
 FactoryBot.define do
   factory :user do
-    name { "MyString" }
-    email { "MyString" }
+    first_name { "Rachel" }
+    last_name { "Longwood" }
+    sequence(:email) { |n| "person_#{n}@example.com" }
     password_digest { "MyString" }
   end
 end

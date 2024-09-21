@@ -77,7 +77,7 @@ group :development do
 
   gem "fasterer" # Write more performant code
 
-  gem 'flog', require: false # Flog reports the most tortured code in an easy to read pain report
+  gem "flog", require: false # Flog reports the most tortured code in an easy to read pain report
 
-  gem 'annotate' # Annotate Rails classes with schema and routes info
+  gem "annotate" # Annotate Rails classes with schema and routes info
 end

@@ -15,13 +15,17 @@
 #  index_users_on_email  (email) UNIQUE
 #
 class User < ApplicationRecord
+  has_secure_password
+
+  before_validation :strip_extra_spaces
+
   validates :first_name, presence: true
   validates :last_name, presence: true
 
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP },
   uniqueness: { case_sensitive: false }
 
-  before_validation :strip_extra_spaces
+  validates :password, presence: true, length: { minimum: 8 }
 
   private
 

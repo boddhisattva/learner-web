@@ -19,6 +19,6 @@ FactoryBot.define do
     first_name { "Rachel" }
     last_name { "Longwood" }
     sequence(:email) { |n| "person_#{n}@example.com" }
-    password_digest { "MyString" }
+    password { "MyString" }
   end
 end

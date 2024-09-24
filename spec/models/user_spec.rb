@@ -20,6 +20,8 @@ RSpec.describe User, type: :model do
   describe 'validations' do
     it { should validate_presence_of(:first_name) }
     it { should validate_presence_of(:last_name) }
+    it { should validate_presence_of(:password) }
+    it { should validate_length_of(:password).is_at_least(8) }
 
     describe 'unique case insensitive email' do
       let(:user) { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
@@ -37,7 +39,8 @@ RSpec.describe User, type: :model do
   end
 
   describe '#strip_extra_spaces' do
-    let(:user) { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
+    let(:user) {
+ create(:user, password: 'test pass', first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
 
     it 'removes the extra spaces from first name, last name & email' do
       user.save

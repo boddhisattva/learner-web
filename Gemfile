@@ -84,7 +84,6 @@ group :development do
   gem "i18n-debug" # Get more clarity on which Internationalisation related translations are looked up
 end
 
-
 group :test do
   gem "rails-controller-testing"
 end

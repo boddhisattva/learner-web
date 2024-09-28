@@ -39,14 +39,23 @@ RSpec.describe User, type: :model do
   end
 
   describe '#strip_extra_spaces' do
-    let(:user) {
- create(:user, password: 'test pass', first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
+    let(:user) do
+      create(:user, password: 'test pass', first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ')
+    end
 
     it 'removes the extra spaces from first name, last name & email' do
-      user.save
-
       expect(user.first_name).to eq('Rachel')
       expect(user.email).to eq('rachel@xyz.com')
+    end
+  end
+
+  describe '#name' do
+    let(:user) do
+      create(:user, password: 'test pass', first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ')
+    end
+
+    it 'returns user name' do
+      expect(user.name).to eq('Rachel Longwood')
     end
   end
 end

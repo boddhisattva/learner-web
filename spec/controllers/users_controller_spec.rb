@@ -16,7 +16,7 @@ RSpec.describe UsersController, type: :controller do
         }
       end
 
-      it 'redirects to one\'s feed after successful sign up' do
+      it 'creates a new user, organisation & redirects to one\'s feed after successful sign up' do
         expect do
           post :create, params: valid_attributes
         end.to change { User.count }.by(1)
@@ -42,7 +42,7 @@ RSpec.describe UsersController, type: :controller do
         }
       end
 
-      it 'renders errors if input data is invalid' do
+      it 'renders errors if input data is invalid and no new users and organisations are created' do
         expect do
           post :create, params: invalid_attributes
         end.to change { User.count }.by(0)

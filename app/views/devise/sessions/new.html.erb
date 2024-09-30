@@ -6,19 +6,10 @@
       <%= t(".title") %>
     </h1>
     <%= form_with(
-          model: @user,
-          url: registration_path(@user),
+          url: session_path(resource_name),
+          scope: :user,
           class: "is-flex is-flex-direction-column"
         ) do |form| %>
-
-      <div class="block">
-        <%= form.label :first_name, class: "label" %>
-        <%= form.text_field :first_name, class: "input" %>
-      </div>
-      <div class="block">
-        <%= form.label :last_name, class: "label" %>
-        <%= form.text_field :last_name, class: "input" %>
-      </div>
 
       <div class="block">
         <%= form.label :email, class: "label" %>
@@ -30,9 +21,14 @@
         <%= form.password_field :password, class: "input" %>
       </div>
 
-      <%= form.submit t(".sign_up"),
+      <%= form.submit t(".submit"),
             class: "button is-primary is-large
               is-align-self-flex-end mb-3 mt-3" %>
-     <% end %>
+    <% end %>
+
+  <%= render "devise/shared/links" %>
+
   </layout-column>
 </layout-columns>
+
+

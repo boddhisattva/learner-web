@@ -2,9 +2,7 @@
 #
 # Table name: memberships
 #
-# rubocop:disable Layout/LineLength
-#  id
-# rubocop:enable Layout/LineLength                                                 :bigint           not null, primary key
+#  id                                                                               :bigint           not null, primary key
 #  created_at                                                                       :datetime         not null
 #  updated_at                                                                       :datetime         not null
 #  member_id(This references the user associated with the membership)               :bigint           not null

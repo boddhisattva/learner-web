@@ -1,0 +1,8 @@
+en:
+  shared:
+    navbar:
+      messages: Messages
+      sign_up: Sign Up
+      login: Login
+      profile: Profile
+      logout: Log out

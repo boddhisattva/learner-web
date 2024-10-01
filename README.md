@@ -28,3 +28,8 @@ From the project root directory:
 #### Running the Rails app
 
 * Start the rails app with: `rails s`
+
+#### User Sign Up & Sign In
+
+* New User Sign up is available via: '/users/sign_up'; E.g: 'http://localhost:3000/users/sign_up'
+* Existing User Login is available via: '/users/sign_in'; E.g: 'http://localhost:3000/users/sign_in'

@@ -14,6 +14,5 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  get  "sign_up",  to: "users#new"
   post "sign_up", to: "users#create"
 end

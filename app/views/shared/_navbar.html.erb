@@ -42,9 +42,9 @@
 
       <%= tag.div class: "navbar-item" do %>
         <div class="buttons">
-          <%= link_to t(".sign_up"),
+          <%= link_to(t(".sign_up"),
                 new_user_registration_path,
-                class: "button is-primary" %>
+                class: "button is-primary") unless current_page?('/users/sign_up')%>
 
           <%= link_to t(".login"),
                 new_user_session_path,

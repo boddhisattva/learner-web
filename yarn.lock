@@ -24,7 +24,7 @@
 
 "@esbuild/darwin-arm64@0.24.0":
   version "0.24.0"
-  resolved "https://registry.yarnpkg.com/@esbuild/darwin-arm64/-/darwin-arm64-0.24.0.tgz#2d0d9414f2acbffd2d86e98253914fca603a53dd"
+  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.24.0.tgz"
   integrity sha512-CKyDpRbK1hXwv79soeTJNHb5EiG6ct3efd/FTPdzOWdbZZfGhpbcqIpiD0+vwmpu0wTIL97ZRPZu8vUt46nBSw==
 
 "@esbuild/darwin-x64@0.24.0":
@@ -159,7 +159,7 @@ chokidar@^4.0.0:
 
 esbuild@^0.24.0:
   version "0.24.0"
-  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.24.0.tgz"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.24.0.tgz#f2d470596885fcb2e91c21eb3da3b3c89c0b55e7"
   integrity sha512-FuLPevChGDshgSicjisSooU0cemp/sGXR841D5LHMB7mTVOmsEHcAxaH3irL53+8YDIeVNQEySh4DaYU/iuPqQ==
   optionalDependencies:
     "@esbuild/aix-ppc64" "0.24.0"

@@ -35,7 +35,8 @@ class User < ApplicationRecord
 
   private
 
-    def strip_extra_spaces # TODO: Devise seems to provide support for this through initializers/devise.rb come back and check later
+    # TODO: Devise seems to provide support for this through initializers/devise.rb, consider fixing later
+    def strip_extra_spaces
       self.first_name = self.first_name&.strip
       self.last_name = self.last_name&.strip
       self.email = self.email&.strip

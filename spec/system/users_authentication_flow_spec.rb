@@ -17,7 +17,7 @@ describe 'User sign up & sign in flow', type: :system do
 
         click_button 'Sign Up'
 
-        #TODO: Make sure to add an expectation that for successful sign User count increases by 1
+        # TODO: Make sure to add an expectation that for successful sign User count increases by 1
 
         expect(page).to have_text("Welcome to #{I18n.t('learner')}, Racquel R")
       end

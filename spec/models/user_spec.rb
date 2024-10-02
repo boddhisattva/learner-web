@@ -25,7 +25,9 @@ RSpec.describe User, type: :model do
     it { should validate_presence_of(:first_name) }
     it { should validate_presence_of(:last_name) }
 
+    #  rubocop:disable Layout/LineLength
     # TODO: Consider removing this. We might not need this explicit spec anymore after introducing devise as its inbuilt.
+    #  rubocop:enable Layout/LineLength
     describe 'unique case insensitive email' do
       let(:user) { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
 

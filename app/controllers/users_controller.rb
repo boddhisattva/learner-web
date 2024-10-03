@@ -16,7 +16,7 @@ class UsersController < ApplicationController
         flash: { success: t(".welcome", name: @user.name) }
     else
       flash.now[:error] = @user.errors.full_messages
-      render :new, status: :unprocessable_entity
+      render "/devise/registrations/new", status: :unprocessable_entity
     end
   end
 

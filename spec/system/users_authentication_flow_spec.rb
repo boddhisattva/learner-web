@@ -6,21 +6,26 @@ describe 'User sign up & sign in flow', type: :system do
   describe 'User sign up flow' do
     let(:activity_day) { create(:activity_day) }
 
-    context 'with valid login credentials' do
-      it 'creates a new user and redirects with appropriate success message' do
-        visit '/users/sign_up'
+    it 'returns error with invalid credentials & creates a new user & returns welcome message with valid credentials' do
+      visit '/users/sign_up'
 
-        fill_in 'user_first_name', with: 'Racquel'
-        fill_in 'user_last_name', with: 'R'
-        fill_in 'user_email', with: 'racquel.r@example.com'
-        fill_in 'user_password', with: 'tester876'
+      fill_in 'user_first_name', with: 'Racquel'
+      fill_in 'user_last_name', with: 'R'
+      fill_in 'user_email', with: 'racquel.r@example.com'
+      fill_in 'user_password', with: 'short'
 
-        click_button 'Sign Up'
+      click_button 'Sign Up'
 
-        # TODO: Make sure to add an expectation that for successful sign User count increases by 1
+      expect(page)
+        .to have_text("Password #{I18n.t ('activerecord.errors.models.user.attributes.password.too_short')}")
+      expect(User.count).to eq(0)
 
-        expect(page).to have_text("Welcome to #{I18n.t('learner')}, Racquel R")
-      end
+      fill_in 'user_password', with: 'testpass768'
+
+      click_button 'Sign Up'
+
+      expect(page).to have_text("Welcome to #{I18n.t('learner')}, Racquel R")
+      expect(User.count).to eq(1)
     end
   end
 end

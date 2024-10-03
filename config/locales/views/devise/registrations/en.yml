@@ -2,4 +2,5 @@ en:
   devise:
     registrations:
       new:
+        title: Create your Learner account
         sign_up: Sign Up

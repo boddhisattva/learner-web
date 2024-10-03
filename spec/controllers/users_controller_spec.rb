@@ -50,7 +50,7 @@ RSpec.describe UsersController, type: :controller do
 
         expect(response).to have_http_status(:unprocessable_entity)
 
-        expect(response).to render_template(:new)
+        expect(response).to render_template('devise/registrations/new')
 
         expect(flash[:error].first)
           .to eq("Password #{I18n.t ('activerecord.errors.models.user.attributes.password.too_short')}")

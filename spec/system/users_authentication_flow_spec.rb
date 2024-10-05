@@ -4,15 +4,13 @@ require 'rails_helper'
 
 describe 'User sign up & sign in flow', type: :system do
   describe 'User sign up flow' do
-    let(:activity_day) { create(:activity_day) }
-
     it 'returns error with invalid credentials & creates a new user & returns welcome message with valid credentials' do
       visit '/users/sign_up'
 
-      fill_in 'user_first_name', with: 'Racquel'
-      fill_in 'user_last_name', with: 'R'
-      fill_in 'user_email', with: 'racquel.r@example.com'
-      fill_in 'user_password', with: 'short'
+      fill_in User.human_attribute_name(:first_name), with: 'Racquel'
+      fill_in User.human_attribute_name(:last_name), with: 'R'
+      fill_in User.human_attribute_name(:email), with: 'racquel.r@example.com'
+      fill_in User.human_attribute_name(:password), with: 'short'
 
       click_button 'Sign Up'
 
@@ -24,8 +22,32 @@ describe 'User sign up & sign in flow', type: :system do
 
       click_button 'Sign Up'
 
-      expect(page).to have_text("Welcome to #{I18n.t('learner')}, Racquel R")
+      expect(page).to have_text(I18n.t("users.create.welcome", name: 'Racquel R'))
       expect(User.count).to eq(1)
     end
   end
+
+  describe 'User sign in flow' do
+    before do
+      create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ')
+    end
+
+    it 'returns error with invalid credentials & logs in user with correct credentials' do
+      visit '/users/sign_in'
+
+      fill_in User.human_attribute_name(:email), with: 'rachel@xyz.com'
+      fill_in User.human_attribute_name(:password), with: 'random invalid password'
+
+      click_button 'Login'
+
+      expect(page).to have_text(I18n.t('devise.failure.invalid', authentication_keys: 'Email'))
+
+      fill_in User.human_attribute_name(:password), with: 'MyString'
+
+      click_button 'Login'
+
+      expect(page).to have_text(I18n.t('devise.sessions.signed_in'))
+    end
+  end
+
 end

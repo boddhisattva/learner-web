@@ -4,35 +4,29 @@ require 'rails_helper'
 
 module Mobile
   describe 'User sign up & sign in flow', type: :system do
-    describe 'Mobile User sign up flow', :mobile_dimensions do
+    describe 'Mobile User sign up flow' do
       let(:activity_day) { create(:activity_day) }
 
       before do
-        page.current_window.resize_to(501, 764)
+        page.current_window.resize_to(501, 764) # Resize window to a size similar to that of mobile devices
       end
 
-      it 'returns error with invalid credentials. Creates a new user, returns welcome message with valid credentials' do
-        visit '/users/sign_up'
+      it 'can access mobile sign up page via burger menu' do
+        visit root_path
 
-        fill_in 'user_first_name', with: 'Racquel'
-        fill_in 'user_last_name', with: 'R'
-        fill_in 'user_email', with: 'racquel.r@example.com'
-        fill_in 'user_password', with: 'short'
+        find(".navbar-burger").click
+        click_on I18n.t("shared.navbar.sign_up")
 
-        save_and_open_page
+        expect(page).to have_current_path(new_user_registration_path)
+      end
 
-        click_button 'Sign Up'
+      it 'can access mobile login page via burger menu' do
+        visit root_path
 
-        expect(page)
-          .to have_text("Password #{I18n.t ('activerecord.errors.models.user.attributes.password.too_short')}")
-        expect(User.count).to eq(0)
+        find(".navbar-burger").click
+        click_link I18n.t("shared.navbar.login")
 
-        fill_in 'user_password', with: 'testpass768'
-
-        click_button 'Sign Up'
-
-        expect(page).to have_text("Welcome to #{I18n.t('learner')}, Racquel R")
-        expect(User.count).to eq(1)
+        expect(page).to have_current_path(new_user_session_path)
       end
     end
   end

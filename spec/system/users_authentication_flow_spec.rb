@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe 'User sign up & sign in flow', type: :system do
   describe 'User sign up flow' do
-    it 'returns error with invalid credentials & creates a new user & returns welcome message with valid credentials' do
+    it 'Returns error with invalid credentials. Creates & logs in new user with a message with valid credentials.' do
       visit '/users/sign_up'
 
       fill_in User.human_attribute_name(:first_name), with: 'Racquel'
@@ -21,6 +21,9 @@ describe 'User sign up & sign in flow', type: :system do
       fill_in 'user_password', with: 'testpass768'
 
       click_button 'Sign Up'
+
+      # TODO: Consider improving the below expectation as you update the root page view
+      expect(page).to have_text('Find me in app/views/feed/show.html.erb') # Confirms Sign in on Signup
 
       expect(page).to have_text(I18n.t("users.create.welcome", name: 'Racquel R'))
       expect(User.count).to eq(1)

@@ -25,9 +25,12 @@ From the project root directory:
 #### Setting up the DB seeds
 * In order to get started with using the app create a new User with `rake db:seed` command
 
-#### Running the Rails app
+#### Running the Rails app & ensuring it takes in the latest CSS & JS changes
 
-* Start the rails app with: `rails s`
+* Start the rails app with: `bin/dev`
+
+**Please note**: This command also bundles the latest CSS & JS code that comes along/regularly changes
+                 throughout the lifecycle of an app
 
 #### User Sign Up & Sign In
 

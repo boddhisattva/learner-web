@@ -15,7 +15,7 @@ services:
         sync: false
       - key: WEB_CONCURRENCY
         value: 4 # sensible default
-  databases:
-    - name: learner-db
-      plan: free
-      postgresMajorVersion: 16
+databases:
+  - name: learner-db
+    plan: free
+    postgresMajorVersion: 16

@@ -23,9 +23,9 @@ describe 'User sign up & sign in flow', type: :system do
       click_button 'Sign Up'
 
       # TODO: Consider improving the below expectation as you update the root page view
-      expect(page).to have_text('Find me in app/views/feed/show.html.erb') # Confirms Sign in on Signup
-
+      expect(page).to have_text('Find me in app/views/feed/index.html.erb') # Confirms Sign in on Signup
       expect(page).to have_text(I18n.t("users.create.welcome", name: 'Racquel R'))
+
       expect(User.count).to eq(1)
     end
   end
@@ -52,5 +52,4 @@ describe 'User sign up & sign in flow', type: :system do
       expect(page).to have_text(I18n.t('devise.sessions.signed_in'))
     end
   end
-
 end

@@ -24,7 +24,7 @@ RSpec.describe UsersController, type: :controller do
 
         expect(response).to have_http_status(:see_other)
 
-        expect(response).to redirect_to('/') # test redirect to root_path
+        expect(response).to redirect_to('/feed')
 
         expect(flash[:success]).to eq(I18n.t("users.create.welcome", name: 'Jim Weirich'))
       end

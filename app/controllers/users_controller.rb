@@ -11,7 +11,7 @@ class UsersController < ApplicationController
 
       @organization = Organization.create(members: [ @user ])
 
-      redirect_to root_path,
+      redirect_to feed_index_path,
         status: :see_other,
         flash: { success: t(".welcome", name: @user.name) }
     else

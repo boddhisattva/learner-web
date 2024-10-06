@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.2.1"
+gem "rails", "8.0.0.beta1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use postgresql as the database for Active Record
@@ -46,7 +46,8 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  gem "bullet", "~> 7.2" # help to kill N+1 queries and unused eager loading.
+  # TODO: Enable later as its not currently compatible with Rails 8.x
+  # gem "bullet", "~> 7.2" # help to kill N+1 queries and unused eager loading.
 
   gem "factory_bot_rails" # DSL for defining and using factories
 

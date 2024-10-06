@@ -11,6 +11,10 @@ module Mobile
         page.current_window.resize_to(501, 764) # Resize window to a size similar to that of mobile devices
       end
 
+      after do
+        page.current_window.resize_to(1200, 815) #Resize to normal window size defaults
+      end
+
       it 'can access mobile sign up page via burger menu' do
         visit root_path
 

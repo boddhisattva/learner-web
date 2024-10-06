@@ -11,6 +11,7 @@
       <span></span>
       <span></span>
       <span></span>
+      <span></span>
     </a>
   </div>
 
@@ -44,11 +45,11 @@
         <div class="buttons">
           <%= link_to(t(".sign_up"),
                 new_user_registration_path,
-                class: "button is-primary") unless current_page?('/users/sign_up')%>
+                class: "button is-primary") if controller_name != 'registrations' && controller_name != 'users' %>
 
           <%= link_to t(".login"),
                 new_user_session_path,
-                class: "button is-light" %>
+                class: "button is-light" if controller_name != 'sessions' %>
         </div>
       <% end unless user_signed_in? %>
     </div>

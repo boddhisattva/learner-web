@@ -12,7 +12,7 @@ module Mobile
       end
 
       after do
-        page.current_window.resize_to(1200, 815) #Resize to normal window size defaults
+        page.current_window.resize_to(1200, 815) # Resize to normal window size defaults
       end
 
       it 'can access mobile sign up page via burger menu' do

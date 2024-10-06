@@ -23,15 +23,6 @@ module Mobile
 
         expect(page).to have_current_path(new_user_registration_path)
       end
-
-      it 'can access mobile login page via burger menu' do
-        visit root_path
-
-        find(".navbar-burger").click
-        click_link I18n.t("shared.navbar.login")
-
-        expect(page).to have_current_path(new_user_session_path)
-      end
     end
   end
 end

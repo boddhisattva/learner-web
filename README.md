@@ -6,11 +6,13 @@ Life is journey of constant learnings and this is an attempt to keep track of at
 
 ## App Development Status - In progress
 
+Demo of work done so far is deployed at https://learner-web.onrender.com/
+
 ## Usage
 
 ### Dependencies
 
-* This app uses Ruby 3.3.5 & Rails 7.2.1
+* This app uses Ruby 3.3.5 & Rails 8.0.0.beta1
 
 ### Basic App setup
 
@@ -18,21 +20,26 @@ Life is journey of constant learnings and this is an attempt to keep track of at
 
 * Run `bundle install` from a project's root directory to install the related dependencies.
 
-#### Setting up the DB schema
-From the project root directory:
-* Create the Database Schema with: `rake db:create` and `rake db:migrate`
+#### Setting up the Database schema
+  - From the project root directory:
+    - Create the Database Schema with: `rake db:create` and `rake db:migrate`
 
-#### Setting up the DB seeds
-* In order to get started with using the app create a new User with `rake db:seed` command
+#### Setting up a test user
+* In order to get started with using the app with an existing user, one could use the `rake db:seed` command
 
 #### Running the Rails app & ensuring it takes in the latest CSS & JS changes
 
 * Start the rails app with: `bin/dev`
 
-**Please note**: This command also bundles the latest CSS & JS code that comes along/regularly changes
-                 throughout the lifecycle of an app
+**Please note**: This command also bundles the latest CSS & JS code that comes along/regularly changes throughout the development lifecycle of an app
 
-#### User Sign Up & Sign In
+#### Running the tests
 
-* New User Sign up is available via: '/users/sign_up'; E.g: 'http://localhost:3000/users/sign_up'
-* Existing User Login is available via: '/users/sign_in'; E.g: 'http://localhost:3000/users/sign_in'
+* One can run the tests from the project root directory with the command `rspec`
+
+#### Functionalities implemented thus far
+
+The following features are available via both the Web app & in Mobile
+
+* User sign up & sign in
+

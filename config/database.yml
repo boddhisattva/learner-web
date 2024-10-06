@@ -83,3 +83,4 @@ production:
   database: learner_production
   username: learner
   password: <%= ENV["LEARNER_DATABASE_PASSWORD"] %>
+  url: <%= ENV['DATABASE_URL'] %>

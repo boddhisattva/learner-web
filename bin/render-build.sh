@@ -1,4 +1,7 @@
-#!/usr/bin/env bash # exit on error
+sudo apt-get install bash
+
+#!/usr/bin/env bash
+# exit on error
 set -o errexit
 
 bundle install

@@ -92,4 +92,4 @@ group :test do
   gem "launchy", "~> 3.0" # Useful for debugging system tests
 end
 
-gem "devise", "~> 4.9"
+gem "devise", "~> 4.9" # Useful for authentication related functionality

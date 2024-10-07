@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 module Mobile
-  describe 'User sign up & sign in flow', type: :system do
+  describe 'User sign up flow', type: :system do
     describe 'Mobile User sign up flow' do
       let(:activity_day) { create(:activity_day) }
 

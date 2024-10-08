@@ -6,9 +6,10 @@ Life is journey of constant learnings and this is an attempt to keep track of at
 
 ## Functionalities implemented thus far
 
-The following features are available via both the Web app & in Mobile
+The following **features** are available via both the **Web app & in Mobile**
 
-* User sign up & sign in
+* User sign up & sign in(Uses **Hotwire Stimulus** as needed)
+* Update User profile details(Uses **Hotwire Turbo** as needed)
 
 ## App Development Status - In progress
 
@@ -18,7 +19,7 @@ Demo of work done so far is deployed at https://learner-web.onrender.com/
 
 ### Dependencies
 
-* This app uses Ruby 3.3.5 & Rails 8.0.0.beta1
+* This app uses Ruby 3.3.5 & Rails 7.2.1
 
 ### Basic App setup
 

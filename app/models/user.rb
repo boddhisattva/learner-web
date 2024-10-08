@@ -24,21 +24,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  before_validation :strip_extra_spaces
-
   validates :first_name, presence: true
   validates :last_name, presence: true
 
   def name
     "#{first_name} #{last_name}"
   end
-
-  private
-
-    # TODO: Devise seems to provide support for this through initializers/devise.rb, consider fixing later
-    def strip_extra_spaces
-      self.first_name = self.first_name&.strip
-      self.last_name = self.last_name&.strip
-      self.email = self.email&.strip
-    end
 end

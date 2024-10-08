@@ -7,3 +7,5 @@ en:
       welcome: "Welcome to Learner, %{name}"
     update:
       success: Your changes have been saved
+    show:
+      save_profile: Save changes

@@ -19,5 +19,8 @@ Rails.application.routes.draw do
 
   post "sign_up", to: "users#create"
 
+  resource :profile, only: [ :show, :update ],
+  controller: "users"
+
   resources :feed, only: [ :index ]
 end

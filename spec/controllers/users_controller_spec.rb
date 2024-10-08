@@ -58,4 +58,53 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe '#update' do
+    let(:user) { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
+
+    before do
+      sign_in user
+    end
+
+    context 'with valid user attributes' do
+      let(:valid_attributes) do
+        {
+          user: {
+            last_name: 'Peters',
+            email: 'rachel.peters@xyz.com'
+          }
+        }
+      end
+
+      it 'updates a user details and returns related success message' do
+        patch :update, params: valid_attributes
+
+        expect(user.reload.last_name).to eq('Peters')
+        expect(user.email).to eq('rachel.peters@xyz.com')
+        expect(response).to have_http_status(:see_other)
+        expect(response).to redirect_to(profile_path)
+        expect(flash[:success]).to eq(I18n.t("users.update.success"))
+      end
+    end
+
+    context 'with invalid user attributes' do
+      let(:invalid_attributes) do
+        {
+          user: {
+            last_name: '',
+            email: 'rachel.peters@xyz.com'
+          }
+        }
+      end
+
+      it 'returns one or more errors related to a failed user update' do
+        patch :update, params: invalid_attributes
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to render_template(:edit)
+        expect(flash[:error].first)
+          .to eq("Last name can't be blank")
+      end
+    end
+  end
 end

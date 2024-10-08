@@ -46,7 +46,6 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  # TODO: Enable later as its not currently compatible with Rails 8.x
   gem "bullet", "~> 7.2" # help to kill N+1 queries and unused eager loading.
 
   gem "factory_bot_rails" # DSL for defining and using factories

@@ -5,3 +5,5 @@ en:
       sign_up: Sign up!
     create:
       welcome: "Welcome to Learner, %{name}"
+    update:
+      success: Your changes have been saved

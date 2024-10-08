@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user!, only: [ :update ]
+
   def new
     @user = User.new
   end
@@ -17,6 +19,16 @@ class UsersController < ApplicationController
     else
       flash.now[:error] = @user.errors.full_messages
       render "/devise/registrations/new", status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if current_user.update(user_params)
+      flash[:success] = t(".success")
+      redirect_to profile_path, status: :see_other
+    else
+      flash.now[:error] = current_user.errors.full_messages
+      render :edit, status: :unprocessable_entity
     end
   end
 

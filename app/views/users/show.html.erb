@@ -1,0 +1,40 @@
+<% content_for :title, current_user.name %>
+
+<%= turbo_frame_tag :user_details do %>
+  <layout-columns class="columns is-centered">
+    <layout-column class="column box is-5 mt-6 p-5 m-4">
+      <h1 class="title has-text-centered">
+        <%= t(".your_details") %>
+      </h1>
+
+      <%= form_with(
+            model: current_user,
+            url: profile_path,
+            class: "is-flex is-flex-direction-column"
+          ) do |form| %>
+        <div class="block">
+          <%= form.label :first_name, class: "label" %>
+          <%= form.text_field :first_name, class: "input" %>
+        </div>
+        <div class="block">
+          <%= form.label :last_name, class: "label" %>
+          <%= form.text_field :last_name, class: "input" %>
+        </div>
+        <div class="block">
+          <%= form.label :email, class: "label" %>
+          <%= form.email_field :email, class: "input" %>
+        </div>
+
+        <%= form.submit t(".save_profile"),
+              class: "button is-primary is-align-self-flex-end
+                mb-3 mt-3" %>
+
+        <%= render "shared/flashes" %>
+       <% end %>
+    </layout-column>
+  </layout-columns>
+
+  <%= turbo_stream.update :current_user_name do %>
+    <%= current_user.name %>
+  <% end %>
+<% end %>

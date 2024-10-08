@@ -15,6 +15,8 @@ The following **features** are available via both the **Web app & in Mobile**
 
 Demo of work done so far is deployed at https://learner-web.onrender.com/
 
+**Please note**: Deploying on [Render](https://render.com/) seems slow via its free tier(more [here](https://www.reddit.com/r/node/comments/195sm33/comment/lbgoggr/)), so if needed please allow page loading some time
+
 ## Usage
 
 ### Dependencies

@@ -24,12 +24,12 @@
             class: "navbar-item has-dropdown
               is-hoverable mr-4" do %>
         <%= link_to current_user.name,
-              "#",
+              profile_path,
               class: "navbar-link" %>
 
         <div class="navbar-dropdown is-right">
           <%= link_to t(".profile"),
-                "#",
+                profile_path,
                 class: "navbar-item" %>
 
            <hr class="navbar-divider">

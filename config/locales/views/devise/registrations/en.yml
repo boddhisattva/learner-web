@@ -4,3 +4,5 @@ en:
       new:
         title: Create your Learner account
         sign_up: Sign Up
+        login_message: Already got an account?
+        login: Login here.

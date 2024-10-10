@@ -4,3 +4,5 @@ en:
       new:
         title: Log In
         submit: Login
+        sign_up_message: Haven't got an account yet?
+        sign_up: Sign up now.

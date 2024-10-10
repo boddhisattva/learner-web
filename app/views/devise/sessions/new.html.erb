@@ -26,6 +26,11 @@
               is-align-self-flex-end mb-3 mt-3" %>
     <% end %>
 
+    <%= tag.p class: "has-text-centered mt-4" do %>
+      <%= t(".sign_up_message")  %>
+      <%= link_to t(".sign_up"), new_user_registration_path %>
+    <% end if turbo_native_app? %>
+
   <%= render "devise/shared/links" %>
 
   </layout-column>

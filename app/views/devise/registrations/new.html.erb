@@ -34,5 +34,10 @@
             class: "button is-primary is-large
               is-align-self-flex-end mb-3 mt-3" %>
      <% end %>
+
+    <%= tag.p class: "has-text-centered" do %>
+      <%= t(".login_message")  %>
+      <%= link_to t(".login"), new_user_session_path %>
+    <% end if turbo_native_app? %>
   </layout-column>
 </layout-columns>

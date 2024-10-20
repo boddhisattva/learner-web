@@ -27,7 +27,16 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
+  has_many :memberships, foreign_key: "member_id"
+  has_many :organizations, through: :memberships
+  has_many :learnings, foreign_key: "creator_id"
+  has_many :learning_categories, foreign_key: "creator_id"
+
   def name
     "#{first_name} #{last_name}"
+  end
+
+  def own_organization
+    Organization.where(name: self.name).first
   end
 end

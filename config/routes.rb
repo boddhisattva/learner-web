@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "learnings/index"
   devise_for :users
 
   devise_scope :user do
@@ -23,4 +24,6 @@ Rails.application.routes.draw do
   controller: "users"
 
   resources :feed, only: [ :index ]
+
+  resources :learnings
 end

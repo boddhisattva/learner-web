@@ -10,9 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_08_193405) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_20_080014) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "learning_categories", force: :cascade do |t|
+    t.string "name", null: false, comment: "Name of the learning category"
+    t.text "description", comment: "More information about the learning category"
+    t.bigint "creator_id", null: false, comment: "User who created the learning category"
+    t.bigint "last_modifier_id", null: false, comment: "User who last modified the learning category"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_learning_categories_on_creator_id"
+    t.index ["deleted_at"], name: "index_learning_categories_on_deleted_at"
+    t.index ["last_modifier_id"], name: "index_learning_categories_on_last_modifier_id"
+    t.index ["name"], name: "index_learning_categories_on_name", unique: true
+  end
+
+  create_table "learnings", force: :cascade do |t|
+    t.string "lesson", null: false, comment: "Learning lesson learnt"
+    t.text "description", comment: "Learning lesson in more detail"
+    t.bigint "creator_id", null: false, comment: "User who created the learning"
+    t.datetime "deleted_at"
+    t.boolean "public", default: false, null: false, comment: "Determines organizational visibility of the learning"
+    t.integer "learning_categories", default: [], comment: "Collection of different learning categories a Learning belongs to", array: true
+    t.bigint "last_modifier_id", null: false, comment: "User who last modified the learning"
+    t.bigint "organization_id", null: false, comment: "The organization to which the learning belongs"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_learnings_on_creator_id"
+    t.index ["deleted_at"], name: "index_learnings_on_deleted_at"
+    t.index ["last_modifier_id"], name: "index_learnings_on_last_modifier_id"
+    t.index ["learning_categories"], name: "index_learnings_on_learning_categories", using: :gin
+    t.index ["lesson"], name: "index_learnings_on_lesson"
+    t.index ["organization_id"], name: "index_learnings_on_organization_id"
+  end
 
   create_table "memberships", force: :cascade do |t|
     t.bigint "member_id", null: false, comment: "This references the user associated with the membership"
@@ -42,6 +75,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_08_193405) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "learning_categories", "users", column: "creator_id"
+  add_foreign_key "learning_categories", "users", column: "last_modifier_id"
+  add_foreign_key "learnings", "organizations"
+  add_foreign_key "learnings", "users", column: "creator_id"
+  add_foreign_key "learnings", "users", column: "last_modifier_id"
   add_foreign_key "memberships", "organizations"
   add_foreign_key "memberships", "users", column: "member_id"
 end

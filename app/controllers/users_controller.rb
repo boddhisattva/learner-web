@@ -26,14 +26,15 @@ class UsersController < ApplicationController
     end
   end
 
+  # TODO: Try to make this method shorter using extract refactoring & when adding specs related to raise NameUpdateError scenarios
+  # rubocop:disable Metrics/AbcSize
   def update
     user_organization = current_user.own_organization
 
     ActiveRecord::Base.transaction do
       raise NameUpdateError unless current_user.update(user_params)
 
-      user_organization.name = current_user.name
-      if user_organization.changed?
+      if current_user.first_name_previously_changed? || current_user.last_name_previously_changed?
         # TO DO: Come back to expore how to handle the below code if oragnization updation fails & add relevant spec
         raise NameUpdateError unless user_organization&.update(name: current_user.name)
       end
@@ -47,6 +48,8 @@ class UsersController < ApplicationController
       flash.now[:error] = current_user.errors.full_messages.concat(user_organization.errors.full_messages)
       render :edit, status: :unprocessable_entity
   end
+  # rubocop:enable Metrics/AbcSize
+
 
   private
     def user_organization_updated_on_name_update?

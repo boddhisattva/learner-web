@@ -13,7 +13,7 @@ class LearningsController < ApplicationController
   def create
     @learning = Learning.new(learnings_params)
     @learning.creator_id = current_user.id
-    @learning.modifier_id = current_user.id
+    @learning.last_modifier_id = current_user.id
 
     if @learning.save
       redirect_to learnings_index_path,

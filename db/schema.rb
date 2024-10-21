@@ -34,7 +34,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_20_080014) do
     t.bigint "creator_id", null: false, comment: "User who created the learning"
     t.datetime "deleted_at"
     t.boolean "public", default: false, null: false, comment: "Determines organizational visibility of the learning"
-    t.integer "learning_categories", default: [], comment: "Collection of different learning categories a Learning belongs to", array: true
+    t.integer "learning_category_ids", default: [], comment: "Collection of different learning categories a Learning belongs to", array: true
     t.bigint "last_modifier_id", null: false, comment: "User who last modified the learning"
     t.bigint "organization_id", null: false, comment: "The organization to which the learning belongs"
     t.datetime "created_at", null: false
@@ -42,7 +42,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_20_080014) do
     t.index ["creator_id"], name: "index_learnings_on_creator_id"
     t.index ["deleted_at"], name: "index_learnings_on_deleted_at"
     t.index ["last_modifier_id"], name: "index_learnings_on_last_modifier_id"
-    t.index ["learning_categories"], name: "index_learnings_on_learning_categories", using: :gin
+    t.index ["learning_category_ids"], name: "index_learnings_on_learning_category_ids", using: :gin
     t.index ["lesson"], name: "index_learnings_on_lesson"
     t.index ["organization_id"], name: "index_learnings_on_organization_id"
   end

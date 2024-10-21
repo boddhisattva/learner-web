@@ -1,4 +1,5 @@
 class CreateLearnings < ActiveRecord::Migration[7.2]
+  # rubocop:disable Metrics/MethodLength
   def change
     create_table :learnings do |t|
       t.string :lesson, null: false, comment: 'Learning lesson learnt'
@@ -19,4 +20,5 @@ comment: 'The organization to which the learning belongs'
     add_index :learnings, :lesson
     add_index :learnings, :deleted_at
   end
+  # rubocop:enable Metrics/MethodLength
 end

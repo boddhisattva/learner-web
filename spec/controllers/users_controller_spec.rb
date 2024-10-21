@@ -16,20 +16,30 @@ RSpec.describe UsersController, type: :controller do
         }
       end
 
-      it 'creates a new user, organisation & redirects to one\'s feed after successful sign up' do
+      # TO DO: # Add spec with regards to null organization edge case as well and take things from there
+      it 'creates a new user, organisation with user name, membership & redirects to one\'s feed after successful sign up' do
         expect do
           post :create, params: valid_attributes
         end.to change { User.count }.by(1)
            .and change { Organization.count }.by(1)
+           .and change { Membership.count }.by(1)
 
         expect(response).to have_http_status(:see_other)
 
-        expect(response).to redirect_to('/feed')
+        newly_created_user = User.first
+
+        expect(Organization.first.name).to eq(newly_created_user.name)
+        expect(newly_created_user.email).to eq('jim.weirich@test.com')
+        expect(newly_created_user.first_name).to eq('Jim')
+        expect(newly_created_user.last_name).to eq('Weirich')
+
+        expect(response).to redirect_to('/learnings/index')
 
         expect(flash[:success]).to eq(I18n.t("users.create.welcome", name: 'Jim Weirich'))
       end
     end
 
+    # TODO: If needed, Look into adding a test case if organization name update fails
     context 'with one or more invalid user attributes' do
       let(:invalid_attributes) do
         {
@@ -47,6 +57,7 @@ RSpec.describe UsersController, type: :controller do
           post :create, params: invalid_attributes
         end.to change { User.count }.by(0)
            .and change { Organization.count }.by(0)
+           .and change { Membership.count }.by(0)
 
         expect(response).to have_http_status(:unprocessable_entity)
 
@@ -61,9 +72,11 @@ RSpec.describe UsersController, type: :controller do
 
   describe '#update' do
     let(:user) { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
-
+    let(:organization) { Organization.create(name: user.name) }
     before do
       sign_in user
+      # Whenever a new user is created via user sign up flow, an organization is created with user name, hence adding relevant setup
+      organization
     end
 
     context 'with valid user attributes' do
@@ -76,10 +89,13 @@ RSpec.describe UsersController, type: :controller do
         }
       end
 
-      it 'updates a user details and returns related success message' do
+      it 'updates a user details, organisation name accordingly if needed and returns related success message' do
+        expect(organization.name).to eq('Rachel Longwood')
+
         patch :update, params: valid_attributes
 
         expect(user.reload.last_name).to eq('Peters')
+        expect(organization.reload.name).to eq('Rachel Peters')
         expect(user.email).to eq('rachel.peters@xyz.com')
         expect(response).to have_http_status(:see_other)
         expect(response).to redirect_to(profile_path)
@@ -87,6 +103,7 @@ RSpec.describe UsersController, type: :controller do
       end
     end
 
+    # TODO: If needed, Look into adding a test case if organization name update fails
     context 'with invalid user attributes' do
       let(:invalid_attributes) do
         {

@@ -16,7 +16,7 @@ Layout/EmptyLinesAroundBlockBody:
 
 # A line with 80 characters length is generally too small
 Layout/LineLength:
-  Max: 120
+  Max: 135
 
 # Indent internal methods like that those under private for better readability
 Layout/IndentationConsistency:

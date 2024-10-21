@@ -2,26 +2,26 @@
 #
 # Table name: learning_categories
 #
-#  id                                                  :bigint           not null, primary key
-#  deleted_at                                          :datetime
-#  description(More about the Learning Category)       :text
-#  name(Learning Category name)                        :string           not null
-#  created_at                                          :datetime         not null
-#  updated_at                                          :datetime         not null
-#  creator_id(Learning Category created by user)       :bigint           not null
-#  modifier_id(Learning Category last updated by user) :bigint           not null
+#  id                                                             :bigint           not null, primary key
+#  deleted_at                                                     :datetime
+#  description(More information about the learning category)      :text
+#  name(Name of the learning category)                            :string           not null
+#  created_at                                                     :datetime         not null
+#  updated_at                                                     :datetime         not null
+#  creator_id(User who created the learning category)             :bigint           not null
+#  last_modifier_id(User who last modified the learning category) :bigint           not null
 #
 # Indexes
 #
-#  index_learning_categories_on_creator_id   (creator_id)
-#  index_learning_categories_on_deleted_at   (deleted_at)
-#  index_learning_categories_on_modifier_id  (modifier_id)
-#  index_learning_categories_on_name         (name) UNIQUE
+#  index_learning_categories_on_creator_id        (creator_id)
+#  index_learning_categories_on_deleted_at        (deleted_at)
+#  index_learning_categories_on_last_modifier_id  (last_modifier_id)
+#  index_learning_categories_on_name              (name) UNIQUE
 #
 # Foreign Keys
 #
 #  fk_rails_...  (creator_id => users.id)
-#  fk_rails_...  (modifier_id => users.id)
+#  fk_rails_...  (last_modifier_id => users.id)
 #
 class LearningCategory < ApplicationRecord
   acts_as_paranoid

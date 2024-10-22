@@ -6,6 +6,7 @@
         <div class="content">
           <h1 class="title has-text-centered">
             Learning Lessons
+            <small class="has-text-grey">(<%= @learnings.count %> total)</small>
             <%= link_to new_learning_path, class: "button is-primary is-pulled-right" do %>
               <span class="icon">
                 <i class="fas fa-plus"></i>

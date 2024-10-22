@@ -1,8 +1,8 @@
 <section class="section">
   <div class="container">
     <div class="columns is-centered">
-      <div class="column is-8-desktop is-11-tablet is-12-mobile"> <!-- Modified column sizes -->
-        <div class="box p-5"> <!-- Added more padding for better spacing -->
+      <div class="column is-8-desktop is-11-tablet is-12-mobile">
+        <div class="box p-5">
           <h1 class="title has-text-centered mb-5">Create New Learning</h1>
           <%= form_with(model: @learning, local: true) do |f| %>
             <% if @learning.errors.any? %>
@@ -54,9 +54,9 @@
             <div class="field mb-5">
               <%= f.label "Learning Categories", class: "label mb-3" %>
               <div class="control">
-                <div class="columns is-multiline is-mobile"> <!-- Added is-mobile -->
+                <div class="columns is-multiline is-mobile">
                   <% LearningCategory.all.each do |category| %>
-                    <div class="column is-half-mobile is-one-third-tablet"> <!-- Modified column sizes -->
+                    <div class="column is-half-mobile is-one-third-tablet">
                       <label class="checkbox">
                         <%= check_box_tag "learning[learning_category_ids][]",
                             category.id,
@@ -70,10 +70,21 @@
               </div>
             </div>
 
+            <div class="field mb-5">
+              <%= f.label :public, class: "label" %>
+              <div class="control">
+                <label class="checkbox">
+                  <%= f.check_box :public %>
+                  <span class="ml-2">Make this learning public</span>
+                </label>
+                <p class="help">Public learnings can be viewed by all users</p>
+              </div>
+            </div>
+
             <div class="field is-grouped is-grouped-centered mt-5">
               <div class="control">
                 <%= f.submit "Create Learning",
-                    class: "button is-primary is-medium px-5" %> <!-- Made button bigger -->
+                    class: "button is-primary is-medium px-5" %>
               </div>
               <div class="control">
                 <%= link_to "Cancel",
@@ -84,7 +95,7 @@
           <% end %>
         </div>
 
-        <div class="has-text-centered mt-4 mb-4"> <!-- Added bottom margin -->
+        <div class="has-text-centered mt-4 mb-4">
           <%= link_to learnings_path,
               class: "has-text-grey is-flex is-align-items-center is-justify-content-center" do %>
             <span class="icon">

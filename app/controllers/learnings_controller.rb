@@ -2,7 +2,7 @@ class LearningsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @learnings = current_user.learnings
+    @learnings = current_user.learnings.order(created_at: :desc)
     # TO DO: Add pagination later
   end
 

@@ -2,3 +2,5 @@ en:
   learnings:
     create:
       success: Your Learning is created successfully
+    destroy:
+      success: Your Learning is removed successfully

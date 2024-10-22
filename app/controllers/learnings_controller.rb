@@ -10,10 +10,6 @@ class LearningsController < ApplicationController
     @learning = Learning.new
   end
 
-  def show
-    @learning = Learning.find_by(id: params[:id])
-  end
-
   def create
     @learning = Learning.new(learnings_params)
     @learning.creator_id = current_user.id
@@ -26,6 +22,23 @@ class LearningsController < ApplicationController
     else
       flash.now[:error] = @learning.errors.full_messages
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def show
+    @learning = Learning.find_by(id: params[:id])
+  end
+
+  def destroy
+    @learning = Learning.find_by(id: params[:id])
+
+    if @learning.destroy
+      redirect_to learnings_index_path,
+        status: :see_other,
+        flash: { success: t(".success") }
+    else
+      #TODO: Come back to surely see that the code actually goes here through a relevant spec
+      flash.now[:error] = @learning.errors.full_messages
     end
   end
 

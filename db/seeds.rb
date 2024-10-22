@@ -18,7 +18,9 @@ organization = Organization.find_or_create_by(name: user.name)
 
 Membership.create(member_id: user.id, organization_id: organization.id)
 
-Organization.create(name: 'Earth') # This is a worldwide public organization
+earth_as_organization = Organization.create(name: 'Earth') # This is a worldwide public organization
+
+Membership.create(member_id: user.id, organization_id: earth_as_organization.id)
 
 learning_category = LearningCategory.create(name: 'Learnings for Life', creator_id: User.first.id,
 last_modifier_id: User.first.id)

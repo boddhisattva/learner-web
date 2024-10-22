@@ -10,6 +10,10 @@ class LearningsController < ApplicationController
     @learning = Learning.new
   end
 
+  def show
+    @learning = Learning.find_by(id: params[:id])
+  end
+
   def create
     @learning = Learning.new(learnings_params)
     @learning.creator_id = current_user.id

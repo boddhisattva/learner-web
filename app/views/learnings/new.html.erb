@@ -1,17 +1,16 @@
 <section class="section">
   <div class="container">
     <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="box">
-          <h1 class="title has-text-centered">Create New Learning</h1>
-
+      <div class="column is-8-desktop is-11-tablet is-12-mobile"> <!-- Modified column sizes -->
+        <div class="box p-5"> <!-- Added more padding for better spacing -->
+          <h1 class="title has-text-centered mb-5">Create New Learning</h1>
           <%= form_with(model: @learning, local: true) do |f| %>
             <% if @learning.errors.any? %>
-              <div class="notification is-danger">
+              <div class="notification is-danger is-light">
                 <h2 class="subtitle">
                   <%= pluralize(@learning.errors.count, "error") %> prohibited this learning from being saved:
                 </h2>
-                <ul>
+                <ul class="ml-4">
                   <% @learning.errors.full_messages.each do |msg| %>
                     <li><%= msg %></li>
                   <% end %>
@@ -19,21 +18,26 @@
               </div>
             <% end %>
 
-            <div class="field">
+            <div class="field mb-4">
               <%= f.label :lesson, class: "label" %>
               <div class="control">
-                <%= f.text_field :lesson, class: "input", placeholder: "Enter learning name" %>
+                <%= f.text_field :lesson,
+                    class: "input",
+                    placeholder: "Enter learning name" %>
               </div>
             </div>
 
-            <div class="field">
+            <div class="field mb-4">
               <%= f.label :description, class: "label" %>
               <div class="control">
-                <%= f.text_area :description, class: "textarea", placeholder: "Enter learning description", rows: 5 %>
+                <%= f.text_area :description,
+                    class: "textarea",
+                    placeholder: "Enter learning description",
+                    rows: 5 %>
               </div>
             </div>
 
-            <div class="field">
+            <div class="field mb-4">
               <%= f.label :organization_id, "Organization", class: "label" %>
               <div class="control">
                 <div class="select is-fullwidth">
@@ -47,12 +51,12 @@
               </div>
             </div>
 
-            <div class="field">
-              <%= f.label "Learning Categories", class: "label" %>
+            <div class="field mb-5">
+              <%= f.label "Learning Categories", class: "label mb-3" %>
               <div class="control">
-                <div class="columns is-multiline">
+                <div class="columns is-multiline is-mobile"> <!-- Added is-mobile -->
                   <% LearningCategory.all.each do |category| %>
-                    <div class="column is-one-third">
+                    <div class="column is-half-mobile is-one-third-tablet"> <!-- Modified column sizes -->
                       <label class="checkbox">
                         <%= check_box_tag "learning[learning_category_ids][]",
                             category.id,
@@ -68,17 +72,21 @@
 
             <div class="field is-grouped is-grouped-centered mt-5">
               <div class="control">
-                <%= f.submit "Create Learning", class: "button is-primary" %>
+                <%= f.submit "Create Learning",
+                    class: "button is-primary is-medium px-5" %> <!-- Made button bigger -->
               </div>
               <div class="control">
-                <%= link_to "Cancel", learnings_path, class: "button is-light" %>
+                <%= link_to "Cancel",
+                    learnings_path,
+                    class: "button is-light is-medium" %>
               </div>
             </div>
           <% end %>
         </div>
 
-        <div class="has-text-centered mt-4">
-          <%= link_to learnings_path, class: "has-text-grey" do %>
+        <div class="has-text-centered mt-4 mb-4"> <!-- Added bottom margin -->
+          <%= link_to learnings_path,
+              class: "has-text-grey is-flex is-align-items-center is-justify-content-center" do %>
             <span class="icon">
               <i class="fas fa-arrow-left"></i>
             </span>

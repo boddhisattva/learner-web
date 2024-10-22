@@ -28,6 +28,6 @@ class LearningsController < ApplicationController
   private
 
     def learnings_params
-      params.require(:learning).permit(:lesson, :description, :public, :learning_categories, :organization_id)
+      params.require(:learning).permit(:lesson, :description, :public, :learning_category_ids, :organization_id)
     end
 end

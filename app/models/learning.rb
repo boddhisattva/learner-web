@@ -37,5 +37,8 @@ class Learning < ApplicationRecord
 
   belongs_to :creator, class_name: "User"
   belongs_to :last_modifier, class_name: "User"
-  # belongs_to :learning_category
+
+  def learning_categories
+    LearningCategory.where(id: learning_category_ids)
+  end
 end

@@ -37,7 +37,7 @@ class LearningsController < ApplicationController
         status: :see_other,
         flash: { success: t(".success") }
     else
-      #TODO: Come back to surely see that the code actually goes here through a relevant spec
+      # TODO: Come back to surely see that the code actually goes here through a relevant spec
       flash.now[:error] = @learning.errors.full_messages
     end
   end

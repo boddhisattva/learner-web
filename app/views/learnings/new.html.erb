@@ -1,0 +1,91 @@
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="box">
+          <h1 class="title has-text-centered">Create New Learning</h1>
+
+          <%= form_with(model: @learning, local: true) do |f| %>
+            <% if @learning.errors.any? %>
+              <div class="notification is-danger">
+                <h2 class="subtitle">
+                  <%= pluralize(@learning.errors.count, "error") %> prohibited this learning from being saved:
+                </h2>
+                <ul>
+                  <% @learning.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="field">
+              <%= f.label :lesson, class: "label" %>
+              <div class="control">
+                <%= f.text_field :lesson, class: "input", placeholder: "Enter learning name" %>
+              </div>
+            </div>
+
+            <div class="field">
+              <%= f.label :description, class: "label" %>
+              <div class="control">
+                <%= f.text_area :description, class: "textarea", placeholder: "Enter learning description", rows: 5 %>
+              </div>
+            </div>
+
+            <div class="field">
+              <%= f.label :organization_id, "Organization", class: "label" %>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <%= f.collection_select :organization_id,
+                      current_user.organizations,
+                      :id,
+                      :name,
+                      { prompt: "Select an organization" },
+                      { class: "select" } %>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <%= f.label "Learning Categories", class: "label" %>
+              <div class="control">
+                <div class="columns is-multiline">
+                  <% LearningCategory.all.each do |category| %>
+                    <div class="column is-one-third">
+                      <label class="checkbox">
+                        <%= check_box_tag "learning[learning_category_ids][]",
+                            category.id,
+                            @learning.learning_category_ids.include?(category),
+                            id: "learning_category_#{category.id}" %>
+                        <span class="ml-2"><%= category.name %></span>
+                      </label>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-grouped is-grouped-centered mt-5">
+              <div class="control">
+                <%= f.submit "Create Learning", class: "button is-primary" %>
+              </div>
+              <div class="control">
+                <%= link_to "Cancel", learnings_path, class: "button is-light" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="has-text-centered mt-4">
+          <%= link_to learnings_path, class: "has-text-grey" do %>
+            <span class="icon">
+              <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Back to Learnings</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

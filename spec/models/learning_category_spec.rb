@@ -16,7 +16,7 @@
 #  index_learning_categories_on_creator_id        (creator_id)
 #  index_learning_categories_on_deleted_at        (deleted_at)
 #  index_learning_categories_on_last_modifier_id  (last_modifier_id)
-#  index_learning_categories_on_name              (name) UNIQUE
+#  index_learning_categories_on_name              (name) UNIQUE WHERE (deleted_at IS NULL)
 #
 # Foreign Keys
 #

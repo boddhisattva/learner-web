@@ -25,7 +25,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_20_154306) do
     t.index ["creator_id"], name: "index_learning_categories_on_creator_id"
     t.index ["deleted_at"], name: "index_learning_categories_on_deleted_at"
     t.index ["last_modifier_id"], name: "index_learning_categories_on_last_modifier_id"
-    t.index ["name"], name: "index_learning_categories_on_name", unique: true
+    t.index ["name"], name: "index_learning_categories_on_name", unique: true, where: "(deleted_at IS NULL)"
   end
 
   create_table "learnings", force: :cascade do |t|

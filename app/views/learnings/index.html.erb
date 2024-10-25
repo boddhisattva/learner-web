@@ -32,43 +32,7 @@
                   </thead>
                   <tbody>
                     <% @learnings.each do |learning| %>
-                      <tr>
-                        <td>
-                          <%= learning.lesson %>
-                          <!-- Show these details on mobile only -->
-                          <div class="is-hidden-tablet">
-                            <small class="has-text-grey">
-                              <%= learning.created_at.strftime("%B %d, %Y") %>
-                            </small>
-                          </div>
-                        </td>
-                        <td class="is-hidden-mobile">
-                          <%= learning.created_at.strftime("%B %d, %Y") %>
-                        </td>
-                        <td>
-                          <div class="buttons are-small is-flex-wrap-nowrap">
-                            <%= link_to learning_path(learning),
-                                class: "button is-info is-small" do %>
-                              <span class="icon is-small">
-                                <i class="fas fa-eye"></i>
-                              </span>
-                            <% end %>
-                            <%= link_to edit_learning_path(learning),
-                                class: "button is-warning is-small" do %>
-                              <span class="icon is-small">
-                                <i class="fas fa-edit"></i>
-                              </span>
-                            <% end %>
-                            <%= link_to learning_path(learning),
-                                data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' },
-                                class: "button is-danger is-small" do %>
-                              <span class="icon is-small">
-                                <i class="fas fa-trash"></i>
-                              </span>
-                            <% end %>
-                          </div>
-                        </td>
-                      </tr>
+                      <%= render partial: 'learning', locals: {learning: learning } %>
                     <% end %>
                   </tbody>
                 </table>

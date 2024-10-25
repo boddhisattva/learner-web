@@ -16,7 +16,7 @@
 #  index_learning_categories_on_creator_id        (creator_id)
 #  index_learning_categories_on_deleted_at        (deleted_at)
 #  index_learning_categories_on_last_modifier_id  (last_modifier_id)
-#  index_learning_categories_on_name              (name) UNIQUE
+#  index_learning_categories_on_name              (name) UNIQUE WHERE (deleted_at IS NULL)
 #
 # Foreign Keys
 #
@@ -28,7 +28,10 @@ class LearningCategory < ApplicationRecord
 
   # TODO: Add relevant model
   validates :name, presence: true
+  # TODO: Add model validations for the DB level constraints added
+
 
   belongs_to :creator, class_name: "User"
   belongs_to :last_modifier, class_name: "User"
+
 end

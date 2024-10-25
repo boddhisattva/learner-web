@@ -11,7 +11,7 @@ comment: 'User who last modified the learning category'
 
       t.timestamps
     end
-    add_index :learning_categories, :name, unique: true
+    add_index :learning_categories, :name, unique: true, where: 'deleted_at is NULL'
     add_index :learning_categories, :deleted_at
   end
 end

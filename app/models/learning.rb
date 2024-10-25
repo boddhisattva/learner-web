@@ -34,6 +34,7 @@ class Learning < ApplicationRecord
 
   # TODO: Add relevant model spec
   validates :lesson, presence: true
+  # TODO: Add model validations for the DB level constraints added
 
   belongs_to :creator, class_name: "User"
   belongs_to :last_modifier, class_name: "User"

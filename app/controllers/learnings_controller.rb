@@ -33,11 +33,17 @@ class LearningsController < ApplicationController
     @learning = Learning.find_by(id: params[:id])
 
     if @learning.destroy
-      redirect_to learnings_index_path,
-        status: :see_other,
-        flash: { success: t(".success") }
+      flash.now[:success] = t(".success")
+      @learnings = current_user.learnings
+      respond_to do |format|
+        format.turbo_stream { render :destroy, status: :see_other }
+        # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
+        # TODO: Add a relevant test for the same
+        format.html { redirect_to learnings_index_path, status: :see_other, flash: { success: t(".success") } }
+      end
     else
       # TODO: Come back to surely see that the code actually goes here through a relevant spec
+      @learnings = current_user.learnings # TODO: Also just double check if we need this line for the else case
       flash.now[:error] = @learning.errors.full_messages
     end
   end

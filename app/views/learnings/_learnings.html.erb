@@ -1,0 +1,16 @@
+<div class="box" id="all_learnings">
+  <div class="table-container"> <!-- Added wrapper for horizontal scrolling -->
+    <table class="table is-fullwidth is-hoverable">
+      <thead>
+        <tr>
+          <th>Lesson</th>
+          <th class="is-hidden-mobile">Created</th> <!-- Hide on mobile -->
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render @learnings %>
+      </tbody>
+    </table>
+  </div>
+</div>

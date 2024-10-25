@@ -39,7 +39,7 @@ gem "bootsnap", require: false
 
 gem "devise", "~> 4.9" # Useful for authentication related functionality
 
-gem "paranoia", "~> 3.0" # Addd soft deletion capabilities
+gem "paranoia", "~> 3.0" # Add soft deletion capabilities
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -13,6 +13,6 @@
 #
 FactoryBot.define do
   factory :organization do
-
+    name { "Sample organization" }
   end
 end

@@ -41,6 +41,8 @@ gem "devise", "~> 4.9" # Useful for authentication related functionality
 
 gem "paranoia", "~> 3.0" # Add soft deletion capabilities
 
+gem "will_paginate", "~> 4.0", ">= 4.0.1" # Add pagination to limit number of displayed entries per page
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

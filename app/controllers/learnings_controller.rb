@@ -1,8 +1,18 @@
 class LearningsController < ApplicationController
+  MAX_ENTRIES_PER_PAGE = 10
+
   before_action :authenticate_user!
 
   def index
     @learnings = current_user.learnings.order(created_at: :desc)
+
+    # TODO: Refactor the below filters to the model code
+    if params[:search].present?
+      @learnings = @learnings.where("lesson ILIKE ?", "%#{params[:search]}%")
+    end
+
+    # Maintain your existing pagination if you're using it
+    @learnings = @learnings.paginate(page: params[:page], per_page: MAX_ENTRIES_PER_PAGE)
     # TO DO: Add pagination later
   end
 

@@ -27,8 +27,8 @@ FactoryBot.define do
   factory :learning_category do
     name { "MyString" }
     description { "MyText" }
-    creator { user }
-    modifier { user }
+    creator { create(:user) }
+    last_modifier { creator }
     deleted_at { "2024-10-20 09:59:36" }
   end
 end

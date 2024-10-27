@@ -9,6 +9,30 @@
               <span class="mr-2">Learning Lessons</span>
               <small id="learnings_count" class="has-text-grey">(<%= @learnings.count %> total)</small>
             </h1>
+
+            <!-- Search form -->
+            <div class="box mb-4">
+              <%= form_with(url: learnings_path, method: :get, local: true, class: "mb-3") do |f| %>
+                <div class="field is-grouped">
+                  <div class="control is-expanded">
+                    <%= f.text_field :search,
+                        class: "input",
+                        placeholder: "Search by learning lesson...",
+                        value: params[:search] %>
+                  </div>
+
+                  <div class="control">
+                    <%= f.submit "Search", class: "button is-info" %>
+                  </div>
+                  <% if params[:search].present? || params[:category].present? %>
+                    <div class="control">
+                      <%= link_to "Clear", learnings_path, class: "button" %>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+
             <div class="has-text-centered">
               <%= link_to new_learning_path, class: "button is-primary" do %>
                 <span class="icon">
@@ -21,10 +45,9 @@
 
           <% if @learnings.any? %>
             <%= render 'learnings' %>
-
             <% if @learnings.respond_to?(:total_pages) %>
               <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-                <%= paginate @learnings %>
+                <%= will_paginate @learnings %>
               </nav>
             <% end %>
           <% else %>

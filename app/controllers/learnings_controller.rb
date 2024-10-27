@@ -29,6 +29,8 @@ class LearningsController < ApplicationController
     @learning = Learning.find_by(id: params[:id])
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # TODO: come back and try to see later how to reduce the method size further
   def destroy
     @learning = Learning.find_by(id: params[:id])
 
@@ -47,6 +49,7 @@ class LearningsController < ApplicationController
       flash.now[:error] = @learning.errors.full_messages
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 

@@ -33,5 +33,4 @@ class LearningCategory < ApplicationRecord
 
   belongs_to :creator, class_name: "User"
   belongs_to :last_modifier, class_name: "User"
-
 end

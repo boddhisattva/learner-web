@@ -12,7 +12,7 @@
 
             <!-- Search form -->
             <div class="box mb-4">
-              <%= form_with(url: learnings_path, method: :get, local: true, class: "mb-3") do |f| %>
+              <%= form_with(url: learnings_path, method: :get, data: { turbo_frame: "learnings_result", turbo_action: "advance" }, class: "mb-3") do |f| %>
                 <div class="field is-grouped">
                   <div class="control is-expanded">
                     <%= f.text_field :search,
@@ -44,7 +44,9 @@
           </div>
 
           <% if @learnings.any? %>
-            <%= render 'learnings' %>
+            <%= turbo_frame_tag "learnings_result" do %>
+              <%= render 'learnings' %>
+            <% end %>
             <% if @learnings.respond_to?(:total_pages) %>
               <nav class="pagination is-centered" role="navigation" aria-label="pagination">
                 <%= will_paginate @learnings %>

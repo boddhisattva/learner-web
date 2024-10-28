@@ -14,7 +14,7 @@
     </td>
     <td>
       <div class="buttons are-small is-flex-wrap-nowrap">
-        <%= link_to learning_path(learning),
+        <%= link_to learning_path(learning), data: { turbo_frame: "_top"},
             class: "button is-info is-small" do %>
           <span class="icon is-small">
             <i class="fas fa-eye"></i>

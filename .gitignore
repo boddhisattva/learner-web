@@ -40,3 +40,6 @@
 /node_modules
 .DS_Store
 .ruby-gemset
+
+# I believe these are IntelliJ Ruby mine IDE related files
+.idea

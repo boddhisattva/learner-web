@@ -32,5 +32,29 @@
 require 'rails_helper'
 
 RSpec.describe Learning, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'validations' do
+    it { should validate_presence_of(:lesson) }
+  end
+
+  describe 'associations' do
+    it { should belong_to(:creator).class_name('User') }
+    it { should belong_to(:last_modifier).class_name('User') }
+    it { should belong_to(:organization) }
+  end
+
+  describe '#learning_categories' do
+    let(:category1) { create(:learning_category) }
+    let(:category2) { create(:learning_category) }
+    let(:learning) { create(:learning) }
+
+    before do
+      category1
+      category2
+      learning.update(learning_category_ids: [ category1.id, category2.id ])
+    end
+
+    it 'returns the correct learning categories' do
+      expect(learning.learning_category_ids).to match_array([ category1.id, category2.id ])
+    end
+  end
 end

@@ -27,12 +27,18 @@ class LearningsController < ApplicationController
 
   def show
     @learning = Learning.find_by(id: params[:id])
+
+    if @learning.blank?
+      redirect_to learnings_index_path, status: :see_other, flash: { error: t(".error") }
+    end
   end
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   # TODO: come back and try to see later how to reduce the method size further
   def destroy
     @learning = Learning.find_by(id: params[:id])
+    return redirect_to learnings_index_path, status: :see_other, flash: { error: t(".not_found") } if @learning.blank?
 
     if @learning.destroy
       flash.now[:success] = t(".success")
@@ -40,16 +46,20 @@ class LearningsController < ApplicationController
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }
         # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
-        # TODO: Add a relevant test for the same
         format.html { redirect_to learnings_index_path, status: :see_other, flash: { success: t(".success") } }
       end
     else
-      # TODO: Come back to surely see that the code actually goes here through a relevant spec
-      @learnings = current_user.learnings # TODO: Also just double check if we need this line for the else case
+      @learnings = current_user.learnings
       flash.now[:error] = @learning.errors.full_messages
+      respond_to do |format|
+        format.turbo_stream { render :destroy, status: :see_other }
+        # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
+        format.html { redirect_to learnings_index_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
+      end
     end
   end
   # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   private
 

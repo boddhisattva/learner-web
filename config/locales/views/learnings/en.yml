@@ -3,4 +3,8 @@ en:
     create:
       success: Your Learning is created successfully
     destroy:
+      not_found: Learning to be deleted was not found
       success: Your Learning is removed successfully
+      error: Failed to remove Learning
+    show:
+      error: Learning not found

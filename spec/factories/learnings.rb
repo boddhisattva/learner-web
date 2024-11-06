@@ -33,11 +33,11 @@ FactoryBot.define do
   factory :learning do
     lesson { "MyString" }
     description { "MyText" }
-    creator { user }
-    deleted_at { "2024-10-20 10:00:14" }
+    creator { create(:user) }
+    deleted_at { "" }
     public { false }
-    learning_category { learning_category }
-    modifier { user }
-    organization { user.own_organization }
+    learning_category_ids { [ create(:learning_category).id ] }
+    last_modifier { creator }
+    organization { create(:organization) }
   end
 end

@@ -25,10 +25,10 @@
 #
 FactoryBot.define do
   factory :learning_category do
-    name { "MyString" }
+    sequence(:name) { |n| "Category #{n}" }
     description { "MyText" }
-    creator { user }
-    modifier { user }
-    deleted_at { "2024-10-20 09:59:36" }
+    creator_id { create(:user).id }
+    last_modifier_id { creator_id }
+    deleted_at { "" }
   end
 end

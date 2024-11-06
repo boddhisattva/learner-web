@@ -8,8 +8,22 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-User.first_or_create(first_name: 'Abhimanyu',
+user =  User.first_or_create(first_name: 'Abhimanyu',
                      last_name: 'Pandav',
                      email: 'abhimanyu@test.com',
                      password: 'passwd123', # needs to be at least 8 characters
                      )
+
+organization = Organization.find_or_create_by(name: user.name)
+
+Membership.create(member_id: user.id, organization_id: organization.id)
+
+earth_as_organization = Organization.create(name: 'Earth') # This is a worldwide public organization
+
+Membership.create(member_id: user.id, organization_id: earth_as_organization.id)
+
+learning_category = LearningCategory.create(name: 'Learnings for Life', creator_id: User.first.id,
+last_modifier_id: User.first.id)
+
+Learning.create(lesson: "Karm kar Phal ki chinta na kar", learning_category_ids: [ learning_category.id ],
+creator_id: User.first.id, last_modifier_id: User.first.id, organization_id: organization.id)

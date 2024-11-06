@@ -1,0 +1,9 @@
+<%= turbo_stream.update "learnings_count" do %>
+  <small id="learnings_count" class="has-text-grey">(<%= @learnings.count %> total)</small>
+<% end %>
+
+<%= turbo_stream.replace "all_learnings" do %>
+  <%= render "shared/flashes" %>
+  <%= render 'learnings', object: @learnings %>
+<% end %>
+

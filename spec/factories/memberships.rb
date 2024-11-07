@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: memberships
 #
-#  rubocop:disable Layout/LineLength
 #  id                                                                               :bigint           not null, primary key
-#  rubocop:enable Layout/LineLength
 #  created_at                                                                       :datetime         not null
 #  updated_at                                                                       :datetime         not null
 #  member_id(This references the user associated with the membership)               :bigint           not null

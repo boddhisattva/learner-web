@@ -17,10 +17,10 @@ describe 'Update user profile details', type: :system do
 
       fill_in User.human_attribute_name(:first_name), with: 'Rania'
 
-      click_button I18n.t("users.show.save_profile")
+      click_button I18n.t('users.show.save_profile')
 
-      expect(page).to have_selector("#current_user_name", text: "Rania Longwood")
-      expect(page).to have_text(I18n.t("users.update.success"))
+      expect(page).to have_selector('#current_user_name', text: 'Rania Longwood')
+      expect(page).to have_text(I18n.t('users.update.success'))
     end
   end
 end

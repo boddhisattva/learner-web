@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: learnings
@@ -33,13 +35,13 @@ require 'rails_helper'
 
 RSpec.describe Learning, type: :model do
   describe 'validations' do
-    it { should validate_presence_of(:lesson) }
+    it { is_expected.to validate_presence_of(:lesson) }
   end
 
   describe 'associations' do
-    it { should belong_to(:creator).class_name('User') }
-    it { should belong_to(:last_modifier).class_name('User') }
-    it { should belong_to(:organization) }
+    it { is_expected.to belong_to(:creator).class_name('User') }
+    it { is_expected.to belong_to(:last_modifier).class_name('User') }
+    it { is_expected.to belong_to(:organization) }
   end
 
   describe '#learning_categories' do
@@ -50,11 +52,11 @@ RSpec.describe Learning, type: :model do
     before do
       category1
       category2
-      learning.update(learning_category_ids: [ category1.id, category2.id ])
+      learning.update(learning_category_ids: [category1.id, category2.id])
     end
 
     it 'returns the correct learning categories' do
-      expect(learning.learning_category_ids).to match_array([ category1.id, category2.id ])
+      expect(learning.learning_category_ids).to contain_exactly(category1.id, category2.id)
     end
   end
 end

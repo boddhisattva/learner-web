@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -20,9 +22,9 @@
 #
 FactoryBot.define do
   factory :user do
-    first_name { "Rachel" }
-    last_name { "Longwood" }
+    first_name { 'Rachel' }
+    last_name { 'Longwood' }
     sequence(:email) { |n| "person_#{n}@example.com" }
-    password { "MyString" }
+    password { 'MyString' }
   end
 end

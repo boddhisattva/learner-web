@@ -18,8 +18,8 @@ module Mobile
       it 'can access mobile sign up page via burger menu' do
         visit root_path
 
-        find(".navbar-burger").click
-        click_on I18n.t("shared.navbar.sign_up")
+        find('.navbar-burger').click
+        click_on I18n.t('shared.navbar.sign_up')
 
         expect(page).to have_current_path(new_user_registration_path)
       end

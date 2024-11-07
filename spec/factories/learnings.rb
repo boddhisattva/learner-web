@@ -31,7 +31,7 @@
 #
 FactoryBot.define do
   factory :learning do
-    lesson { "MyString" }
+    sequence(:lesson) { |n| "Learning #{n}" }
     description { "MyText" }
     creator { create(:user) }
     deleted_at { "" }

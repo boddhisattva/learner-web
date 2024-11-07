@@ -29,7 +29,7 @@ class LearningsController < ApplicationController
     @learning = Learning.find_by(id: params[:id])
 
     if @learning.blank?
-      redirect_to learnings_index_path, status: :see_other, flash: { error: t(".error") }
+      redirect_to learnings_path, status: :see_other, flash: { error: t(".error") }
     end
   end
 

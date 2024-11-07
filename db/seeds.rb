@@ -25,5 +25,8 @@ Membership.create(member_id: user.id, organization_id: earth_as_organization.id)
 learning_category = LearningCategory.create(name: 'Learnings for Life', creator_id: User.first.id,
 last_modifier_id: User.first.id)
 
+learning_category = LearningCategory.create(name: 'Discipline', creator_id: User.first.id,
+last_modifier_id: User.first.id)
+
 Learning.create(lesson: "Karm kar Phal ki chinta na kar", learning_category_ids: [ learning_category.id ],
 creator_id: User.first.id, last_modifier_id: User.first.id, organization_id: organization.id)

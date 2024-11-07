@@ -15,7 +15,7 @@ describe 'User sign up & sign in flow', type: :system do
       click_button 'Sign Up'
 
       expect(page)
-        .to have_text("Password #{I18n.t ('activerecord.errors.models.user.attributes.password.too_short')}")
+        .to have_text("Password #{I18n.t('activerecord.errors.models.user.attributes.password.too_short')}")
       expect(User.count).to eq(0)
     end
 
@@ -30,7 +30,7 @@ describe 'User sign up & sign in flow', type: :system do
       click_button 'Sign Up'
 
       expect(page).to have_text('Learning Lessons') # Confirms Sign in on Signup
-      expect(page).to have_text(I18n.t("users.create.welcome", name: 'Racquel R'))
+      expect(page).to have_text(I18n.t('users.create.welcome', name: 'Racquel R'))
       expect(User.count).to eq(1)
     end
   end

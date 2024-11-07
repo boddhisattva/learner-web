@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: learnings
@@ -32,11 +34,11 @@
 FactoryBot.define do
   factory :learning do
     sequence(:lesson) { |n| "Learning #{n}" }
-    description { "MyText" }
+    description { 'MyText' }
     creator { create(:user) }
-    deleted_at { "" }
+    deleted_at { '' }
     public { false }
-    learning_category_ids { [ create(:learning_category).id ] }
+    learning_category_ids { [create(:learning_category).id] }
     last_modifier { creator }
     organization { create(:organization) }
   end

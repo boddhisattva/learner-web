@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
@@ -20,9 +22,9 @@ RSpec.describe UsersController, type: :controller do
       it 'creates a new user, organisation with user name, membership & redirects to one\'s feed after successful sign up' do
         expect do
           post :create, params: valid_attributes
-        end.to change { User.count }.by(1)
-           .and change { Organization.count }.by(1)
-           .and change { Membership.count }.by(1)
+        end.to change(User, :count).by(1)
+           .and change(Organization, :count).by(1)
+           .and change(Membership, :count).by(1)
 
         expect(response).to have_http_status(:see_other)
 
@@ -35,7 +37,7 @@ RSpec.describe UsersController, type: :controller do
 
         expect(response).to redirect_to('/learnings/index')
 
-        expect(flash[:success]).to eq(I18n.t("users.create.welcome", name: 'Jim Weirich'))
+        expect(flash[:success]).to eq(I18n.t('users.create.welcome', name: 'Jim Weirich'))
       end
     end
 
@@ -55,16 +57,16 @@ RSpec.describe UsersController, type: :controller do
       it 'renders errors if input data is invalid and no new users and organisations are created' do
         expect do
           post :create, params: invalid_attributes
-        end.to change { User.count }.by(0)
-           .and change { Organization.count }.by(0)
-           .and change { Membership.count }.by(0)
+        end.to change(User, :count).by(0)
+           .and change(Organization, :count).by(0)
+           .and change(Membership, :count).by(0)
 
         expect(response).to have_http_status(:unprocessable_entity)
 
         expect(response).to render_template('devise/registrations/new')
 
         expect(flash[:error].first)
-          .to eq("Password #{I18n.t ('activerecord.errors.models.user.attributes.password.too_short')}")
+          .to eq("Password #{I18n.t('activerecord.errors.models.user.attributes.password.too_short')}")
 
       end
     end
@@ -73,6 +75,7 @@ RSpec.describe UsersController, type: :controller do
   describe '#update' do
     let(:user) { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
     let(:organization) { Organization.create(name: user.name) }
+
     before do
       sign_in user
       # Whenever a new user is created via user sign up flow, an organization is created with user name, hence adding relevant setup
@@ -99,7 +102,7 @@ RSpec.describe UsersController, type: :controller do
         expect(user.email).to eq('rachel.peters@xyz.com')
         expect(response).to have_http_status(:see_other)
         expect(response).to redirect_to(profile_path)
-        expect(flash[:success]).to eq(I18n.t("users.update.success"))
+        expect(flash[:success]).to eq(I18n.t('users.update.success'))
       end
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LearningsController < ApplicationController
   before_action :authenticate_user!
 
@@ -17,8 +19,8 @@ class LearningsController < ApplicationController
 
     if @learning.save
       redirect_to learnings_index_path,
-        status: :see_other,
-        flash: { success: t(".success", lesson: @learning.lesson) }
+                  status: :see_other,
+                  flash: { success: t('.success', lesson: @learning.lesson) }
     else
       flash.now[:error] = @learning.errors.full_messages
       render :new, status: :unprocessable_entity
@@ -28,9 +30,9 @@ class LearningsController < ApplicationController
   def show
     @learning = Learning.find_by(id: params[:id])
 
-    if @learning.blank?
-      redirect_to learnings_path, status: :see_other, flash: { error: t(".error") }
-    end
+    return if @learning.present?
+
+    redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -38,15 +40,15 @@ class LearningsController < ApplicationController
   # TODO: come back and try to see later how to reduce the method size further
   def destroy
     @learning = Learning.find_by(id: params[:id])
-    return redirect_to learnings_index_path, status: :see_other, flash: { error: t(".not_found") } if @learning.blank?
+    return redirect_to learnings_index_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     if @learning.destroy
-      flash.now[:success] = t(".success")
+      flash.now[:success] = t('.success')
       @learnings = current_user.learnings
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }
         # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
-        format.html { redirect_to learnings_index_path, status: :see_other, flash: { success: t(".success") } }
+        format.html { redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success') } }
       end
     else
       @learnings = current_user.learnings

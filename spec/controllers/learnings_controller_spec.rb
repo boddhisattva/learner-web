@@ -87,7 +87,7 @@ RSpec.describe LearningsController, type: :controller do
     context "when the learning is not found" do
       it "redirects to index with error message" do
         get :show, params: { id: 'nonexistent' }
-        expect(response).to redirect_to(learnings_index_path)
+        expect(response).to redirect_to(learnings_path)
         expect(flash[:error]).to eq(I18n.t("learnings.show.error"))
       end
     end

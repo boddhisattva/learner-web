@@ -8,3 +8,11 @@ en:
       error: Failed to remove Learning
     show:
       error: Learning not found
+    edit:
+      title: "Edit Learning"
+      not_found: "Learning to be updated was not found"
+    update:
+      success: "Learning was successfully updated"
+      not_found: "Learning not found"
+
+

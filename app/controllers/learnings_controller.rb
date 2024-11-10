@@ -35,6 +35,28 @@ class LearningsController < ApplicationController
     redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }
   end
 
+  def edit
+    @learning = Learning.find_by(id: params[:id])
+
+    redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
+  end
+
+  def update
+    @learning = Learning.find_by(id: params[:id])
+    return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
+
+    @learning.last_modifier_id = current_user.id
+
+    if @learning.update(learnings_params)
+      redirect_to learning_path(@learning),
+                  status: :see_other,
+                  flash: { success: t('.success', lesson: @learning.lesson) }
+    else
+      flash.now[:error] = @learning.errors.full_messages
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
   # TODO: come back and try to see later how to reduce the method size further

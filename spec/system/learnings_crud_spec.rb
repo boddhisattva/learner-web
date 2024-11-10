@@ -125,7 +125,7 @@ RSpec.describe 'Learnings', type: :system do
         visit edit_learning_path(id: 999_999)
 
         expect(page).to have_current_path(learnings_path)
-        expect(page).to have_content('Learning not found')
+        expect(page).to have_content(I18n.t('learnings.edit.not_found'))
       end
     end
   end

@@ -151,4 +151,81 @@ RSpec.describe LearningsController, type: :controller do
       end
     end
   end
+
+  describe 'GET #edit' do
+    let(:learning) { create(:learning, creator: user) }
+
+    it 'assigns the requested learning' do
+      get :edit, params: { id: learning.id }
+      expect(assigns(:learning)).to eq(learning)
+    end
+
+    context 'when the learning is not found' do
+      it 'redirects to index with error message' do
+        get :edit, params: { id: 'nonexistent' }
+        expect(response).to redirect_to(learnings_path)
+        expect(flash[:error]).to eq(I18n.t('learnings.edit.not_found'))
+      end
+    end
+  end
+
+  describe 'PATCH #update' do
+    let(:learning) { create(:learning, creator: user) }
+    let(:valid_params) do
+      {
+        id: learning.id,
+        learning: {
+          lesson: 'Updated Lesson',
+          description: 'Updated Description',
+          public: false,
+          organization_id: organization.id,
+          learning_category_ids: [learning_category.id]
+        }
+      }
+    end
+
+    context 'with valid parameters' do
+      it 'updates the learning and redirects to show with success message' do
+        patch :update, params: valid_params
+        learning.reload
+
+        expect(learning.lesson).to eq('Updated Lesson')
+        expect(learning.description).to eq('Updated Description')
+        expect(learning.public).to be(false)
+        expect(learning.organization).to eq(organization)
+        expect(learning.learning_category_ids).to eq([learning_category.id])
+        expect(learning.last_modifier).to eq(user)
+
+        expect(response).to redirect_to(learning_path(learning))
+        expect(flash[:success]).to eq(I18n.t('learnings.update.success'))
+      end
+    end
+
+    context 'with invalid parameters' do
+      let(:invalid_params) do
+        {
+          id: learning.id,
+          learning: { lesson: '' }
+        }
+      end
+
+      it 'does not update the learning and renders edit template with error message' do
+        original_lesson = learning.lesson
+        patch :update, params: invalid_params
+        learning.reload
+
+        expect(learning.lesson).to eq(original_lesson)
+        expect(response).to render_template(:edit)
+        expect(flash.now[:error]).to eq(["Lesson can't be blank"])
+      end
+    end
+
+    context 'when the learning is not found' do
+      it 'redirects to index with error message' do
+        patch :update, params: { id: 'nonexistent', learning: { lesson: 'Updated' } }
+        expect(response).to redirect_to(learnings_path)
+        expect(flash[:error]).to eq(I18n.t('learnings.update.not_found'))
+      end
+    end
+  end
 end

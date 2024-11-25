@@ -87,7 +87,7 @@ end
 group :test do
   gem "rails-controller-testing"
   gem "capybara" # Useful for testing web apps & specifically for writing things like system tests
-  gem "selenium-webdriver", "~> 4.26" # Browser automation tool for automated testing of webapps & more
+  gem "selenium-webdriver", "~> 4.27" # Browser automation tool for automated testing of webapps & more
   gem "launchy", "~> 3.0" # Useful for debugging system tests
 end
 

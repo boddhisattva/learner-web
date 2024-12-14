@@ -208,12 +208,7 @@ GEM
     pry-byebug (3.10.1)
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
-<<<<<<< HEAD
-    psych (5.2.1)
-      date
-=======
     psych (5.2.0)
->>>>>>> ddd5ed9 (Bump rspec-rails from 7.0.1 to 7.1.0)
       stringio
     public_suffix (6.0.1)
     puma (6.5.0)
@@ -263,13 +258,8 @@ GEM
     rake (13.2.1)
     rdoc (6.8.1)
       psych (>= 4.0.0)
-<<<<<<< HEAD
-    regexp_parser (2.9.3)
-    reline (0.5.12)
-=======
     regexp_parser (2.9.2)
     reline (0.5.11)
->>>>>>> ddd5ed9 (Bump rspec-rails from 7.0.1 to 7.1.0)
       io-console (~> 0.5)
     responders (3.1.1)
       actionpack (>= 5.2)

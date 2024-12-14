@@ -407,7 +407,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   rubocop-rspec_rails
-  selenium-webdriver (~> 4.27)
+  selenium-webdriver (~> 4.25)
   shoulda-matchers
   stimulus-rails
   strong_migrations

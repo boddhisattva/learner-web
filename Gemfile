@@ -85,7 +85,7 @@ group :development do
 
   gem 'flog', require: false # Flog reports the most tortured code in an easy to read pain report
 
-  gem 'annotate' # Annotate Rails classes with schema and routes info
+  gem 'annotaterb' # Annotate Rails classes with schema and routes info
 
   gem 'i18n-debug' # Get more clarity on which Internationalisation related translations are looked up
 end

@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_20_154306) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_16_063025) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "learning_categories", force: :cascade do |t|
     t.string "name", null: false, comment: "Name of the learning category"
@@ -33,7 +33,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_20_154306) do
     t.text "description", comment: "Learning lesson in more detail"
     t.bigint "creator_id", null: false, comment: "User who created the learning"
     t.datetime "deleted_at"
-    t.boolean "public", default: false, null: false, comment: "Determines organizational visibility of the learning"
+    t.boolean "public_visibility", default: false, null: false, comment: "Determines organizational visibility of the learning"
     t.integer "learning_category_ids", default: [], comment: "Collection of different learning categories a Learning belongs to", array: true
     t.bigint "last_modifier_id", null: false, comment: "User who last modified the learning"
     t.bigint "organization_id", null: false, comment: "The organization to which the learning belongs"
@@ -52,6 +52,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_20_154306) do
     t.bigint "organization_id", null: false, comment: "This references the organisation associated with the membership"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["member_id", "organization_id"], name: "index_memberships_on_member_id_and_organization_id", unique: true
     t.index ["member_id"], name: "index_memberships_on_member_id"
     t.index ["organization_id"], name: "index_memberships_on_organization_id"
   end

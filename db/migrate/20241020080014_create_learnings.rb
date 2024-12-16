@@ -8,7 +8,7 @@ class CreateLearnings < ActiveRecord::Migration[7.2]
       t.text :description, comment: 'Learning lesson in more detail'
       t.references :creator, null: false, foreign_key: { to_table: :users }, comment: 'User who created the learning'
       t.datetime :deleted_at
-      t.boolean :public, null: false, default: false, comment: 'Determines organizational visibility of the learning'
+      t.boolean :public_visibility, null: false, default: false, comment: 'Determines organizational visibility of the learning'
       t.integer :learning_category_ids, array: true, default: [],
                                         comment: 'Collection of different learning categories a Learning belongs to'
       t.references :last_modifier, null: false, foreign_key: { to_table: :users },

@@ -9,7 +9,7 @@
 #  description(Learning lesson in more detail)                                              :text
 #  learning_category_ids(Collection of different learning categories a Learning belongs to) :integer          default([]), is an Array
 #  lesson(Learning lesson learnt)                                                           :string           not null
-#  public(Determines organizational visibility of the learning)                             :boolean          default(FALSE), not null
+#  public_visibility(Determines organizational visibility of the learning)                  :boolean          default(FALSE), not null
 #  created_at                                                                               :datetime         not null
 #  updated_at                                                                               :datetime         not null
 #  creator_id(User who created the learning)                                                :bigint           not null

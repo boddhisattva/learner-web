@@ -88,6 +88,6 @@ class LearningsController < ApplicationController
   private
 
     def learnings_params
-      params.require(:learning).permit(:lesson, :description, :public, :organization_id, learning_category_ids: [])
+      params.require(:learning).permit(:lesson, :description, :public_visibility, :organization_id, learning_category_ids: [])
     end
 end

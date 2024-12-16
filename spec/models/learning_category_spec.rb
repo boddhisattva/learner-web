@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: learning_categories
@@ -25,6 +24,7 @@
 #  fk_rails_...  (creator_id => users.id)
 #  fk_rails_...  (last_modifier_id => users.id)
 #
+
 require 'rails_helper'
 
 RSpec.describe LearningCategory, type: :model do

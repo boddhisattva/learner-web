@@ -74,7 +74,7 @@ RSpec.describe UsersController, type: :controller do
 
   describe '#update' do
     let(:user) { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
-    let(:organization) { Organization.create(name: user.name) }
+    let(:organization) { create(:organization, name: user.name) }
 
     before do
       sign_in user
@@ -103,6 +103,31 @@ RSpec.describe UsersController, type: :controller do
         expect(response).to have_http_status(:see_other)
         expect(response).to redirect_to(profile_path)
         expect(flash[:success]).to eq(I18n.t('users.update.success'))
+      end
+    end
+
+    context 'organization with same name already exists' do
+      let(:other_user) { create(:user, first_name: '  Marcus ', last_name: ' Aurelius', email: 'marcus@xyz.com ') }
+      let(:other_organization) { create(:organization, name: other_user.name) }
+      let(:user_attributes) do
+        {
+          user: {
+            first_name: user.first_name,
+            last_name: user.last_name
+          }
+        }
+      end
+
+      before do
+        sign_in other_user
+        other_organization
+      end
+
+      it 'raises an appropriate error and does not update the other organization with the new name' do
+        patch(:update, params: user_attributes)
+
+        expect(response).to render_template(:edit)
+        expect(flash[:error]).to include(match(/Name PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "index_organizations_on_name"/))
       end
     end
 

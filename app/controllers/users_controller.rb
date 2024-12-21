@@ -59,7 +59,10 @@ class UsersController < ApplicationController
     end
 
     def user_organization_name_update_failed?(user_organization)
-      !user_organization&.update(name: current_user.name)
+      !user_organization&.update!(name: current_user.name)
+    rescue StandardError => e
+      user_organization.errors.add(:name, e.message)
+      true
     end
 
     def user_params

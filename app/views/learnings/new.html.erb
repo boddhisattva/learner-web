@@ -36,14 +36,13 @@
                 </div>
 
                 <div class="field mb-4">
-                  <% binding.pry %>
-                    <%= f.label :organization_id, "Organization" , class: "label" %>
-                      <div class="control">
-                        <div class="select is-fullwidth">
-                          <%= f.collection_select :organization_id, current_user.organizations, :id, :name, {
-                            prompt: "Select an organization" }, { class: "select" } %>
-                        </div>
+                  <%= f.label :organization_id, "Organization" , class: "label" %>
+                    <div class="control">
+                      <div class="select is-fullwidth">
+                        <%= f.collection_select :organization_id, current_user.organizations, :id, :name, {
+                          prompt: "Select an organization" }, { class: "select" } %>
                       </div>
+                    </div>
                 </div>
 
                 <div class="field mb-5">

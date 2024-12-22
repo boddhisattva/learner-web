@@ -10,6 +10,7 @@ class LearningsController < ApplicationController
 
   def new
     @learning = Learning.new
+    @learning_categories = LearningCategory.all
   end
 
   def create
@@ -22,6 +23,7 @@ class LearningsController < ApplicationController
                   status: :see_other,
                   flash: { success: t('.success', lesson: @learning.lesson) }
     else
+      @learning_categories = LearningCategory.all
       flash.now[:error] = @learning.errors.full_messages
       render :new, status: :unprocessable_entity
     end
@@ -37,6 +39,7 @@ class LearningsController < ApplicationController
 
   def edit
     @learning = Learning.find_by(id: params[:id])
+    @learning_categories = LearningCategory.all
 
     redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
   end
@@ -52,6 +55,7 @@ class LearningsController < ApplicationController
                   status: :see_other,
                   flash: { success: t('.success', lesson: @learning.lesson) }
     else
+      @learning_categories = LearningCategory.all
       flash.now[:error] = @learning.errors.full_messages
       render :edit, status: :unprocessable_entity
     end

@@ -36,17 +36,12 @@ class UsersController < ApplicationController
     ActiveRecord::Base.transaction do
       raise NameUpdateError unless current_user.update(user_params)
 
-      if user_name_updated? && user_organization_name_update_failed?(user_organization)
-        # TO DO: Come back to expore how to handle the below code if oragnization updation fails & add relevant spec
-        raise NameUpdateError
-      end
+      raise NameUpdateError if user_name_updated? && user_organization_name_update_failed?(user_organization)
 
       flash[:success] = t('.success')
       redirect_to profile_path, status: :see_other
     end
   rescue NameUpdateError
-    # TO DO: Come back to expore how to handle the below code if oragnization creation fails..
-    # TO DO Continuation: ..we need to return relevant errors of failed oragnization creation in a relevant spec & add relevant spec
     flash.now[:error] = current_user.errors.full_messages.concat(user_organization.errors.full_messages)
     render :edit, status: :unprocessable_entity
   end

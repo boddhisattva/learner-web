@@ -5,9 +5,13 @@ require 'rails_helper'
 RSpec.describe 'Learnings', type: :system do
   let(:user) { create(:user) }
   let(:learning) { create(:learning, creator: user, last_modifier: user) }
+  let(:organization) { create(:organization) }
+  let(:membership) { create(:membership, member: user, organization: organization) }
 
   before do
     sign_in user
+    organization
+    membership
   end
 
   describe 'index page' do
@@ -25,12 +29,8 @@ RSpec.describe 'Learnings', type: :system do
   end
 
   describe 'creating a learning' do
-    let(:organization) { create(:organization) }
-    let(:membership) { create(:membership, member: user, organization: organization) }
 
     before do
-      organization
-      membership
       visit new_learning_path
     end
 

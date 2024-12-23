@@ -131,7 +131,6 @@ RSpec.describe UsersController, type: :controller do
       end
     end
 
-    # TODO: If needed, Look into adding a test case if organization name update fails
     context 'with invalid user attributes' do
       let(:invalid_attributes) do
         {

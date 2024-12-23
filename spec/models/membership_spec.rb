@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: memberships
@@ -24,5 +25,8 @@
 require 'rails_helper'
 
 RSpec.describe Membership, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'associations' do
+    it { is_expected.to belong_to(:member).class_name('User') }
+    it { is_expected.to belong_to(:organization) }
+  end
 end

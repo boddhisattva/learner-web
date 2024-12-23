@@ -10,14 +10,11 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-require 'pry'
-
-binding.pry
-
-user = User.find_or_create_by(first_name: 'Abhimanyu',
-                              last_name: 'Pandav',
-                              email: 'abhimanyu@test.com',
-                              password: 'passwd123') # needs to be at least 8 characters
+user = User.create!(first_name: 'Abhimanyu',
+                    last_name: 'Dharmveer',
+                    email: 'abhimanyud@test.com',
+                    password: 'passwd123',
+                    password_confirmation: 'passwd123') # needs to be at least 8 characters
 
 organization = Organization.find_or_create_by(name: user.name)
 

@@ -3,6 +3,7 @@
 class AddDeviseToUsers < ActiveRecord::Migration[7.2]
   def self.up
     safety_assured do
+      # rubocop:disable Rails/BulkChangeTable
       change_table :users do |t|
         ## Database authenticatable
         # t.string :email, null: false, default: "" # TODO: need to add null: false related separate migration
@@ -36,6 +37,7 @@ class AddDeviseToUsers < ActiveRecord::Migration[7.2]
         # Uncomment below if timestamps were not included in your original model.
         # t.timestamps null: false
       end
+      # rubocop:enable Rails/BulkChangeTable
     end
 
     # add_index :users, :email,                unique: true #already added in an earlier migration

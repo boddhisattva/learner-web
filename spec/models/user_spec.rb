@@ -52,4 +52,18 @@ RSpec.describe User, type: :model do
       expect(user.name).to eq('Rachel Longwood')
     end
   end
+
+  describe '#own_organization' do
+    let(:user) { create(:user) }
+    let(:organization) { create(:organization, name: user.name) }
+
+    before do
+      organization
+    end
+
+    it 'returns the correct organizations' do
+      organization = Organization.find_by(name: user.name)
+      expect(user.own_organization).to eq(organization)
+    end
+  end
 end

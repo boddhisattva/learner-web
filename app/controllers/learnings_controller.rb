@@ -13,6 +13,7 @@ class LearningsController < ApplicationController
     @learning_categories = LearningCategory.all
   end
 
+  # rubocop:disable Metrics/AbcSize
   def create
     @learning = Learning.new(learnings_params)
     @learning.creator_id = current_user.id
@@ -28,6 +29,7 @@ class LearningsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def show
     @learning = Learning.find_by(id: params[:id])
@@ -44,6 +46,7 @@ class LearningsController < ApplicationController
     redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
   end
 
+  # rubocop:disable Metrics/AbcSize
   def update
     @learning = Learning.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
@@ -60,6 +63,7 @@ class LearningsController < ApplicationController
       render :edit, status: :unprocessable_entity
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength

@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0", ">= 8.0.1"
+gem 'rails', '~> 8.0', '>= 8.0.1'
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem 'propshaft'
 # Use postgresql as the database for Active Record
@@ -52,7 +52,7 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem 'rubocop-rails-omakase', require: false
 
-  gem "bullet", "~> 8.0" # help to kill N+1 queries and unused eager loading.
+  gem 'bullet', '~> 8.0' # help to kill N+1 queries and unused eager loading.
 
   gem 'factory_bot_rails' # DSL for defining and using factories
 

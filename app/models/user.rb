@@ -29,15 +29,19 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
-  has_many :memberships, foreign_key: 'member_id'
+  # rubocop:disable Rails / InverseOf
+  has_many :memberships, dependent: :destroy, foreign_key: 'member_id'
+  has_many :learnings, dependent: :destroy, foreign_key: 'creator_id'
+  has_many :learning_categories, dependent: :destroy, foreign_key: 'creator_id'
+  # rubocop:enable Rails / InverseOf
+
   has_many :organizations, through: :memberships
-  has_many :learnings, foreign_key: 'creator_id'
-  has_many :learning_categories, foreign_key: 'creator_id'
 
   def name
     "#{first_name} #{last_name}"
   end
 
+  # Add test for the same
   def own_organization
     Organization.where(name: self.name).first
   end

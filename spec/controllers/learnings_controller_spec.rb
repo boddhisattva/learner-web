@@ -134,10 +134,12 @@ RSpec.describe LearningsController, type: :controller do
     context 'when destroy fails' do
       before do
         learning
+        # rubocop:disable RSpec / AnyInstance
         allow_any_instance_of(Learning).to receive(:destroy).and_return(false)
         allow_any_instance_of(Learning).to receive(:errors).and_return(
           double(full_messages: ['Error message'])
         )
+        # rubocop:enable RSpec / AnyInstance
       end
 
       it 'learning to be deleted is not found' do

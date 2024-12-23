@@ -45,18 +45,18 @@ RSpec.describe Learning, type: :model do
   end
 
   describe '#learning_categories' do
-    let(:category1) { create(:learning_category) }
-    let(:category2) { create(:learning_category) }
+    let(:category) { create(:learning_category) }
+    let(:another_category) { create(:learning_category) }
     let(:learning) { create(:learning) }
 
     before do
-      category1
-      category2
-      learning.update(learning_category_ids: [category1.id, category2.id])
+      category
+      another_category
+      learning.update(learning_category_ids: [category.id, another_category.id])
     end
 
     it 'returns the correct learning categories' do
-      expect(learning.learning_category_ids).to contain_exactly(category1.id, category2.id)
+      expect(learning.learning_category_ids).to contain_exactly(category.id, another_category.id)
     end
   end
 end

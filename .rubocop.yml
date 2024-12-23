@@ -38,10 +38,8 @@ require:
   - rubocop-rspec_rails
 
 ### Rspec Cops
-
-# This cop doesn't seem to add much value, hence disabling the same
 RSpec/ExampleLength:
-  Enabled: false
+  Max: 20
 
 RSpec/MultipleExpectations:
   Max: 10
@@ -55,5 +53,6 @@ RSpec/NestedGroups:
 RSpec/MultipleMemoizedHelpers:
   Max: 7
 
-Metrics/AbcSize:
-  Max: 20
+RSpec/VerifiedDoubles:
+  Enabled: false
+

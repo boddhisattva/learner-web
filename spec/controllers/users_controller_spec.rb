@@ -55,11 +55,13 @@ RSpec.describe UsersController, type: :controller do
       end
 
       it 'renders errors if input data is invalid and no new users and organisations are created' do
+        # rubocop:disable RSpec / ChangeByZero
         expect do
           post :create, params: invalid_attributes
         end.to change(User, :count).by(0)
            .and change(Organization, :count).by(0)
            .and change(Membership, :count).by(0)
+        # rubocop:enable RSpec / ChangeByZero
 
         expect(response).to have_http_status(:unprocessable_entity)
 
@@ -73,8 +75,8 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe '#update' do
-    let(:user) { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
-    let(:organization) { create(:organization, name: user.name) }
+    let(:user)         { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
+    let(:organization) { create(:organization, name: user.name)                                                     }
 
     before do
       sign_in user
@@ -106,7 +108,7 @@ RSpec.describe UsersController, type: :controller do
       end
     end
 
-    context 'organization with same name already exists' do
+    context 'when organization with same name already exists' do
       let(:other_user) { create(:user, first_name: '  Marcus ', last_name: ' Aurelius', email: 'marcus@xyz.com ') }
       let(:other_organization) { create(:organization, name: other_user.name) }
       let(:user_attributes) do
@@ -123,6 +125,7 @@ RSpec.describe UsersController, type: :controller do
         other_organization
       end
 
+      # rubocop:disable Layout/LineLength
       it 'raises an appropriate error and does not update the other organization with the new name' do
         patch(:update, params: user_attributes)
 
@@ -130,6 +133,7 @@ RSpec.describe UsersController, type: :controller do
         expect(flash[:error]).to include(match(/Name PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "index_organizations_on_name"/))
       end
     end
+    # rubocop:enable Layout/LineLength
 
     context 'with invalid user attributes' do
       let(:invalid_attributes) do

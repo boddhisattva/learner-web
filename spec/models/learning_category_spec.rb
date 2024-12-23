@@ -33,4 +33,9 @@ RSpec.describe LearningCategory, type: :model do
     it { is_expected.to validate_presence_of(:name) }
   end
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:creator).class_name('User') }
+    it { is_expected.to belong_to(:last_modifier).class_name('User') }
+  end
+
 end

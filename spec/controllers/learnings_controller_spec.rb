@@ -96,10 +96,13 @@ RSpec.describe LearningsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    let!(:learning) { create(:learning, creator: user) }
+    let(:learning) { create(:learning, creator: user) }
 
     context 'with Turbo Stream request', as: :turbo_stream do
-      before { request.accept = 'text/vnd.turbo-stream.html' }
+      before do
+        learning
+        request.accept = 'text/vnd.turbo-stream.html'
+      end
 
       it 'deletes the learning' do
         expect do
@@ -116,6 +119,8 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'with HTML request' do
+      before { learning }
+
       it 'redirects to index with success message' do
         expect do
           delete :destroy, params: { id: learning.id }
@@ -128,6 +133,7 @@ RSpec.describe LearningsController, type: :controller do
 
     context 'when destroy fails' do
       before do
+        learning
         allow_any_instance_of(Learning).to receive(:destroy).and_return(false)
         allow_any_instance_of(Learning).to receive(:errors).and_return(
           double(full_messages: ['Error message'])

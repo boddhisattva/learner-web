@@ -14,5 +14,3 @@ en:
     update:
       success: "Learning was successfully updated"
       not_found: "Learning not found"
-
-

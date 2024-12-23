@@ -158,8 +158,8 @@
               <% end %>
 
                 <!-- TODO: add permissions later when needed around edit -->
-                <%= link_to learning_path(@learning), method: :delete, data: {
-                  confirm: "Are you sure you want to delete this learning?" }, class: "button is-danger" do %>
+                <%= link_to learning_path(@learning, format: :html), method: :delete, data: {
+                  confirm: "Are you sure you want to delete this learning?", turbo_method: :delete }, class: "button is-danger" do %>
                   <span class="icon">
                     <i class="fas fa-trash"></i>
                   </span>

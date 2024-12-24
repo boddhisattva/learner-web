@@ -9,19 +9,21 @@ Life is journey of constant learnings and this is an attempt to keep track of at
 The following **features** are available via both the **Web app & in Mobile**
 
 * User sign up & sign in(Uses **Hotwire Stimulus** as needed)
+  * As part of a user sign up, an organization is created based on user name & it is associated with an appropriate membership
 * Update User profile details(Uses **Hotwire Turbo** as needed)
+* Add ability to create a new learning
+  * Sample Learning Categories can be added through `rake db:seed`
+  * Additional learning categories can be currently added through `rails c` backend manually
 
-## App Development Status - In progress
 
-Demo of work done so far is deployed at https://learner-web.onrender.com/
+## App Development Status - Paused for now
 
-**Please note**: Deploying on [Render](https://render.com/) seems slow via its free tier(more [here](https://www.reddit.com/r/node/comments/195sm33/comment/lbgoggr/)), so if needed please allow page loading some time
 
 ## Usage
 
 ### Dependencies
 
-* This app uses Ruby 3.3.5 & Rails 7.2.1
+* This app uses Ruby 3.3.6 & Rails 8.0.1
 
 ### Basic App setup
 
@@ -34,7 +36,8 @@ Demo of work done so far is deployed at https://learner-web.onrender.com/
     - Create the Database Schema with: `rake db:create` and `rake db:migrate`
 
 #### Setting up a test user
-* In order to get started with using the app with an existing user, one could use the `rake db:seed` command
+* In order to get started with using the app with an existing user, one could use the `rake db:seed`
+* Additional learning categories can be currently added through `rails c` BE manually
 
 #### Running the Rails app & ensuring it takes in the latest CSS & JS changes
 

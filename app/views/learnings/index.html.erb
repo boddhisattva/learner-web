@@ -41,7 +41,8 @@
                     value: params[:query],
                     placeholder: "Search by lesson name...",
                     class: "input",
-                    autocomplete: "off" %>
+                    autocomplete: "off",
+                    oninput: "this.form.requestSubmit()" %>
             </div>
             <div class="control">
               <%= f.submit "Search", class: "button is-info" %>
@@ -77,8 +78,8 @@
             </p>
           </div>
           <% end %>
-          <% end %>
-          <% end %>
+          <<<<<<< HEAD <% end %>=======>>>>>>> 937c9ed (Ensure search works as we type new text)
+            <% end %>
         </div>
       </div>
     </div>

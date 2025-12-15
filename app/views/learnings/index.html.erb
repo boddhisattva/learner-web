@@ -33,6 +33,51 @@
               <%= link_to "Create your first learning", new_learning_path %>
             </p>
           </div>
+          <!-- Search Form -->
+          <div class="mb-5">
+            <%= form_with url: learnings_path, method: :get, data: { turbo_frame: "learnings_list" }, class: "field has-addons has-addons-centered" do |f| %>
+            <div class="control is-expanded">
+              <%= f.search_field :query,
+                    value: params[:query],
+                    placeholder: "Search by lesson name...",
+                    class: "input",
+                    autocomplete: "off" %>
+            </div>
+            <div class="control">
+              <%= f.submit "Search", class: "button is-info" %>
+            </div>
+            <% if params[:query].present? %>
+            <div class="control">
+              <%= link_to "Clear", learnings_path, class: "button is-light" %>
+            </div>
+            <% end %>
+            <% end %>
+          </div>
+
+          <!-- Turbo Frame wraps the results that will update -->
+          <%= turbo_frame_tag "learnings_list" do %>
+          <% if @learnings.any? %>
+          <%= render 'learnings' %>
+
+          <% if @learnings.respond_to?(:total_pages) %>
+          <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+            <%= paginate @learnings %>
+          </nav>
+          <% end %>
+          <% else %>
+          <div class="notification is-info is-light">
+            <p class="has-text-centered">
+              <% if params[:query].present? %>
+              No learnings found matching "<strong><%= params[:query] %></strong>".
+              <%= link_to "Clear search", learnings_path %>
+              <% else %>
+              No learnings have been created yet.
+              <%= link_to "Create your first learning", new_learning_path %>
+              <% end %>
+            </p>
+          </div>
+          <% end %>
+          <% end %>
           <% end %>
         </div>
       </div>

@@ -34,7 +34,7 @@
             </p>
           </div>
           <!-- Search Form -->
-          <div class="mb-5">
+          <div class="mb-5" data-controller="search">
             <%= form_with url: learnings_path, method: :get, data: { turbo_frame: "learnings_list" }, class: "field has-addons has-addons-centered" do |f| %>
             <div class="control is-expanded">
               <%= f.search_field :query,
@@ -42,14 +42,15 @@
                     placeholder: "Search by lesson name...",
                     class: "input",
                     autocomplete: "off",
-                    oninput: "this.form.requestSubmit()" %>
+                    oninput: "this.form.requestSubmit()",
+                    data: { search_target: "learning_search_input" } %>
             </div>
             <div class="control">
               <%= f.submit "Search", class: "button is-info" %>
             </div>
             <% if params[:query].present? %>
             <div class="control">
-              <%= link_to "Clear", learnings_path, class: "button is-light" %>
+              <%= link_to "Clear", learnings_path, class: "button is-light", data: { action: "click->search#clear" } %>
             </div>
             <% end %>
             <% end %>
@@ -70,7 +71,7 @@
             <p class="has-text-centered">
               <% if params[:query].present? %>
               No learnings found matching "<strong><%= params[:query] %></strong>".
-              <%= link_to "Clear search", learnings_path %>
+              <%= link_to "Clear search", learnings_path, data: { action: "click->search#clear" } %>
               <% else %>
               No learnings have been created yet.
               <%= link_to "Create your first learning", new_learning_path %>

@@ -43,4 +43,8 @@ class Learning < ApplicationRecord
   def learning_categories
     LearningCategory.where(id: learning_category_ids)
   end
+
+  def self.search(query)
+    where('lesson ILIKE ?', "%#{query}%")
+  end
 end

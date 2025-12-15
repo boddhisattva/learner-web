@@ -56,7 +56,7 @@
           </div>
 
           <!-- Turbo Frame wraps the results that will update -->
-          <%= turbo_frame_tag "learnings_list" do %>
+          <%= turbo_frame_tag "learnings_list", target: "_top" do %>
           <% if @learnings.any? %>
           <%= render 'learnings' %>
 

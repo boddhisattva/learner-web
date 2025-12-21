@@ -43,7 +43,17 @@ class LearningsController < ApplicationController
     @learning = Learning.find_by(id: params[:id])
     @learning_categories = LearningCategory.all
 
-    redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
+    if @learning.blank?
+      redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
+      return
+    end
+
+    # Turbo Frame requests need just the partial, not the full page
+    return unless turbo_frame_request?
+
+    render partial: 'form', locals: { learning: @learning, learning_categories: @learning_categories }
+
+    # Otherwise render edit.html.erb (full page for non-turbo browsers)
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -54,13 +64,27 @@ class LearningsController < ApplicationController
     @learning.last_modifier_id = current_user.id
 
     if @learning.update(learnings_params)
-      redirect_to learning_path(@learning),
-                  status: :see_other,
-                  flash: { success: t('.success', lesson: @learning.lesson) }
+      if turbo_frame_request?
+        render turbo_stream: turbo_stream.replace(
+          dom_id(@learning),
+          partial: 'learning',
+          locals: { learning: @learning }
+        )
+      else
+        redirect_to learning_path(@learning),
+                    status: :see_other,
+                    flash: { success: t('.success', lesson: @learning.lesson) }
+      end
     else
       @learning_categories = LearningCategory.all
-      flash.now[:error] = @learning.errors.full_messages
-      render :edit, status: :unprocessable_entity
+      if turbo_frame_request?
+        render partial: 'form',
+               locals: { learning: @learning, learning_categories: @learning_categories },
+               status: :unprocessable_entity
+      else
+        flash.now[:error] = @learning.errors.full_messages
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
   # rubocop:enable Metrics/AbcSize

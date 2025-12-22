@@ -1,7 +1,12 @@
 <tr>
   <td colspan="3">
     <%= turbo_frame_tag learning do %>
-    <table class="table is-fullwidth mb-0">
+    <table class="table is-fullwidth mb-0" style="table-layout: fixed;">
+      <colgroup>
+        <col style="width: auto;">
+        <col class="is-hidden-mobile" style="width: 180px;">
+        <col style="width: 150px;">
+      </colgroup>
       <tr>
         <td style="border: none;">
           <%= learning.lesson %>

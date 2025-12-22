@@ -2,7 +2,7 @@
 <tr class="is-being-edited">
   <td colspan="3">
     <div class="box p-4">
-      <%= form_with(model: learning, local: true) do |f| %>
+      <%= form_with(model: learning) do |f| %>
       <% if learning.errors.any? %>
       <div class="notification is-danger is-light">
         <h2 class="subtitle">

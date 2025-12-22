@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class LearningsController < ApplicationController
+  include ActionView::RecordIdentifier
+
   before_action :authenticate_user!
 
   def index

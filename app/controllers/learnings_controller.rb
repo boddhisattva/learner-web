@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class LearningsController < ApplicationController
-  include ActionView::RecordIdentifier
-
   before_action :authenticate_user!
 
   def index
@@ -36,9 +34,18 @@ class LearningsController < ApplicationController
   def show
     @learning = Learning.find_by(id: params[:id])
 
-    return if @learning.present?
+    if @learning.blank?
+      redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }
+      return
+    end
 
-    redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }
+    if turbo_frame_request?
+      render partial: 'learning', locals: { learning: @learning }
+      return
+    end
+
+    # Non-turbo requests: Rails automatically renders show.html.erb
+    # This happens when users navigate directly to the show page (not via Turbo Frame)
   end
 
   def edit
@@ -67,11 +74,9 @@ class LearningsController < ApplicationController
 
     if @learning.update(learnings_params)
       if turbo_frame_request?
-        render turbo_stream: turbo_stream.replace(
-          dom_id(@learning),
-          partial: 'learning',
-          locals: { learning: @learning }
-        )
+        # For Turbo Frames, just render the partial - Turbo will replace the frame content
+        render partial: 'learning',
+               locals: { learning: @learning }
       else
         redirect_to learning_path(@learning),
                     status: :see_other,

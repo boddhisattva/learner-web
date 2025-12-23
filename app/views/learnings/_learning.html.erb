@@ -1,26 +1,57 @@
 <tr>
-  <td colspan="3">
+  <td colspan="5">
     <%= turbo_frame_tag learning do %>
     <table class="table is-fullwidth mb-0" style="table-layout: fixed;">
       <colgroup>
-        <col style="width: auto;">
-        <col class="is-hidden-mobile" style="width: 180px;">
-        <col style="width: 150px;">
+        <col class="is-hidden-mobile" style="width: 60%;">
+        <col class="is-hidden-mobile" style="width: 25%;">
+        <col class="is-hidden-mobile" style="width: 15%;">
+        <col class="is-hidden-tablet" style="width: 70%;">
+        <col class="is-hidden-tablet" style="width: 30%;">
       </colgroup>
       <tr>
-        <td style="border: none;">
+        <!-- Desktop/Tablet layout (3 columns) -->
+        <td class="is-hidden-mobile" style="border: none;">
           <%= learning.lesson %>
-          <!-- Show these details on mobile only -->
-          <div class="is-hidden-tablet">
+        </td>
+        <td class="is-hidden-mobile" style="border: none;">
+          <%= learning.created_at.strftime("%B %d, %Y") %>
+        </td>
+        <td class="is-hidden-mobile" style="border: none;">
+          <div class="buttons are-small is-flex-wrap-nowrap">
+            <%= link_to learning_path(learning),
+                        class: "button is-info is-small" do %>
+            <span class="icon is-small">
+              <i class="fas fa-eye"></i>
+            </span>
+            <% end %>
+            <%= link_to edit_learning_path(learning),
+                        data: { turbo_frame: dom_id(learning) },
+                        class: "button is-warning is-small" do %>
+            <span class="icon is-small">
+              <i class="fas fa-edit"></i>
+            </span>
+            <% end %>
+            <%= link_to learning_path(learning),
+                        data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' },
+                        class: "button is-danger is-small" do %>
+            <span class="icon is-small">
+              <i class="fas fa-trash"></i>
+            </span>
+            <% end %>
+          </div>
+        </td>
+
+        <!-- Mobile layout (2 columns) -->
+        <td class="is-hidden-tablet" style="border: none;">
+          <%= learning.lesson %>
+          <div>
             <small class="has-text-grey">
               <%= learning.created_at.strftime("%B %d, %Y") %>
             </small>
           </div>
         </td>
-        <td class="is-hidden-mobile" style="border: none;">
-          <%= learning.created_at.strftime("%B %d, %Y") %>
-        </td>
-        <td style="border: none;">
+        <td class="is-hidden-tablet" style="border: none;">
           <div class="buttons are-small is-flex-wrap-nowrap">
             <%= link_to learning_path(learning),
                         class: "button is-info is-small" do %>

@@ -21,12 +21,6 @@
 
           <% if @learnings.any? %>
             <%= render 'learnings' %>
-
-            <% if @learnings.respond_to?(:total_pages) %>
-              <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-                <%= paginate @learnings %>
-              </nav>
-            <% end %>
           <% else %>
             <div class="notification is-info is-light">
               <p class="has-text-centered">

@@ -4,8 +4,9 @@ class LearningsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @learnings = current_user.learnings.order(created_at: :desc)
-    # TO DO: Add pagination later
+    @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
+
+    render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy } if turbo_frame_request?
   end
 
   def new

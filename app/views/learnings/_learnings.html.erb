@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody>
-        <%= render @learnings %>
+        <%= render partial: "learnings_page", locals: { learnings: @learnings, pagy: @pagy } %>
       </tbody>
     </table>
   </div>

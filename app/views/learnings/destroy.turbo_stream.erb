@@ -1,5 +1,5 @@
 <%= turbo_stream.update "learnings_count" do %>
-  <small id="learnings_count" class="has-text-grey">(<%= @learnings.count %> total)</small>
+  <small id="learnings_count" class="has-text-grey">(<%= @pagy.count %> total)</small>
 <% end %>
 
 <%= turbo_stream.replace "all_learnings" do %>

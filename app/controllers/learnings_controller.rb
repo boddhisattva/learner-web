@@ -6,7 +6,7 @@ class LearningsController < ApplicationController
   def index
     @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
 
-    render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy } if turbo_frame_request?
+    return render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy } if turbo_frame_request?
   end
 
   def new

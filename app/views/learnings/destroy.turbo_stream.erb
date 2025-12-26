@@ -2,8 +2,15 @@
   <small id="learnings_count" class="has-text-grey">(<%= @pagy.count %> total)</small>
 <% end %>
 
-<%= turbo_stream.replace "all_learnings" do %>
-  <%= render "shared/flashes" %>
-  <%= render 'learnings', object: @learnings %>
+<%# Show flash message %>
+<turbo-stream action="prepend" target="all_learnings">
+  <template>
+    <%= render "shared/flashes" %>
+  </template>
+</turbo-stream>
+
+<%# Replace only learning_page_1 frame (preserves nested structure) %>
+<%= turbo_stream.replace "learning_page_1" do %>
+  <%= render partial: "learnings_page", locals: { learnings: @learnings, pagy: @pagy } %>
 <% end %>
 

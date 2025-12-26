@@ -1,0 +1,4 @@
+<%# Show the form in the form container %>
+<%= turbo_stream.update "new_learning_form" do %>
+  <%= render partial: "learnings/new", locals: { learning: @learning, learning_categories: @learning_categories } %>
+<% end %>

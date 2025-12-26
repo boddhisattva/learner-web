@@ -3,16 +3,12 @@
 
   <% if pagy.next %>
     <%= turbo_frame_tag "learning_page_#{pagy.next}", src: learnings_path(page: pagy.next), loading: :lazy do %>
-      <tr>
-        <td colspan="5" style="border: none; padding: 1rem;">
-          <div class="has-text-centered">
-            <span class="icon">
-              <i class="fas fa-spinner fa-pulse"></i>
-            </span>
-            <span>Loading more...</span>
-          </div>
-        </td>
-      </tr>
+      <div style="padding: 1rem; text-align: center;">
+        <span class="icon">
+          <i class="fas fa-spinner fa-pulse"></i>
+        </span>
+        <span>Loading more...</span>
+      </div>
     <% end %>
   <% end %>
 <% end %>

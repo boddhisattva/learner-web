@@ -1,82 +1,41 @@
-<tr>
-  <td colspan="5" style="padding: 0;">
-    <%= turbo_frame_tag learning do %>
-    <table class="table is-fullwidth mb-0" style="table-layout: fixed; border-bottom: 1px solid #dbdbdb;">
-      <colgroup>
-        <col class="is-hidden-mobile" style="width: 60%;">
-        <col class="is-hidden-mobile" style="width: 25%;">
-        <col class="is-hidden-mobile" style="width: 15%;">
-        <col class="is-hidden-tablet" style="width: 70%;">
-        <col class="is-hidden-tablet" style="width: 30%;">
-      </colgroup>
-      <tr>
-        <!-- Desktop/Tablet layout (3 columns) -->
-        <td class="is-hidden-mobile" style="border: none;">
-          <%= learning.lesson %>
-        </td>
-        <td class="is-hidden-mobile" style="border: none;">
-          <%= learning.created_at.strftime("%B %d, %Y") %>
-        </td>
-        <td class="is-hidden-mobile" style="border: none;">
-          <div class="buttons are-small is-flex-wrap-nowrap">
-            <%= link_to learning_path(learning),
-                        class: "button is-info is-small" do %>
-            <span class="icon is-small">
-              <i class="fas fa-eye"></i>
-            </span>
-            <% end %>
-            <%= link_to edit_learning_path(learning),
-                        data: { turbo_frame: dom_id(learning) },
-                        class: "button is-warning is-small" do %>
-            <span class="icon is-small">
-              <i class="fas fa-edit"></i>
-            </span>
-            <% end %>
-            <%= link_to learning_path(learning),
-                        data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' },
-                        class: "button is-danger is-small" do %>
-            <span class="icon is-small">
-              <i class="fas fa-trash"></i>
-            </span>
-            <% end %>
-          </div>
-        </td>
+<%= turbo_frame_tag learning do %>
+  <!-- Desktop/Tablet layout (3 columns) -->
+  <div class="is-hidden-mobile" style="display: grid; grid-template-columns: 60% 25% 15%; gap: 1rem; padding: 0.75rem 1rem; border-bottom: 1px solid #dbdbdb; align-items: center;">
+    <div><%= learning.lesson %></div>
+    <div><%= learning.created_at.strftime("%B %d, %Y") %></div>
+    <div>
+      <div class="buttons are-small is-flex-wrap-nowrap">
+        <%= link_to learning_path(learning), class: "button is-info is-small" do %>
+          <span class="icon is-small"><i class="fas fa-eye"></i></span>
+        <% end %>
+        <%= link_to edit_learning_path(learning), data: { turbo_frame: dom_id(learning) }, class: "button is-warning is-small" do %>
+          <span class="icon is-small"><i class="fas fa-edit"></i></span>
+        <% end %>
+        <%= link_to learning_path(learning), data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }, class: "button is-danger is-small" do %>
+          <span class="icon is-small"><i class="fas fa-trash"></i></span>
+        <% end %>
+      </div>
+    </div>
+  </div>
 
-        <!-- Mobile layout (2 columns) -->
-        <td class="is-hidden-tablet" style="border: none;">
-          <%= learning.lesson %>
-          <div>
-            <small class="has-text-grey">
-              <%= learning.created_at.strftime("%B %d, %Y") %>
-            </small>
-          </div>
-        </td>
-        <td class="is-hidden-tablet" style="border: none;">
-          <div class="buttons are-small is-flex-wrap-nowrap">
-            <%= link_to learning_path(learning),
-                        class: "button is-info is-small" do %>
-            <span class="icon is-small">
-              <i class="fas fa-eye"></i>
-            </span>
-            <% end %>
-            <%= link_to edit_learning_path(learning),
-                        data: { turbo_frame: dom_id(learning) },
-                        class: "button is-warning is-small" do %>
-            <span class="icon is-small">
-              <i class="fas fa-edit"></i>
-            </span>
-            <% end %>
-            <%= link_to learning_path(learning),
-                        data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' },
-                        class: "button is-danger is-small" do %>
-            <span class="icon is-small">
-              <i class="fas fa-trash"></i>
-            </span>
-            <% end %>
-          </div>
-        </td>
-      </tr>
-    </table>
-    <% end %>
-  </td>
-</tr>
+  <!-- Mobile layout (2 columns) -->
+  <div class="is-hidden-tablet" style="display: grid; grid-template-columns: 70% 30%; gap: 1rem; padding: 0.75rem 1rem; border-bottom: 1px solid #dbdbdb; align-items: center;">
+    <div>
+      <%= learning.lesson %>
+      <div><small class="has-text-grey"><%= learning.created_at.strftime("%B %d, %Y") %></small></div>
+    </div>
+    <div>
+      <div class="buttons are-small is-flex-wrap-nowrap">
+        <%= link_to learning_path(learning), class: "button is-info is-small" do %>
+          <span class="icon is-small"><i class="fas fa-eye"></i></span>
+        <% end %>
+        <%= link_to edit_learning_path(learning), data: { turbo_frame: dom_id(learning) }, class: "button is-warning is-small" do %>
+          <span class="icon is-small"><i class="fas fa-edit"></i></span>
+        <% end %>
+        <%= link_to learning_path(learning), data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }, class: "button is-danger is-small" do %>
+          <span class="icon is-small"><i class="fas fa-trash"></i></span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

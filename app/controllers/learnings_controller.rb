@@ -6,12 +6,12 @@ class LearningsController < ApplicationController
   def index
     @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
 
-    return render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy } if turbo_frame_request?
+    render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy } if turbo_frame_request?
   end
 
   def new
     @learning = Learning.new
-    @learning_categories = LearningCategory.all
+    @learning_categories = LearningCategory.all # TODO: See if this can benefit from pagination as '.all' can be a resource intensive operation
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -19,15 +19,21 @@ class LearningsController < ApplicationController
     @learning = Learning.new(learnings_params)
     @learning.creator_id = current_user.id
     @learning.last_modifier_id = current_user.id
+    @learning_categories = LearningCategory.all # TODO: See if this can benefit from pagination as '.all' can be a resource intensive operation
 
-    if @learning.save
-      redirect_to learnings_index_path,
-                  status: :see_other,
-                  flash: { success: t('.success', lesson: @learning.lesson) }
-    else
-      @learning_categories = LearningCategory.all
-      flash.now[:error] = @learning.errors.full_messages
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @learning.save
+        flash.now[:success] = t('.success')
+        # Explicitly load page 1 after creating a new learning to see latest learnings first
+        @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: 1)
+        format.turbo_stream { render :create, status: :created }
+        format.html do
+          redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success') }
+        end
+      else
+        format.turbo_stream { render :new, status: :unprocessable_entity }
+        format.html { render :new, status: :unprocessable_entity, flash: { error: @learning.errors.full_messages } }
+      end
     end
   end
   # rubocop:enable Metrics/AbcSize
@@ -40,10 +46,10 @@ class LearningsController < ApplicationController
       return
     end
 
-    if turbo_frame_request?
-      render partial: 'learning', locals: { learning: @learning }
-      return
-    end
+    return unless turbo_frame_request?
+
+    render partial: 'learning', locals: { learning: @learning }
+    nil
 
     # Non-turbo requests: Rails automatically renders show.html.erb
     # This happens when users navigate directly to the show page (not via Turbo Frame)
@@ -81,7 +87,7 @@ class LearningsController < ApplicationController
       else
         redirect_to learning_path(@learning),
                     status: :see_other,
-                    flash: { success: t('.success', lesson: @learning.lesson) }
+                    flash: { success: t('.success') }
       end
     else
       @learning_categories = LearningCategory.all
@@ -106,14 +112,16 @@ class LearningsController < ApplicationController
 
     if @learning.destroy
       flash.now[:success] = t('.success')
-      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
+      # Explicitly load page 1 after deleting helps preserving nested infinite scroll structure on learnings index
+      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: 1)
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }
         # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
         format.html { redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success') } }
       end
     else
-      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
+      # Explicitly load page 1 on error helps preserving nested infinite scroll structure on learnings index
+      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: 1)
       flash.now[:error] = @learning.errors.full_messages
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }

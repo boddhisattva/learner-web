@@ -113,7 +113,7 @@ class LearningsController < ApplicationController
     if @learning.destroy
       flash.now[:success] = t('.success')
       # Explicitly load page 1 after deleting helps preserving nested infinite scroll structure on learnings index
-      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: 1)
+      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }
         # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
@@ -121,7 +121,7 @@ class LearningsController < ApplicationController
       end
     else
       # Explicitly load page 1 on error helps preserving nested infinite scroll structure on learnings index
-      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: 1)
+      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
       flash.now[:error] = @learning.errors.full_messages
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }

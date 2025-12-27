@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "learning_page_#{pagy.page}" do %>
-  <%= render learnings %>
+  <%= render partial: 'learning', collection: learnings %>
 
   <% if pagy.next %>
     <%= turbo_frame_tag "learning_page_#{pagy.next}", src: learnings_path(page: pagy.next), loading: :lazy do %>

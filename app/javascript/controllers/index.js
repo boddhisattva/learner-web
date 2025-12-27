@@ -9,3 +9,6 @@ import { application } from "./application"
 
 import NavbarController from "./navbar_controller"
 application.register("navbar", NavbarController)
+
+import FormResetController from "./form_reset_controller"
+application.register("form-reset", FormResetController)

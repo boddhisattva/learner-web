@@ -10,7 +10,7 @@
               <small id="learnings_count" class="has-text-grey">(<%= @pagy.count %> total)</small>
             </h1>
             <div class="has-text-centered">
-              <%= link_to new_learning_path, id: :new_learning, class: "button is-primary", data: { turbo_stream: true } do %>
+              <%= link_to new_learning_path, id: :new_learning_button, class: "button is-primary", data: { turbo_stream: true } do %>
               <span class="icon">
                 <i class="fas fa-plus"></i>
               </span>

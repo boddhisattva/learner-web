@@ -83,6 +83,8 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'web-console'
 
+  gem 'hotwire-spark', '~> 0.1.13' #
+
   gem 'fasterer' # Write more performant code
 
   gem 'flog', require: false # Flog reports the most tortured code in an easy to read pain report

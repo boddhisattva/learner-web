@@ -1,10 +1,11 @@
 <!-- Inline form for creating new learning (displayed in collapsible container) -->
-<div class="box p-5">
-  <div class="is-flex is-justify-content-space-between is-align-items-center mb-5">
-    <h2 class="title mb-0">Create New Learning</h2>
-  </div>
+<div data-controller="form-reset">
+  <div class="box p-5">
+    <div class="is-flex is-justify-content-space-between is-align-items-center mb-5">
+      <h2 class="title mb-0">Create New Learning</h2>
+    </div>
 
-  <%= form_with(model: @learning, id: :new_learning) do |f| %>
+    <%= form_with(model: @learning, id: :new_learning) do |f| %>
   <% if @learning.errors.any? %>
   <div class="notification is-danger is-light">
     <h2 class="subtitle">
@@ -79,8 +80,11 @@
       <%= f.submit "Create Learning", class: "button is-primary is-medium px-5" %>
     </div>
     <div class="control">
-      <%= link_to "Cancel", learnings_path, class: "button is-light is-medium", data: { turbo_stream: true } %>
+      <button type="button" class="button is-light is-medium" data-action="click->form-reset#clear">
+        Cancel
+      </button>
     </div>
   </div>
   <% end %>
+  </div>
 </div>

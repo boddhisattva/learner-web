@@ -9,8 +9,5 @@
   </template>
 </turbo-stream>
 
-<%# Replace only learning_page_1 frame (preserves nested structure) %>
-<%= turbo_stream.replace "learning_page_1" do %>
-  <%= render partial: "learnings_page", locals: { learnings: @learnings, pagy: @pagy } %>
-<% end %>
+<%= turbo_stream.remove dom_id(@learning) %>
 

@@ -23,12 +23,12 @@ class LearningsController < ApplicationController
 
     respond_to do |format|
       if @learning.save
-        flash.now[:success] = t('.success')
+        flash.now[:success] = t('.success', lesson: @learning.lesson)
         # Explicitly load page 1 after creating a new learning to see latest learnings first
         @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: 1)
         format.turbo_stream { render :create, status: :created }
         format.html do
-          redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success') }
+          redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
         end
       else
         format.turbo_stream { render :new, status: :unprocessable_entity }

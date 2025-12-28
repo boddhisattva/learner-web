@@ -10,13 +10,51 @@ RSpec.describe LearningsController, type: :controller do
   before { sign_in user }
 
   describe 'GET #index' do
-    let!(:learning) { create(:learning, creator: user) }
-    let!(:other_user_learning) { create(:learning) }
+    let(:learning) { create(:learning, creator: user) }
+    let(:other_user_learning) { create(:learning) }
+
+    before do
+      learning
+      other_user_learning
+    end
 
     it "lists only the current user's learnings" do
       get :index
       expect(assigns(:learnings)).to include(learning)
       expect(assigns(:learnings)).not_to include(other_user_learning)
+    end
+
+    context 'with pagination' do
+      before do
+        create_list(:learning, 25, creator: user)
+      end
+
+      it 'sets up pagination with correct first page of results' do
+        get :index
+
+        expect(assigns(:pagy)).to be_present
+        expect(assigns(:pagy).page).to eq(1)
+        expect(assigns(:pagy).count).to eq(26) # 25 + 1 from let!
+        expect(assigns(:pagy).pages).to eq(3)
+        expect(assigns(:learnings).count).to eq(10)
+      end
+
+      it 'returns correct page when page parameter is provided' do
+        get :index, params: { page: 2 }
+
+        expect(assigns(:pagy)).to be_present
+        expect(assigns(:pagy).page).to eq(2)
+        expect(assigns(:pagy).next).to eq(3)
+        expect(assigns(:learnings).count).to eq(10)
+      end
+
+      it 'returns only the page partial for Turbo Frame requests' do
+        request.headers['Turbo-Frame'] = 'learning_page_2'
+        get :index, params: { page: 2 }
+
+        expect(response).to render_template(partial: '_learnings_page')
+        expect(response).not_to render_template(layout: 'application')
+      end
     end
   end
 
@@ -101,17 +139,17 @@ RSpec.describe LearningsController, type: :controller do
     context 'with Turbo Stream request', as: :turbo_stream do
       before do
         learning
+        create_list(:learning, 3, creator: user)
         request.accept = 'text/vnd.turbo-stream.html'
       end
 
-      it 'deletes the learning' do
+      it 'deletes the learning, sets up pagination for re-render, and returns success' do
         expect do
           delete :destroy, params: { id: learning.id }
         end.to change(Learning, :count).by(-1)
-      end
 
-      it 'returns success status and renders destroy template' do
-        delete :destroy, params: { id: learning.id }
+        expect(assigns(:pagy)).to be_present
+        expect(assigns(:learnings).count).to eq(3)
         expect(response).to have_http_status(:see_other)
         expect(response).to render_template(:destroy)
         expect(flash.now[:success]).to eq(I18n.t('learnings.destroy.success'))

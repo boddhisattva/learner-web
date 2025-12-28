@@ -4,8 +4,9 @@ class LearningsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @learnings = current_user.learnings.order(created_at: :desc)
-    # TO DO: Add pagination later
+    @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
+
+    return render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy } if turbo_frame_request?
   end
 
   def new
@@ -34,19 +35,40 @@ class LearningsController < ApplicationController
   def show
     @learning = Learning.find_by(id: params[:id])
 
-    return if @learning.present?
+    if @learning.blank?
+      redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }
+      return
+    end
 
-    redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }
+    if turbo_frame_request?
+      render partial: 'learning', locals: { learning: @learning }
+      return
+    end
+
+    # Non-turbo requests: Rails automatically renders show.html.erb
+    # This happens when users navigate directly to the show page (not via Turbo Frame)
   end
 
   def edit
     @learning = Learning.find_by(id: params[:id])
     @learning_categories = LearningCategory.all
 
-    redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
+    if @learning.blank?
+      redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
+      return
+    end
+
+    # Turbo Frame requests need just the partial, not the full page
+    return unless turbo_frame_request?
+
+    render partial: 'form', locals: { learning: @learning, learning_categories: @learning_categories }
+
+    # Otherwise render edit.html.erb (full page for non-turbo browsers)
   end
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
+  # TODO: come back and try to see later how to reduce the method size further
   def update
     @learning = Learning.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
@@ -54,16 +76,29 @@ class LearningsController < ApplicationController
     @learning.last_modifier_id = current_user.id
 
     if @learning.update(learnings_params)
-      redirect_to learning_path(@learning),
-                  status: :see_other,
-                  flash: { success: t('.success', lesson: @learning.lesson) }
+      if turbo_frame_request?
+        # For Turbo Frames, just render the partial - Turbo will replace the frame content
+        render partial: 'learning',
+               locals: { learning: @learning }
+      else
+        redirect_to learning_path(@learning),
+                    status: :see_other,
+                    flash: { success: t('.success', lesson: @learning.lesson) }
+      end
     else
       @learning_categories = LearningCategory.all
-      flash.now[:error] = @learning.errors.full_messages
-      render :edit, status: :unprocessable_entity
+      if turbo_frame_request?
+        render partial: 'form',
+               locals: { learning: @learning, learning_categories: @learning_categories },
+               status: :unprocessable_entity
+      else
+        flash.now[:error] = @learning.errors.full_messages
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
   # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
@@ -74,14 +109,14 @@ class LearningsController < ApplicationController
 
     if @learning.destroy
       flash.now[:success] = t('.success')
-      @learnings = current_user.learnings
+      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }
         # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
         format.html { redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success') } }
       end
     else
-      @learnings = current_user.learnings
+      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
       flash.now[:error] = @learning.errors.full_messages
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }

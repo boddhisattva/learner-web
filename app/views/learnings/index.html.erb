@@ -22,6 +22,8 @@
           <!-- Collapsible inline form container -->
           <div id="new_learning_form" class="mt-4"></div>
 
+          <div id="flash_messages" class="container is-fluid" data-turbo-temporary></div>
+
           <% if @learnings.any? %>
           <%= render 'learnings' %>
           <% else %>

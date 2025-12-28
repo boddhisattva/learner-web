@@ -3,11 +3,9 @@
 <% end %>
 
 <%# Show flash message %>
-<turbo-stream action="prepend" target="all_learnings">
-  <template>
-    <%= render "shared/flashes" %>
-  </template>
-</turbo-stream>
+<%= turbo_stream.replace "flash_messages" do %>
+  <%= render "shared/flashes" %>
+<% end %>
 
 <%= turbo_stream.remove dom_id(@learning) %>
 

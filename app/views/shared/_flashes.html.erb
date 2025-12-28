@@ -1,4 +1,4 @@
-<div class="container is-fluid" data-turbo-temporary>
+<div id="flash_messages" class="container is-fluid" data-turbo-temporary>
   <% flash.each do |level, message| %>
     <%= tag.div \
           class: "notification is-#{level} is-light

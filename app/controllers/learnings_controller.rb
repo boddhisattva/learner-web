@@ -32,7 +32,10 @@ class LearningsController < ApplicationController
         end
       else
         format.turbo_stream { render :new, status: :unprocessable_entity }
-        format.html { render :new, status: :unprocessable_entity, flash: { error: @learning.errors.full_messages } }
+        format.html do
+          flash.now[:error] = @learning.errors.full_messages
+          render :new, status: :unprocessable_entity
+        end
       end
     end
   end

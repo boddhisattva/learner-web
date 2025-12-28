@@ -7,13 +7,9 @@
 <% end %>
 
 <%# Show flash message %>
-<turbo-stream action="prepend" target="all_learnings">
-  <template>
-    <div style="padding: 1rem;">
-      <%= render "shared/flashes" %>
-    </div>
-  </template>
-</turbo-stream>
+<%= turbo_stream.replace "flash_messages" do %>
+  <%= render "shared/flashes" %>
+<% end %>
 
 <%# Replace learning_page_1 with fresh data - div layout allows proper nesting! %>
 <%= turbo_stream.replace "learning_page_1" do %>

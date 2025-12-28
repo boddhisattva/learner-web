@@ -42,7 +42,7 @@ RSpec.describe 'Learnings', type: :system do
 
         click_button 'Create Learning'
 
-        expect(page).to have_content(I18n.t('learnings.create.success'))
+        expect(page).to have_content(I18n.t('learnings.create.success', lesson: 'Test Lesson'))
         expect(page).to have_content('Test Lesson')
       end
     end

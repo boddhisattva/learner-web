@@ -67,6 +67,8 @@ class LearningsController < ApplicationController
   end
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
+  # TODO: come back and try to see later how to reduce the method size further
   def update
     @learning = Learning.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
@@ -96,6 +98,7 @@ class LearningsController < ApplicationController
     end
   end
   # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength

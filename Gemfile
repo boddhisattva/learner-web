@@ -42,7 +42,7 @@ gem 'devise', '~> 4.9' # Useful for authentication related functionality
 
 gem 'paranoia', '~> 3.0' # Add soft deletion capabilities
 
-gem "pagy", "~> 43.2" # Pagination gem
+gem 'pagy', '~> 43.2' # Pagination gem
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

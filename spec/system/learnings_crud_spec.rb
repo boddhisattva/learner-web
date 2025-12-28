@@ -87,8 +87,10 @@ RSpec.describe 'Learnings', type: :system do
         first('.is-danger').click
       end
 
-      expect(page).not_to have_content(learning.lesson)
-      expect(page).to have_content('Your Learning is removed successfully')
+      within('#all_learnings') do
+        expect(page).not_to have_content(learning.lesson)
+      end
+      expect(page).to have_content(I18n.t('learnings.destroy.success', lesson: learning.lesson))
     end
   end
 

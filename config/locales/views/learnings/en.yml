@@ -12,5 +12,5 @@ en:
       title: "Edit Learning"
       not_found: "Learning to be updated was not found"
     update:
-      success: "Learning was successfully updated"
+      success: 'Your Learning "%{lesson}" is updated successfully'
       not_found: "Learning not found"

@@ -5,9 +5,6 @@
   </div>
 <% end %>
 
-<%= turbo_stream.update "learnings_count" do %>
-  <small id="learnings_count" class="has-text-grey">(<%= @pagy.count %> total)</small>
+<%= turbo_stream.replace dom_id(@learning) do %>
+  <%= render partial: "learning", locals: { learning: @learning } %>
 <% end %>
-
-<%= turbo_stream.remove dom_id(@learning) %>
-

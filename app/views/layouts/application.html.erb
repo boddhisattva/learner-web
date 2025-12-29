@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <title><%= content_for(:title) || "Learner" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -20,8 +21,12 @@
   <body>
     <%= render 'shared/navbar' %>
     <%= render 'shared/flashes' %>
+
+    <!-- Flash Notifications Container (for contextual inline updates & deletions) -->
+    <div id="flash_notifications_container" role="status" aria-live="polite"></div>
     <main>
       <%= yield %>
     </main>
   </body>
+
 </html>

@@ -84,13 +84,12 @@ class LearningsController < ApplicationController
 
     if @learning.update(learnings_params)
       if turbo_frame_request?
-        # For Turbo Frames, just render the partial - Turbo will replace the frame content
-        render partial: 'learning',
-               locals: { learning: @learning }
+        flash.now[:success] = t('.success', lesson: @learning.lesson)
+        render :update, status: :ok
       else
         redirect_to learning_path(@learning),
                     status: :see_other,
-                    flash: { success: t('.success') }
+                    flash: { success: t('.success', lesson: @learning.lesson) }
       end
     else
       @learning_categories = LearningCategory.all
@@ -120,7 +119,9 @@ class LearningsController < ApplicationController
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }
         # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
-        format.html { redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) } }
+        format.html do
+          redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
+        end
       end
     else
       # Explicitly load page 1 on error helps preserving nested infinite scroll structure on learnings index

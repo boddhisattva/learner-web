@@ -41,3 +41,46 @@
 .navbar-burger {
   color: #FFFFFF//#40FF40;
 }
+
+/* Flash Notifications - Contextual floating notifications */
+#flash_notifications_container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 400px;
+  pointer-events: none; /* Allow clicks to pass through container */
+}
+
+.flash-notification {
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: auto; /* But allow clicks on the notification itself */
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Slide in from the right animation */
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+  #flash_notifications_container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .flash-notification {
+    font-size: 0.9rem;
+  }
+}

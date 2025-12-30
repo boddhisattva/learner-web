@@ -137,6 +137,20 @@ class LearningsController < ApplicationController
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/MethodLength
 
+  def cancel
+    @learning = Learning.find_by(id: params[:id])
+
+    if @learning.blank?
+      redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
+      return
+    end
+
+    respond_to do |format|
+      format.turbo_stream { render :cancel }
+      format.html { redirect_to learning_path(@learning), status: :see_other }
+    end
+  end
+
   private
 
     def learnings_params

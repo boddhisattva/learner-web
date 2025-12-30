@@ -28,5 +28,9 @@ Rails.application.routes.draw do
 
   resources :feed, only: [:index]
 
-  resources :learnings
+  resources :learnings do
+    member do
+      get :cancel
+    end
+  end
 end

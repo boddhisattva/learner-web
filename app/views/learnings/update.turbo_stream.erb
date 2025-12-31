@@ -5,6 +5,6 @@
   </div>
 <% end %>
 
-<%= turbo_stream.replace dom_id(@learning) do %>
+<%= turbo_stream.replace dom_id(@learning), method: :morph do %>
   <%= render partial: "learning", locals: { learning: @learning } %>
 <% end %>

@@ -136,17 +136,16 @@ RSpec.describe LearningsController, type: :controller do
   describe 'DELETE #destroy' do
     let(:learning) { create(:learning, creator: user) }
 
-    context 'with Turbo Stream request', as: :turbo_stream do
+    context 'with Turbo Stream request' do
       before do
         learning
         create_list(:learning, 3, creator: user)
-        request.accept = 'text/vnd.turbo-stream.html'
       end
 
       it 'deletes the learning, sets up pagination for re-render, and returns success' do
         learning_name = learning.lesson
         expect do
-          delete :destroy, params: { id: learning.id }
+          delete :destroy, params: { id: learning.id }, as: :turbo_stream
         end.to change(Learning, :count).by(-1)
 
         expect(assigns(:pagy)).to be_present
@@ -273,6 +272,38 @@ RSpec.describe LearningsController, type: :controller do
         patch :update, params: { id: 'nonexistent', learning: { lesson: 'Updated' } }
         expect(response).to redirect_to(learnings_path)
         expect(flash[:error]).to eq(I18n.t('learnings.update.not_found'))
+      end
+    end
+  end
+
+  describe 'GET #cancel' do
+    let(:learning) { create(:learning, creator: user) }
+
+    context 'with Turbo Stream request' do
+      it 'assigns the requested learning and renders cancel template' do
+        get :cancel, params: { id: learning.id }, as: :turbo_stream
+
+        expect(assigns(:learning)).to eq(learning)
+        expect(response).to render_template(:cancel)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'with HTML request' do
+      it 'redirects to learning show page' do
+        get :cancel, params: { id: learning.id }
+
+        expect(response).to redirect_to(learning_path(learning))
+        expect(response).to have_http_status(:see_other)
+      end
+    end
+
+    context 'when the learning is not found' do
+      it 'redirects to index with error message' do
+        get :cancel, params: { id: 'nonexistent' }
+
+        expect(response).to redirect_to(learnings_path)
+        expect(flash[:error]).to eq(I18n.t('learnings.cancel.not_found'))
       end
     end
   end

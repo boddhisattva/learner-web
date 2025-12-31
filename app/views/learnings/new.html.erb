@@ -4,7 +4,7 @@
       <div class="column is-8-desktop is-11-tablet is-12-mobile">
         <div class="box p-5">
           <h1 class="title has-text-centered mb-5">Create New Learning</h1>
-          <%= form_with(model: @learning, local: true) do |f| %>
+          <%= form_with(model: @learning, data: { turbo: false }) do |f| %>
             <% if @learning.errors.any? %>
               <div class="notification is-danger is-light">
                 <h2 class="subtitle">

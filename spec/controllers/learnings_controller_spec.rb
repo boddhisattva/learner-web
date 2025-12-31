@@ -96,7 +96,7 @@ RSpec.describe LearningsController, type: :controller do
         expect(learning.last_modifier).to eq(user)
 
         expect(response).to redirect_to(learnings_index_path)
-        expect(flash[:success]).to eq(I18n.t('learnings.create.success'))
+        expect(flash[:success]).to eq(I18n.t('learnings.create.success', lesson: learning.lesson))
       end
 
     end
@@ -144,6 +144,7 @@ RSpec.describe LearningsController, type: :controller do
       end
 
       it 'deletes the learning, sets up pagination for re-render, and returns success' do
+        learning_name = learning.lesson
         expect do
           delete :destroy, params: { id: learning.id }
         end.to change(Learning, :count).by(-1)
@@ -152,7 +153,7 @@ RSpec.describe LearningsController, type: :controller do
         expect(assigns(:learnings).count).to eq(3)
         expect(response).to have_http_status(:see_other)
         expect(response).to render_template(:destroy)
-        expect(flash.now[:success]).to eq(I18n.t('learnings.destroy.success'))
+        expect(flash.now[:success]).to eq(I18n.t('learnings.destroy.success', lesson: learning_name))
       end
     end
 
@@ -160,12 +161,13 @@ RSpec.describe LearningsController, type: :controller do
       before { learning }
 
       it 'redirects to index with success message' do
+        learning_name = learning.lesson
         expect do
           delete :destroy, params: { id: learning.id }
         end.to change(Learning, :count).by(-1)
         expect(response).to redirect_to(learnings_index_path)
         expect(response).to have_http_status(:see_other)
-        expect(flash[:success]).to eq(I18n.t('learnings.destroy.success'))
+        expect(flash[:success]).to eq(I18n.t('learnings.destroy.success', lesson: learning_name))
       end
     end
 
@@ -243,7 +245,7 @@ RSpec.describe LearningsController, type: :controller do
         expect(learning.last_modifier).to eq(user)
 
         expect(response).to redirect_to(learning_path(learning))
-        expect(flash[:success]).to eq(I18n.t('learnings.update.success'))
+        expect(flash[:success]).to eq(I18n.t('learnings.update.success', lesson: 'Updated Lesson'))
       end
     end
 

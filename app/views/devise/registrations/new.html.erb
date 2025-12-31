@@ -8,7 +8,8 @@
     <%= form_with(
           model: @user,
           url: sign_up_path(@user),
-          class: "is-flex is-flex-direction-column"
+          class: "is-flex is-flex-direction-column",
+          data: { turbo: false }
         ) do |form| %>
 
       <div class="block">

@@ -28,7 +28,7 @@ class LearningsController < ApplicationController
         @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: 1)
         format.turbo_stream { render :create, status: :created }
         format.html do
-          redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
+          redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
         end
       else
         format.turbo_stream { render :new, status: :unprocessable_entity }
@@ -110,7 +110,7 @@ class LearningsController < ApplicationController
   # TODO: come back and try to see later how to reduce the method size further
   def destroy
     @learning = Learning.find_by(id: params[:id])
-    return redirect_to learnings_index_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
+    return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     if @learning.destroy
       flash.now[:success] = t('.success', lesson: @learning.lesson)
@@ -120,7 +120,7 @@ class LearningsController < ApplicationController
         format.turbo_stream { render :destroy, status: :see_other }
         # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
         format.html do
-          redirect_to learnings_index_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
+          redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
         end
       end
     else
@@ -130,7 +130,7 @@ class LearningsController < ApplicationController
       respond_to do |format|
         format.turbo_stream { render :destroy, status: :see_other }
         # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
-        format.html { redirect_to learnings_index_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
+        format.html { redirect_to learnings_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
       end
     end
   end

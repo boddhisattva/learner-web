@@ -95,7 +95,7 @@ RSpec.describe LearningsController, type: :controller do
         expect(learning.creator).to eq(user)
         expect(learning.last_modifier).to eq(user)
 
-        expect(response).to redirect_to(learnings_index_path)
+        expect(response).to redirect_to(learnings_path)
         expect(flash[:success]).to eq(I18n.t('learnings.create.success', lesson: learning.lesson))
       end
 
@@ -165,7 +165,7 @@ RSpec.describe LearningsController, type: :controller do
         expect do
           delete :destroy, params: { id: learning.id }
         end.to change(Learning, :count).by(-1)
-        expect(response).to redirect_to(learnings_index_path)
+        expect(response).to redirect_to(learnings_path)
         expect(response).to have_http_status(:see_other)
         expect(flash[:success]).to eq(I18n.t('learnings.destroy.success', lesson: learning_name))
       end
@@ -194,7 +194,7 @@ RSpec.describe LearningsController, type: :controller do
           delete :destroy, params: { id: learning.id }
         end.not_to change(Learning, :count)
         expect(flash.now[:error]).to eq(['Error message'])
-        expect(response).to redirect_to(learnings_index_path)
+        expect(response).to redirect_to(learnings_path)
         expect(response).to have_http_status(:see_other)
       end
     end

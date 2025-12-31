@@ -35,7 +35,7 @@ RSpec.describe UsersController, type: :controller do
         expect(newly_created_user.first_name).to eq('Jim')
         expect(newly_created_user.last_name).to eq('Weirich')
 
-        expect(response).to redirect_to('/learnings/index')
+        expect(response).to redirect_to('/learnings')
 
         expect(flash[:success]).to eq(I18n.t('users.create.welcome', name: 'Jim Weirich'))
       end

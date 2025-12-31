@@ -19,7 +19,7 @@ class UsersController < ApplicationController
       # TO DO: Come back to expore how to handle the below code if oragnization creation fails & add relevant spec
       @organization = Organization.create(members: [@user], name: @user.name)
 
-      redirect_to learnings_index_path,
+      redirect_to learnings_path,
                   status: :see_other,
                   flash: { success: t('.welcome', name: @user.name) }
     else

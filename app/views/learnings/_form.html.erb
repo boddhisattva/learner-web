@@ -71,7 +71,7 @@
           <%= f.submit "Update Learning", class: "button is-primary is-medium px-5" %>
         </div>
         <div class="control">
-          <%= link_to "Cancel", cancel_learning_path(learning), data: { turbo_frame: dom_id(learning) }, class: "button is-light is-medium" %>
+          <%= link_to "Cancel", cancel_learning_path(learning), data: { turbo_frame: dom_id(learning), turbo_stream: true }, class: "button is-light is-medium" %>
         </div>
       </div>
       <% end %>

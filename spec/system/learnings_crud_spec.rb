@@ -107,7 +107,7 @@ RSpec.describe 'Learnings', type: :system do
 
         click_button 'Update Learning'
 
-        expect(page).to have_content(I18n.t('learnings.update.success'))
+        expect(page).to have_content(I18n.t('learnings.update.success', lesson: 'Updated Lesson'))
         expect(page).to have_content('Updated Lesson')
         expect(page).to have_content('Updated Description')
       end

@@ -32,7 +32,7 @@ module Mobile
           click_button 'Create Learning'
 
           expect(page).to have_content('Mobile Test Learning')
-          expect(page).to have_content(I18n.t('learnings.create.success'))
+          expect(page).to have_content(I18n.t('learnings.create.success', lesson: 'Mobile Test Learning'))
         end
       end
 
@@ -58,7 +58,7 @@ module Mobile
           click_button 'Update Learning'
 
           expect(page).to have_content('Updated Learning')
-          expect(page).to have_content(I18n.t('learnings.update.success'))
+          expect(page).to have_content(I18n.t('learnings.update.success', lesson: 'Updated Learning'))
         end
       end
 

@@ -2,7 +2,7 @@
   <%= render partial: 'learning', collection: learnings %>
 
   <% if pagy.next %>
-    <%= turbo_frame_tag "learning_page_#{pagy.next}", src: learnings_path(page: pagy.next), loading: :lazy do %>
+    <%= turbo_frame_tag "learning_page_#{pagy.next}", src: learnings_path(page: pagy.next, query: params[:query]), loading: :lazy do %>
       <div style="padding: 1rem; text-align: center;">
         <span class="icon">
           <i class="fas fa-spinner fa-pulse"></i>

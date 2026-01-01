@@ -24,16 +24,7 @@
 
           <div id="flash_messages" class="container is-fluid" data-turbo-temporary></div>
 
-          <% if @learnings.any? %>
-          <%= render 'learnings' %>
-          <% else %>
-          <div class="notification is-info is-light">
-            <p class="has-text-centered">
-              No learnings have been created yet.
-              <%= link_to "Create your first learning", new_learning_path %>
-            </p>
-          </div>
-          <!-- Search Form -->
+          <!-- Search Form - Always visible -->
           <div class="mb-5" data-controller="search">
             <%= form_with url: learnings_path, method: :get, data: { turbo_frame: "learnings_list" }, class: "field has-addons has-addons-centered" do |f| %>
             <div class="control is-expanded">
@@ -42,17 +33,17 @@
                     placeholder: "Search by lesson name...",
                     class: "input",
                     autocomplete: "off",
-                    oninput: "this.form.requestSubmit()",
-                    data: { search_target: "learning_search_input" } %>
+                    data: {
+                      search_target: "learningSearchInput",
+                      action: "input->search#input"
+                    } %>
             </div>
             <div class="control">
               <%= f.submit "Search", class: "button is-info" %>
             </div>
-            <% if params[:query].present? %>
-            <div class="control">
+            <div class="control" data-search-target="clearButton" style="<%= 'display: none;' unless params[:query].present? %>">
               <%= link_to "Clear", learnings_path, class: "button is-light", data: { action: "click->search#clear" } %>
             </div>
-            <% end %>
             <% end %>
           </div>
 
@@ -60,12 +51,6 @@
           <%= turbo_frame_tag "learnings_list", target: "_top" do %>
           <% if @learnings.any? %>
           <%= render 'learnings' %>
-
-          <% if @learnings.respond_to?(:total_pages) %>
-          <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-            <%= paginate @learnings %>
-          </nav>
-          <% end %>
           <% else %>
           <div class="notification is-info is-light">
             <p class="has-text-centered">
@@ -79,8 +64,7 @@
             </p>
           </div>
           <% end %>
-          <<<<<<< HEAD <% end %>=======>>>>>>> 937c9ed (Ensure search works as we type new text)
-            <% end %>
+          <% end %>
         </div>
       </div>
     </div>

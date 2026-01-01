@@ -15,3 +15,6 @@ application.register("form-reset", FormResetController)
 
 import FlashNotificationController from "./flash_notification_controller"
 application.register("flash-notification", FlashNotificationController)
+
+import SearchController from "./search_controller"
+application.register("search", SearchController)

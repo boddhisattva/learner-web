@@ -24,7 +24,6 @@
       <p class="has-text-centered">
         <% if params[:query].present? %>
         No learnings found matching "<strong><%= params[:query] %></strong>".
-        <%= link_to "Clear search", learnings_path, class: "button is-light" %>
         <% else %>
         No learnings have been created yet.
         <%= link_to "Create your first learning", new_learning_path %>

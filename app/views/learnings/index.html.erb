@@ -24,25 +24,27 @@
 
           <div id="flash_messages" class="container is-fluid" data-turbo-temporary></div>
 
-          <!-- Search Form - Always visible -->
-          <div class="mb-5" data-controller="search">
-            <%= form_with url: learnings_path, method: :get, data: { turbo_frame: "learnings_list" }, class: "field has-addons has-addons-centered" do |f| %>
-            <div class="control is-expanded">
-              <%= f.search_field :query,
-                    value: params[:query],
-                    placeholder: "Type to search lessons...",
-                    class: "input",
-                    autocomplete: "off",
-                    data: {
-                      search_target: "learningSearchInput",
-                      action: "input->search#input"
-                    } %>
+          <!-- Search Form - Only visible when there are learnings -->
+          <% if @pagy.count > 0 %>
+            <div class="mb-5" data-controller="search">
+              <%= form_with url: learnings_path, method: :get, data: { turbo_frame: "learnings_list" }, class: "field has-addons has-addons-centered" do |f| %>
+              <div class="control is-expanded">
+                <%= f.search_field :query,
+                      value: params[:query],
+                      placeholder: "Type to search lessons...",
+                      class: "input",
+                      autocomplete: "off",
+                      data: {
+                        search_target: "learningSearchInput",
+                        action: "input->search#input"
+                      } %>
+              </div>
+              <div class="control" data-search-target="clearButton" style="<%= 'display: none;' unless params[:query].present? %>">
+                <%= link_to "Clear", learnings_path, class: "button is-light", data: { action: "click->search#clear" } %>
+              </div>
+              <% end %>
             </div>
-            <div class="control" data-search-target="clearButton" style="<%= 'display: none;' unless params[:query].present? %>">
-              <%= link_to "Clear", learnings_path, class: "button is-light", data: { action: "click->search#clear" } %>
-            </div>
-            <% end %>
-          </div>
+          <% end %>
 
           <!-- Turbo Frame wraps the results that will update -->
           <%= turbo_frame_tag "learnings_list", target: "_top" do %>
@@ -53,7 +55,6 @@
             <p class="has-text-centered">
               <% if params[:query].present? %>
               No learnings found matching "<strong><%= params[:query] %></strong>".
-              <%= link_to "Clear search", learnings_path, data: { action: "click->search#clear" } %>
               <% else %>
               No learnings have been created yet.
               <%= link_to "Create your first learning", new_learning_path %>

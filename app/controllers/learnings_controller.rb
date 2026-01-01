@@ -3,11 +3,23 @@
 class LearningsController < ApplicationController
   before_action :authenticate_user!
 
-  def index
-    @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
-    @learnings = @learnings.search(params[:query]) if params[:query].present?
+  LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
 
-    render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy } if turbo_frame_request?
+  def index
+    learnings_scope = current_user.learnings.order(created_at: :desc)
+    learnings_scope = learnings_scope.search(params[:query]) if params[:query].present?
+    @pagy, @learnings = pagy(learnings_scope)
+
+    # Handle turbo frame requests (search and infinite scroll)
+    return unless turbo_frame_request?
+
+    # If request is for the search frame, render the search results
+    if request.headers['Turbo-Frame'] == LEARNINGS_SEARCH_FRAME_ID
+      render partial: 'learnings_list', locals: { learnings: @learnings, pagy: @pagy }
+    else
+      # For infinite scroll pagination frames (both regular and search)
+      render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy }
+    end
   end
 
   def new

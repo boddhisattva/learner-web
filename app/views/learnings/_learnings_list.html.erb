@@ -1,0 +1,35 @@
+<%= turbo_frame_tag "learnings_list", target: "_top" do %>
+  <% if learnings.any? %>
+    <div class="box" id="all_learnings">
+      <!-- Header row - Desktop/Tablet (3 columns) -->
+      <div class="is-hidden-mobile" style="display: grid; grid-template-columns: 60% 25% 15%; gap: 1rem; padding: 0.75rem 1rem; font-weight: 600; border-bottom: 2px solid #dbdbdb;">
+        <div>Lesson</div>
+        <div>Created</div>
+        <div>Actions</div>
+      </div>
+
+      <!-- Header row - Mobile (2 columns) -->
+      <div class="is-hidden-tablet" style="display: grid; grid-template-columns: 70% 30%; gap: 1rem; padding: 0.75rem 1rem; font-weight: 600; border-bottom: 2px solid #dbdbdb;">
+        <div>Lesson</div>
+        <div>Actions</div>
+      </div>
+
+      <!-- Learnings container with infinite scroll -->
+      <div id="learnings_container">
+        <%= render partial: "learnings_page", locals: { learnings: learnings, pagy: pagy } %>
+      </div>
+    </div>
+  <% else %>
+    <div class="notification is-info is-light">
+      <p class="has-text-centered">
+        <% if params[:query].present? %>
+        No learnings found matching "<strong><%= params[:query] %></strong>".
+        <%= link_to "Clear search", learnings_path, class: "button is-light" %>
+        <% else %>
+        No learnings have been created yet.
+        <%= link_to "Create your first learning", new_learning_path %>
+        <% end %>
+      </p>
+    </div>
+  <% end %>
+<% end %>

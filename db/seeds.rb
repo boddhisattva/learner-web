@@ -34,6 +34,8 @@ Learning.create(lesson: 'Karm kar Phal ki chinta na kar', learning_category_ids:
                 creator_id: User.first.id, last_modifier_id: User.first.id, organization_id: organization.id)
 
 100.times do |n|
-  Learning.create(lesson: "What is delayed is not denied #{n + 1}", description: "Description for learning #{n + 1}", learning_category_ids: [learning_category.id],
+  Learning.create(lesson: "What is delayed is not denied #{n + 1}",
+                  description: "Description for learning #{n + 1}",
+                  learning_category_ids: [learning_category.id],
                   creator_id: User.first.id, last_modifier_id: User.first.id, organization_id: organization.id)
 end

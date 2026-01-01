@@ -16,7 +16,7 @@ RSpec.describe 'Learnings Infinite Scroll', type: :system do
       # Create 50 learnings using insert_all for speed
       # Pagy limit is 10, so this creates 5 pages
       # With enough data, not all pages will auto-load on initial visit
-      learnings_data = 50.times.map do |i|
+      learnings_data = Array.new(50) do |i|
         {
           lesson: "Learning #{i + 1}",
           description: "Description for learning #{i + 1}",
@@ -29,7 +29,9 @@ RSpec.describe 'Learnings Infinite Scroll', type: :system do
           updated_at: Time.zone.now - (49 - i).minutes
         }
       end
+      # rubocop:disable Rails/SkipsModelValidations
       Learning.insert_all(learnings_data)
+      # rubocop:enable Rails/SkipsModelValidations
     end
 
     it 'loads learnings progressively as user scrolls' do

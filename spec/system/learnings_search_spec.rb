@@ -23,7 +23,7 @@ RSpec.describe 'Learnings Search', :js, type: :system do
       visit learnings_path
     end
 
-    it 'allows searching as user types with Turbo Frame updates, shows filtered results, displays Clear button, and allows clearing to show all results' do
+    it 'shows filtered results, displays Clear button, & allows clearing to show all results' do
       # Verify search input has correct attributes (setup check)
       expect(page).to have_field('query', type: 'search', placeholder: 'Type to search lessons...')
 
@@ -93,8 +93,8 @@ RSpec.describe 'Learnings Search', :js, type: :system do
     end
   end
 
-  describe 'searching when there are no matching learnings' do
-    it 'shows no results message when no learnings match, shows empty state when no learnings exist, and shows Clear button when visiting with query parameter' do
+  describe 'searching when there are no matching learnings, no learnings exist, and Clear button' do
+    it 'shows no results message when no learnings match and shows Clear button' do
       # Setup: Create a learning for testing
       create(:learning, lesson: 'Ruby basics', creator: user, last_modifier: user)
 
@@ -111,14 +111,16 @@ RSpec.describe 'Learnings Search', :js, type: :system do
       # Should show "no results found" message
       expect(page).to have_content('No learnings found matching "Python Programming"')
 
-      # Now test empty state by visiting without any learnings
+    end
+
+    it 'shows empty state when no learnings exist' do
       Learning.destroy_all
       visit learnings_path
 
-      # Should show empty state message, not "no results" message
       expect(page).to have_content('No learnings have been created yet')
       expect(page).to have_link('Create your first learning')
       expect(page).not_to have_content('No learnings found matching')
+
     end
   end
 
@@ -128,7 +130,7 @@ RSpec.describe 'Learnings Search', :js, type: :system do
         # Create 50 learnings matching "Ruby" search
         # Pagy limit is 10, so this creates 5 pages of matching results
         # With enough data, not all pages will auto-load on initial visit
-        ruby_learnings = 50.times.map do |i|
+        ruby_learnings = Array.new(50) do |i|
           {
             lesson: "Ruby learning #{i + 1}",
             description: "Description for Ruby learning #{i + 1}",
@@ -143,7 +145,7 @@ RSpec.describe 'Learnings Search', :js, type: :system do
         end
 
         # Create 20 learnings that DON'T match search (should never appear)
-        non_matching_learnings = 20.times.map do |i|
+        non_matching_learnings = Array.new(20) do |i|
           {
             lesson: "JavaScript lesson #{i + 1}",
             description: "Description for JavaScript lesson #{i + 1}",
@@ -157,7 +159,9 @@ RSpec.describe 'Learnings Search', :js, type: :system do
           }
         end
 
+        # rubocop:disable Rails/SkipsModelValidations
         Learning.insert_all(ruby_learnings + non_matching_learnings)
+        # rubocop:enable Rails/SkipsModelValidations
       end
 
       it 'loads search results progressively as user scrolls while maintaining search filter' do

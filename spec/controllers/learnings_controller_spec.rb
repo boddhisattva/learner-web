@@ -56,6 +56,28 @@ RSpec.describe LearningsController, type: :controller do
         expect(response).not_to render_template(layout: 'application')
       end
     end
+
+    context 'with search query parameter' do
+      it 'paginates only the filtered search results' do
+        15.times { |i| create(:learning, lesson: "New learning test #{i + 1}", creator: user) }
+        10.times { |i| create(:learning, lesson: "Different topic #{i + 1}", creator: user) }
+
+        get :index, params: { query: 'New learning', page: 1 }
+
+        expect(assigns(:pagy).count).to eq(15)
+        expect(assigns(:learnings).count).to eq(10)
+        expect(assigns(:learnings).map(&:lesson)).to all(match(/New learning/))
+      end
+
+      it 'preserves query parameter when paginating search results' do
+        15.times { |i| create(:learning, lesson: "Test learning #{i + 1}", creator: user) }
+
+        get :index, params: { query: 'Test', page: 2 }
+
+        expect(assigns(:pagy).page).to eq(2)
+        expect(assigns(:learnings).map(&:lesson)).to all(match(/Test/))
+      end
+    end
   end
 
   describe 'GET #new' do

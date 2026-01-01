@@ -6,14 +6,24 @@
   <small id="learnings_count" class="has-text-grey">(<%= @pagy.count %> total)</small>
 <% end %>
 
-<%# Show flash message %>
-<%= turbo_stream.replace "flash_messages" do %>
-  <%= render "shared/flashes" %>
+<%# Show floating auto-dismissing flash notification %>
+<%= turbo_stream.append "flash_notifications_container" do %>
+  <div class="flash-notification notification is-success is-light"
+       data-controller="flash-notification">
+    <%= flash[:success] %>
+  </div>
 <% end %>
 
-<%# Replace learning_page_1 with fresh data - div layout allows proper nesting! %>
-<%= turbo_stream.replace "learning_page_1" do %>
-  <%= render partial: "learnings_page", locals: { learnings: @learnings, pagy: @pagy } %>
+<% if @pagy.count == 1 %>
+  <%# First learning ever - replace entire learnings_list frame to transition from empty state %>
+  <%= turbo_stream.replace "learnings_list" do %>
+    <%= render partial: "learnings_list", locals: { learnings: @learnings, pagy: @pagy } %>
+  <% end %>
+<% else %>
+  <%#  Replace page 1 with updated data to show new learning while preserving infinite scroll structure %>
+  <%= turbo_stream.replace "learning_page_1" do %>
+    <%= render partial: "learnings_page", locals: { learnings: @learnings, pagy: @pagy } %>
+  <% end %>
 <% end %>
 
 <%# Scroll to top to show the new learning %>

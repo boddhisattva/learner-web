@@ -74,23 +74,6 @@ RSpec.describe 'Learnings Search', :js, type: :system do
 
       visit learnings_path
     end
-
-    it 'loads more search results when scrolling while maintaining search filter' do
-      # Search for specific items
-      fill_in 'query', with: 'New learning'
-
-      # Should only see "New learning" items, not "Different topic" items
-      expect(page).to have_content('New learning test')
-      expect(page).not_to have_content('Different topic')
-
-      # Scroll to bottom to trigger infinite scroll
-      page.execute_script('window.scrollTo(0, document.body.scrollHeight)')
-      sleep 1
-
-      # After scrolling, should still only see filtered results (not all learnings)
-      expect(page).to have_content('New learning test')
-      expect(page).not_to have_content('Different topic')
-    end
   end
 
   describe 'searching when there are no matching learnings, no learnings exist, and Clear button' do

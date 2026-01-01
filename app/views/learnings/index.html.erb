@@ -30,16 +30,13 @@
             <div class="control is-expanded">
               <%= f.search_field :query,
                     value: params[:query],
-                    placeholder: "Search by lesson name...",
+                    placeholder: "Type to search lessons...",
                     class: "input",
                     autocomplete: "off",
                     data: {
                       search_target: "learningSearchInput",
                       action: "input->search#input"
                     } %>
-            </div>
-            <div class="control">
-              <%= f.submit "Search", class: "button is-info" %>
             </div>
             <div class="control" data-search-target="clearButton" style="<%= 'display: none;' unless params[:query].present? %>">
               <%= link_to "Clear", learnings_path, class: "button is-light", data: { action: "click->search#clear" } %>

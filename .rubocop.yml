@@ -14,6 +14,9 @@ Style/RedundantSelf:
 Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
+Metrics/ClassLength:
+  Max: 135
+
 # A line with 80 characters length is generally too small
 Layout/LineLength:
   Max: 135
@@ -42,7 +45,7 @@ RSpec/ExampleLength:
   Max: 20
 
 RSpec/MultipleExpectations:
-  Max: 10
+  Max: 15
 
 Metrics/MethodLength:
   Max: 15

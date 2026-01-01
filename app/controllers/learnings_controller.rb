@@ -10,49 +10,24 @@ class LearningsController < ApplicationController
     learnings_scope = learnings_scope.search(params[:query]) if params[:query].present?
     @pagy, @learnings = pagy(learnings_scope)
 
-    # Handle turbo frame requests (search and infinite scroll)
-    return unless turbo_frame_request?
-
-    # If request is for the search frame, render the search results
-    if request.headers['Turbo-Frame'] == LEARNINGS_SEARCH_FRAME_ID
-      render partial: 'learnings_list', locals: { learnings: @learnings, pagy: @pagy }
-    else
-      # For infinite scroll pagination frames (both regular and search)
-      render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy }
-    end
+    render_turbo_frame_response if turbo_frame_request?
   end
 
   def new
     @learning = Learning.new
-    @learning_categories = LearningCategory.all # TODO: See if this can benefit from pagination as '.all' can be a resource intensive operation
+    load_learning_categories
   end
 
-  # rubocop:disable Metrics/AbcSize
   def create
     @learning = Learning.new(learnings_params)
     @learning.creator_id = current_user.id
     @learning.last_modifier_id = current_user.id
-    @learning_categories = LearningCategory.all # TODO: See if this can benefit from pagination as '.all' can be a resource intensive operation
+    load_learning_categories
 
     respond_to do |format|
-      if @learning.save
-        flash.now[:success] = t('.success', lesson: @learning.lesson)
-        # Explicitly load page 1 after creating a new learning to see latest learnings first
-        @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: 1)
-        format.turbo_stream { render :create, status: :created }
-        format.html do
-          redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
-        end
-      else
-        format.turbo_stream { render :new, status: :unprocessable_entity }
-        format.html do
-          flash.now[:error] = @learning.errors.full_messages
-          render :new, status: :unprocessable_entity
-        end
-      end
+      @learning.save ? handle_create_success(format) : handle_create_failure(format)
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
   def show
     @learning = Learning.find_by(id: params[:id])
@@ -73,7 +48,7 @@ class LearningsController < ApplicationController
 
   def edit
     @learning = Learning.find_by(id: params[:id])
-    @learning_categories = LearningCategory.all
+    load_learning_categories
 
     if @learning.blank?
       redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
@@ -88,67 +63,23 @@ class LearningsController < ApplicationController
     # Otherwise render edit.html.erb (full page for non-turbo browsers)
   end
 
-  # rubocop:disable Metrics/AbcSize
   def update
     @learning = Learning.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     @learning.last_modifier_id = current_user.id
 
-    if @learning.update(learnings_params)
-      if turbo_frame_request?
-        flash.now[:success] = t('.success', lesson: @learning.lesson)
-        render :update, status: :ok
-      else
-        redirect_to learning_path(@learning),
-                    status: :see_other,
-                    flash: { success: t('.success', lesson: @learning.lesson) }
-      end
-    else
-      @learning_categories = LearningCategory.all
-      if turbo_frame_request?
-        render partial: 'form',
-               locals: { learning: @learning, learning_categories: @learning_categories },
-               status: :unprocessable_entity
-      else
-        flash.now[:error] = @learning.errors.full_messages
-        render :edit, status: :unprocessable_entity
-      end
-    end
+    @learning.update(learnings_params) ? handle_update_success : handle_update_failure
   end
-  # rubocop:enable Metrics/AbcSize
 
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
-  # TODO: come back and try to see later how to reduce the method size further
   def destroy
     @learning = Learning.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
-    if @learning.destroy
-      flash.now[:success] = t('.success', lesson: @learning.lesson)
-      # Explicitly load page 1 after deleting helps preserving nested infinite scroll structure on learnings index
-      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
-      respond_to do |format|
-        format.turbo_stream { render :destroy, status: :see_other }
-        # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
-        format.html do
-          redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
-        end
-      end
-    else
-      # Explicitly load page 1 on error helps preserving nested infinite scroll structure on learnings index
-      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc))
-      flash.now[:error] = @learning.errors.full_messages
-      respond_to do |format|
-        format.turbo_stream { render :destroy, status: :see_other }
-        # Below code is useful when you have JS disable on the browser, then a normal HTML request is received
-        format.html { redirect_to learnings_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
-      end
+    respond_to do |format|
+      @learning.destroy ? handle_destroy_success(format) : handle_destroy_failure(format)
     end
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
 
   def cancel
     @learning = Learning.find_by(id: params[:id])
@@ -168,5 +99,81 @@ class LearningsController < ApplicationController
 
     def learnings_params
       params.require(:learning).permit(:lesson, :description, :public_visibility, :organization_id, learning_category_ids: [])
+    end
+
+    def load_paginated_learnings(page = 1)
+      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: page)
+    end
+
+    def load_learning_categories
+      # TODO: See if this can benefit from pagination as '.all' can be a resource intensive operation
+      @learning_categories = LearningCategory.all
+    end
+
+    # Renders the appropriate partial based on Turbo Frame ID
+    # Used in: index (handles both search and infinite scroll frames)
+    def render_turbo_frame_response
+      if request.headers['Turbo-Frame'] == LEARNINGS_SEARCH_FRAME_ID
+        render partial: 'learnings_list', locals: { learnings: @learnings, pagy: @pagy }
+      else
+        render partial: 'learnings_page', locals: { learnings: @learnings, pagy: @pagy }
+      end
+    end
+
+    def handle_create_success(format)
+      flash.now[:success] = t('.success', lesson: @learning.lesson)
+      # Explicitly load page 1 after creating a new learning to see latest learnings first
+      load_paginated_learnings(1)
+      format.turbo_stream { render :create, status: :created }
+      format.html do
+        redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
+      end
+    end
+
+    def handle_create_failure(format)
+      format.turbo_stream { render :new, status: :unprocessable_entity }
+      format.html do
+        flash.now[:error] = @learning.errors.full_messages
+        render :new, status: :unprocessable_entity
+      end
+    end
+
+    def handle_update_success
+      if turbo_frame_request?
+        flash.now[:success] = t('.success', lesson: @learning.lesson)
+        render :update, status: :ok
+      else
+        redirect_to learning_path(@learning),
+                    status: :see_other,
+                    flash: { success: t('.success', lesson: @learning.lesson) }
+      end
+    end
+
+    def handle_update_failure
+      load_learning_categories
+      if turbo_frame_request?
+        render partial: 'form',
+               locals: { learning: @learning, learning_categories: @learning_categories },
+               status: :unprocessable_entity
+      else
+        flash.now[:error] = @learning.errors.full_messages
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    def handle_destroy_success(format)
+      flash.now[:success] = t('.success', lesson: @learning.lesson)
+      load_paginated_learnings
+      format.turbo_stream { render :destroy, status: :see_other }
+      format.html do
+        redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
+      end
+    end
+
+    def handle_destroy_failure(format)
+      load_paginated_learnings
+      flash.now[:error] = @learning.errors.full_messages
+      format.turbo_stream { render :destroy, status: :see_other }
+      format.html { redirect_to learnings_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
     end
 end

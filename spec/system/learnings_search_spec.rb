@@ -62,20 +62,6 @@ RSpec.describe 'Learnings Search', :js, type: :system do
     end
   end
 
-  describe 'search with infinite scroll pagination' do
-    before do
-      15.times do |i|
-        create(:learning, lesson: "New learning test #{i + 1}", creator: user, last_modifier: user)
-      end
-
-      10.times do |i|
-        create(:learning, lesson: "Different topic #{i + 1}", creator: user, last_modifier: user)
-      end
-
-      visit learnings_path
-    end
-  end
-
   describe 'searching when there are no matching learnings, no learnings exist, and Clear button' do
     it 'shows no results message when no learnings match and shows Clear button' do
       # Setup: Create a learning for testing

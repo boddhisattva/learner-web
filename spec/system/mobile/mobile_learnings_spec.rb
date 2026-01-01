@@ -72,12 +72,16 @@ module Mobile
         it 'can delete a learning via mobile interface' do
           visit learnings_path
 
+          expect(page).to have_content('Learning to Delete')
+
           accept_confirm do
             first('.is-danger').click
           end
 
-          expect(page).to have_content(I18n.t('learnings.destroy.success'))
-          expect(page).not_to have_content('Learning to Delete')
+          expect(page).to have_content(I18n.t('learnings.destroy.success', lesson: learning.lesson))
+          within('#all_learnings') do
+            expect(page).not_to have_content('Learning to Delete')
+          end
         end
       end
     end

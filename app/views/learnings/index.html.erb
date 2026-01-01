@@ -19,9 +19,6 @@
             </div>
           </div>
 
-          <!-- Collapsible inline form container -->
-          <div id="new_learning_form" class="mt-4"></div>
-
           <div id="flash_messages" class="container is-fluid" data-turbo-temporary></div>
 
           <!-- Search Form - Only visible when there are learnings -->
@@ -45,6 +42,9 @@
               <% end %>
             </div>
           <% end %>
+
+          <!-- Collapsible inline form container -->
+          <div id="new_learning_form" class="mt-4"></div>
 
           <!-- Turbo Frame wraps the results that will update -->
           <%= turbo_frame_tag "learnings_list", target: "_top" do %>

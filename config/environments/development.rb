@@ -9,6 +9,7 @@ Rails.application.configure do
     Bullet.bullet_logger = true
     Bullet.rails_logger  = true
     Bullet.add_footer    = true
+    Bullet.raise = true
   end
 
   # N+1 query detection using prosopite gem

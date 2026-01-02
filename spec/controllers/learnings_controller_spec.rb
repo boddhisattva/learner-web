@@ -236,6 +236,23 @@ RSpec.describe LearningsController, type: :controller do
         expect(flash[:error]).to eq(I18n.t('learnings.edit.not_found'))
       end
     end
+
+    context 'when user tries to edit another users learning' do
+      let(:alice) { create(:user) }
+      let(:bob) { create(:user) }
+      let(:alice_learning) { create(:learning, creator: alice) }
+
+      before do
+        sign_in bob
+      end
+
+      it 'redirects to learnings path with error message' do
+        get :edit, params: { id: alice_learning.id }
+
+        expect(response).to redirect_to(learnings_path)
+        expect(flash[:error]).to eq(I18n.t('learnings.edit.not_found'))
+      end
+    end
   end
 
   describe 'PATCH #update' do

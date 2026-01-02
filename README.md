@@ -12,9 +12,13 @@ The following **features** are available via both the **Web app & in Mobile**
   * As part of a user sign up, an organization is created based on user name & it is associated with an appropriate membership
 * Update User profile details(Uses **Hotwire Turbo** as needed)
 * Add ability to create a new learning
-  * Sample Learning Categories can be added through `rake db:seed`
+  * Sample Learnings & Learning Categories can be added through `rake db:seed`
   * Additional learning categories can be currently added through `rails c` backend manually
-
+* **Learning Search** implemented using **Stimulus** and related features like Stimulus Target
+* **Infinite scroll** implementation using **Turbo Frames**
+* **Inline functionalities** for - Learning creation, edit using **Turbo Stream**
+* Learning deletion also implemented with **Turbo Streams** to give a more intuitive user experience
+* **Floating flash notifications** implemented for operations like learning create, update & delete to give a much better User experience.
 
 ## App Development Status - Paused for now
 

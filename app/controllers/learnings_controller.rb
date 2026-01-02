@@ -106,8 +106,7 @@ class LearningsController < ApplicationController
     end
 
     def load_learning_categories
-      # TODO: See if this can benefit from pagination as '.all' can be a resource intensive operation
-      @learning_categories = LearningCategory.all
+      @learning_categories = LearningCategory.order(created_at: :desc).limit(100)
     end
 
     # Renders the appropriate partial based on Turbo Frame ID

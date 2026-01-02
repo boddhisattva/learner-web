@@ -55,7 +55,7 @@
                           <div class="column is-half-mobile is-one-third-tablet">
                             <label class="checkbox">
                               <%= check_box_tag "learning[learning_category_ids][]" , category.id,
-                                @learning.learning_category_ids.include?(category),
+                                @learning.learning_category_ids.include?(category.id),
                                 id: "learning_category_#{category.id}" %>
                                 <span class="ml-2">
                                   <%= category.name %>

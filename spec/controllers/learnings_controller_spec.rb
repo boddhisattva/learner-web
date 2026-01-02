@@ -236,6 +236,26 @@ RSpec.describe LearningsController, type: :controller do
         expect(response).to have_http_status(:see_other)
       end
     end
+
+    context 'when user tries to destroy another users learning' do
+      let(:alice) { create(:user) }
+      let(:bob) { create(:user) }
+      let(:alice_learning) { create(:learning, creator: alice) }
+
+      before do
+        sign_in bob
+        alice_learning
+      end
+
+      it 'redirects to learnings path with error message and does not delete the learning' do
+        expect do
+          delete :destroy, params: { id: alice_learning.id }
+        end.not_to change(Learning, :count)
+
+        expect(response).to redirect_to(learnings_path)
+        expect(flash[:error]).to eq(I18n.t('learnings.destroy.not_found'))
+      end
+    end
   end
 
   describe 'GET #edit' do
@@ -330,6 +350,25 @@ RSpec.describe LearningsController, type: :controller do
         expect(flash[:error]).to eq(I18n.t('learnings.update.not_found'))
       end
     end
+
+    context 'when user tries to update another users learning' do
+      let(:alice) { create(:user) }
+      let(:bob) { create(:user) }
+      let(:alice_learning) { create(:learning, creator: alice) }
+
+      before do
+        sign_in bob
+      end
+
+      it 'redirects to learnings path with error message and does not update the learning' do
+        original_lesson = alice_learning.lesson
+        patch :update, params: { id: alice_learning.id, learning: { lesson: 'Hacked!' } }
+
+        expect(alice_learning.reload.lesson).to eq(original_lesson)
+        expect(response).to redirect_to(learnings_path)
+        expect(flash[:error]).to eq(I18n.t('learnings.update.not_found'))
+      end
+    end
   end
 
   describe 'GET #cancel' do
@@ -357,6 +396,23 @@ RSpec.describe LearningsController, type: :controller do
     context 'when the learning is not found' do
       it 'redirects to index with error message' do
         get :cancel, params: { id: 'nonexistent' }
+
+        expect(response).to redirect_to(learnings_path)
+        expect(flash[:error]).to eq(I18n.t('learnings.cancel.not_found'))
+      end
+    end
+
+    context 'when user tries to cancel another users learning' do
+      let(:alice) { create(:user) }
+      let(:bob) { create(:user) }
+      let(:alice_learning) { create(:learning, creator: alice) }
+
+      before do
+        sign_in bob
+      end
+
+      it 'redirects to learnings path with error message' do
+        get :cancel, params: { id: alice_learning.id }
 
         expect(response).to redirect_to(learnings_path)
         expect(flash[:error]).to eq(I18n.t('learnings.cancel.not_found'))

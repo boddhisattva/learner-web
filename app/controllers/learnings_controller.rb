@@ -64,7 +64,7 @@ class LearningsController < ApplicationController
   end
 
   def update
-    @learning = Learning.find_by(id: params[:id])
+    @learning = current_user.learnings.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     @learning.last_modifier_id = current_user.id
@@ -73,7 +73,7 @@ class LearningsController < ApplicationController
   end
 
   def destroy
-    @learning = Learning.find_by(id: params[:id])
+    @learning = current_user.learnings.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     respond_to do |format|
@@ -82,7 +82,7 @@ class LearningsController < ApplicationController
   end
 
   def cancel
-    @learning = Learning.find_by(id: params[:id])
+    @learning = current_user.learnings.find_by(id: params[:id])
 
     if @learning.blank?
       redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }

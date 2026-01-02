@@ -47,7 +47,7 @@ class LearningsController < ApplicationController
   end
 
   def edit
-    @learning = Learning.find_by(id: params[:id])
+    @learning = current_user.learnings.find_by(id: params[:id])
     load_learning_categories
 
     if @learning.blank?

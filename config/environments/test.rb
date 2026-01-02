@@ -15,6 +15,12 @@ Rails.application.configure do
     Bullet.raise         = true # raise an error if n+1 query occurs
   end
 
+  config.after_initialize do
+    Prosopite.prosopite_logger = true
+    Prosopite.enabled = true
+    Prosopite.raise = true
+  end
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.

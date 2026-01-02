@@ -11,6 +11,14 @@ Rails.application.configure do
     Bullet.add_footer    = true
   end
 
+  # N+1 query detection using prosopite gem
+
+  config.after_initialize do
+    Prosopite.prosopite_logger = true
+    Prosopite.enabled = true
+    Prosopite.raise = true
+  end
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time

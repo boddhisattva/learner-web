@@ -30,7 +30,7 @@ class LearningsController < ApplicationController
   end
 
   def show
-    @learning = Learning.find_by(id: params[:id])
+    @learning = current_user.learnings.find_by(id: params[:id])
 
     if @learning.blank?
       redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }

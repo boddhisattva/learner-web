@@ -146,6 +146,27 @@ GEM
       sexp_processor (~> 4.8)
     globalid (1.3.0)
       activesupport (>= 6.1)
+    google-protobuf (4.33.2)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.33.2-aarch64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.33.2-aarch64-linux-musl)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.33.2-arm64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.33.2-x86_64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.33.2-x86_64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.33.2-x86_64-linux-musl)
+      bigdecimal
+      rake (>= 13)
     hotwire-spark (0.1.13)
       listen
       rails (>= 7.0.0)
@@ -235,6 +256,8 @@ GEM
     pg (1.6.2-x86_64-darwin)
     pg (1.6.2-x86_64-linux)
     pg (1.6.2-x86_64-linux-musl)
+    pg_query (6.1.0)
+      google-protobuf (>= 3.25.3)
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
@@ -243,6 +266,7 @@ GEM
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
       rack
+    prosopite (2.1.2)
     pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -453,7 +477,9 @@ DEPENDENCIES
   pagy (~> 43.2)
   paranoia (~> 3.0)
   pg (~> 1.5)
+  pg_query
   propshaft
+  prosopite
   pry-byebug (~> 3.10, >= 3.10.1)
   puma (>= 5.0)
   rails (~> 8.0, >= 8.0.1)

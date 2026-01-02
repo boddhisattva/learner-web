@@ -120,7 +120,6 @@ RSpec.describe LearningsController, type: :controller do
         expect(response).to redirect_to(learnings_path)
         expect(flash[:success]).to eq(I18n.t('learnings.create.success', lesson: learning.lesson))
       end
-
     end
 
     context 'with invalid parameters' do

@@ -49,7 +49,6 @@ gem 'prosopite'
 # Using prosopite gem also requires one to use pg_query gem if one's DB is not MySQL/MariaDB(we're using PostgreSQL)
 gem 'pg_query'
 
-
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
@@ -106,4 +105,3 @@ group :test do
   gem 'rails-controller-testing'
   gem 'selenium-webdriver', '~> 4.30' # Browser automation tool for automated testing of webapps & more
 end
-

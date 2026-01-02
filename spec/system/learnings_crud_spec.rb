@@ -7,11 +7,15 @@ RSpec.describe 'Learnings', type: :system do
   let(:learning) { create(:learning, creator: user, last_modifier: user) }
   let(:organization) { create(:organization) }
   let(:membership) { create(:membership, member: user, organization: organization) }
+  let(:discipline_category) { create(:learning_category, name: 'Discipline') }
+  let(:life_category) { create(:learning_category, name: 'Learnings for Life') }
 
   before do
     sign_in user
     organization
     membership
+    discipline_category
+    life_category
   end
 
   describe 'index page' do
@@ -95,21 +99,39 @@ RSpec.describe 'Learnings', type: :system do
   end
 
   describe 'editing a learning' do
+    let(:learning_with_category) do
+      create(:learning,
+             creator: user,
+             last_modifier: user,
+             organization: organization,
+             learning_category_ids: [discipline_category.id])
+    end
+
     before do
-      learning
-      visit edit_learning_path(learning)
+      learning_with_category
+      visit edit_learning_path(learning_with_category)
     end
 
     context 'with valid inputs' do
-      it 'updates the learning' do
+      it 'updates the learning and pre-selects existing category checkboxes, allows updating categories' do
+        # Verify existing category is pre-selected & already in the database
+        expect(learning_with_category.learning_category_ids).to include(discipline_category.id)
+        expect(page).to have_checked_field("learning_category_#{discipline_category.id}")
+        expect(page).to have_unchecked_field("learning_category_#{life_category.id}")
+
+        # Update the learning
         fill_in 'Lesson', with: 'Updated Lesson'
         fill_in 'Description', with: 'Updated Description'
+        check "learning_category_#{life_category.id}"
 
         click_button 'Update Learning'
 
         expect(page).to have_content(I18n.t('learnings.update.success', lesson: 'Updated Lesson'))
         expect(page).to have_content('Updated Lesson')
         expect(page).to have_content('Updated Description')
+
+        learning_with_category.reload
+        expect(learning_with_category.learning_category_ids).to include(discipline_category.id, life_category.id)
       end
     end
 

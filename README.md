@@ -20,8 +20,8 @@ The following **features** are available via both the **Web app & in Mobile**
 * Learning deletion also implemented with **Turbo Streams** to give a more intuitive user experience
 * **Floating flash notifications** implemented for operations like learning create, update & delete to give a much better User experience.
 
-## App Development Status - Paused for now
-
+## Features that are currently a Work in Progress(WIP)
+* Implementing Learning Categories, Memberships & Organisations fully pertaining to a user's learning is a current WIP 
 
 ## Usage
 

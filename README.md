@@ -16,7 +16,8 @@ The following **features** are available via both the **Web app & in Mobile**
   * Additional learning categories can be currently added through `rails c` backend manually
 * **Learning Search** implemented using **Stimulus** and related features like Stimulus Target
 * **Infinite scroll** implementation using **Turbo Frames**
-* **Inline functionalities** for - Learning creation, edit using **Turbo Stream**
+* **Inline functionalities** for - Learning creation, update using **Turbo Streams**
+  ** Functionalities like Update make use of features like **Morphing** that allows one to preserve scroll position and provides a better UX in general(especially in Mobile)
 * Learning deletion also implemented with **Turbo Streams** to give a more intuitive user experience
 * **Floating flash notifications** implemented for operations like learning create, update & delete to give a much better User experience.
 
@@ -27,7 +28,7 @@ The following **features** are available via both the **Web app & in Mobile**
 
 ### Dependencies
 
-* This app uses Ruby 3.3.6 & Rails 8.0.1
+* This app uses Ruby 3.3.6 & Rails 8.1.1
 
 ### Basic App setup
 

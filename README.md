@@ -17,7 +17,7 @@ The following **features** are available via both the **Web app & in Mobile**
 * **Learning Search** implemented using **Stimulus** and related features like Stimulus Target
 * **Infinite scroll** implementation using **Turbo Frames**
 * **Inline functionalities** for - Learning creation, update using **Turbo Streams**
-  ** Functionalities like Update make use of features like **Morphing** that allows one to preserve scroll position and provides a better UX in general(especially in Mobile)
+  - Functionalities like Update make use of features like **Morphing** that allows one to preserve scroll position and provides a better UX in general(especially in Mobile)
 * Learning deletion also implemented with **Turbo Streams** to give a more intuitive user experience
 * **Floating flash notifications** implemented for operations like learning create, update & delete to give a much better User experience.
 

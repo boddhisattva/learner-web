@@ -140,7 +140,7 @@ GEM
     ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     ffi (1.17.2-x86_64-linux-musl)
-    flog (4.9.1)
+    flog (4.9.2)
       path_expander (~> 2.0)
       prism (~> 1.7)
       sexp_processor (~> 4.8)

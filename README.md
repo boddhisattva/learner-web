@@ -21,8 +21,41 @@ The following **features** are available via both the **Web app & in Mobile**
 * Learning deletion also implemented with **Turbo Streams** to give a more intuitive user experience
 * **Floating flash notifications** implemented for operations like learning create, update & delete to give a much better User experience.
 
+## App related screenshots
+
+<details>
+  <summary>View App related screenshots</summary>
+
+1. Create New Inline Learning
+  ![Alt text](https://imgur.com/Z8meaL7.png "Create New Inline Learning")
+
+2. Learnings Index
+  ![Alt text](https://imgur.com/eXSWUzi.png "Learnings Index")
+
+3.Learnings Show
+  ![Alt text](https://imgur.com/rkPZ6u9.png "Learnings Show")
+
+4. Update Learnings Inline & confirm updates with Floating Notifcations
+  ![Alt text](https://imgur.com/BaV3MVw.png "Learnings with Floating Notifcations")
+
+5. Learnings Rendered in Mobile View
+
+  ![Alt text](https://imgur.com/y38TMWn.png "Mobile Index")
+
+6. Search learnings via Mobile view
+
+  ![Alt text](https://imgur.com/BYneXRl.png "Mobile Search")
+
+7. Learning related Floating Notifications in Mobile view
+
+  ![Alt text](https://imgur.com/kQ7JD2W.png "Mobile Search")
+
+
+
+</details>
+
 ## Features that are currently a Work in Progress(WIP)
-* Implementing Learning Categories, Memberships & Organisations fully pertaining to a user's learning is a current WIP 
+* Implementing Learning Categories, Memberships & Organisations fully pertaining to a user's learning is a current WIP
 
 ## Usage
 

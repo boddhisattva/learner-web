@@ -53,22 +53,7 @@
           <div id="new_learning_form" class="mt-4"></div>
 
           <!-- Turbo Frame wraps the results that will update -->
-          <%= turbo_frame_tag "learnings_list", target: "_top" do %>
-          <% if @learnings.any? %>
-          <%= render 'learnings' %>
-          <% else %>
-          <div class="notification is-info is-light">
-            <p class="has-text-centered">
-              <% if params[:query].present? %>
-              No learnings found matching "<strong><%= params[:query] %></strong>".
-              <% else %>
-              No learnings have been created yet.
-              <%= link_to "Create your first learning", new_learning_path %>
-              <% end %>
-            </p>
-          </div>
-          <% end %>
-          <% end %>
+          <%= render 'learnings_list', learnings: @learnings, pagy: @pagy %>
         </div>
       </div>
     </div>

@@ -50,11 +50,14 @@ end
 
 100.times do |n|
   lesson_name = "What is delayed is not denied #{n + 1}"
-  Learning.find_or_create_by!(lesson: lesson_name,
-                              creator: user,
-                              organization: personal_organization) do |learning|
-    learning.description = "Description for learning #{n + 1}"
-    learning.category_ids = [discipline_category.id]
-    learning.last_modifier_id = user.id
+  learning = Learning.find_or_create_by!(lesson: lesson_name,
+                                         creator: user,
+                                         organization: personal_organization) do |l|
+    l.category_ids = [discipline_category.id]
+    l.last_modifier_id = user.id
   end
+  # Update lesson and description to match actual ID after creation/finding
+  learning.update!(lesson: "What is delayed is not denied #{learning.id}",
+                   description: "Description for learning #{learning.id}",
+                   last_modifier_id: user.id)
 end

@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe LearningsController, type: :controller do
   let(:user) { create(:user) }
-  let(:organization) { create(:organization) }
-  let(:learning_category) { create(:learning_category) }
+  let(:organization) { user.personal_organization }
+  let(:learning_category) { create(:learning_category, creator: user, organization: organization) }
 
   before { sign_in user }
 
@@ -95,7 +95,7 @@ RSpec.describe LearningsController, type: :controller do
           description: 'Test Description',
           public_visibility: true,
           organization_id: organization.id,
-          learning_category_ids: [learning_category.id]
+          category_ids: [learning_category.id]
         }
       }
     end
@@ -113,7 +113,7 @@ RSpec.describe LearningsController, type: :controller do
         expect(learning.description).to eq('Test Description')
         expect(learning.public_visibility).to be(true)
         expect(learning.organization).to eq(organization)
-        expect(learning.learning_category_ids).to eq([learning_category.id])
+        expect(learning.category_ids).to eq([learning_category.id])
         expect(learning.creator).to eq(user)
         expect(learning.last_modifier).to eq(user)
 
@@ -301,7 +301,7 @@ RSpec.describe LearningsController, type: :controller do
           description: 'Updated Description',
           public_visibility: false,
           organization_id: organization.id,
-          learning_category_ids: [learning_category.id]
+          category_ids: [learning_category.id]
         }
       }
     end
@@ -315,7 +315,7 @@ RSpec.describe LearningsController, type: :controller do
         expect(learning.description).to eq('Updated Description')
         expect(learning.public_visibility).to be(false)
         expect(learning.organization).to eq(organization)
-        expect(learning.learning_category_ids).to eq([learning_category.id])
+        expect(learning.category_ids).to eq([learning_category.id])
         expect(learning.last_modifier).to eq(user)
 
         expect(response).to redirect_to(learning_path(learning))

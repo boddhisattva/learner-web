@@ -12,18 +12,21 @@
 #  updated_at                                                     :datetime         not null
 #  creator_id(User who created the learning category)             :bigint           not null
 #  last_modifier_id(User who last modified the learning category) :bigint           not null
+#  organization_id                                                :bigint           not null
 #
 # Indexes
 #
 #  index_learning_categories_on_creator_id        (creator_id)
 #  index_learning_categories_on_deleted_at        (deleted_at)
 #  index_learning_categories_on_last_modifier_id  (last_modifier_id)
-#  index_learning_categories_on_name              (name) UNIQUE WHERE (deleted_at IS NULL)
+#  index_learning_categories_on_org_and_name      (organization_id,name) UNIQUE WHERE (deleted_at IS NULL)
+#  index_learning_categories_on_organization_id   (organization_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (creator_id => users.id)
 #  fk_rails_...  (last_modifier_id => users.id)
+#  fk_rails_...  (organization_id => organizations.id)
 #
 
 require 'rails_helper'

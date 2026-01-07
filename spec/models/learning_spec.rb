@@ -18,12 +18,13 @@
 #
 # Indexes
 #
-#  index_learnings_on_creator_id             (creator_id)
-#  index_learnings_on_deleted_at             (deleted_at)
-#  index_learnings_on_last_modifier_id       (last_modifier_id)
-#  index_learnings_on_learning_category_ids  (learning_category_ids) USING gin
-#  index_learnings_on_lesson                 (lesson)
-#  index_learnings_on_organization_id        (organization_id)
+#  index_learnings_on_creator_id                      (creator_id)
+#  index_learnings_on_creator_id_and_organization_id  (creator_id,organization_id)
+#  index_learnings_on_deleted_at                      (deleted_at)
+#  index_learnings_on_last_modifier_id                (last_modifier_id)
+#  index_learnings_on_learning_category_ids           (learning_category_ids) USING gin
+#  index_learnings_on_lesson                          (lesson)
+#  index_learnings_on_organization_id                 (organization_id)
 #
 # Foreign Keys
 #
@@ -42,21 +43,26 @@ RSpec.describe Learning, type: :model do
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:last_modifier).class_name('User') }
     it { is_expected.to belong_to(:organization) }
+    it { is_expected.to have_many(:learning_categorizations).dependent(:destroy) }
+    it { is_expected.to have_many(:categories).through(:learning_categorizations).source(:category).class_name('LearningCategory') }
   end
 
-  describe '#learning_categories' do
-    let(:category) { create(:learning_category) }
-    let(:another_category) { create(:learning_category) }
-    let(:learning) { create(:learning) }
+  describe '#categories' do
+    let(:user) { create(:user) }
+    let(:organization) { user.personal_organization }
+    let(:category) { create(:learning_category, creator: user, organization: organization) }
+    let(:another_category) { create(:learning_category, creator: user, organization: organization) }
+    let(:learning) { create(:learning, creator: user, organization: organization) }
 
     before do
       category
       another_category
-      learning.update(learning_category_ids: [category.id, another_category.id])
+      learning.update(category_ids: [category.id, another_category.id])
     end
 
     it 'returns the correct learning categories' do
-      expect(learning.learning_category_ids).to contain_exactly(category.id, another_category.id)
+      expect(learning.category_ids).to contain_exactly(category.id, another_category.id)
+      expect(learning.categories).to contain_exactly(category, another_category)
     end
   end
 end

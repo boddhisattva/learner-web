@@ -42,10 +42,6 @@ class LearningsController < ApplicationController
     return unless turbo_frame_request?
 
     render partial: 'learning', locals: { learning: @learning }
-    nil
-
-    # Non-turbo requests: Rails automatically renders show.html.erb
-    # This happens when users navigate directly to the show page (not via Turbo Frame)
   end
 
   def edit
@@ -61,8 +57,6 @@ class LearningsController < ApplicationController
     return unless turbo_frame_request?
 
     render partial: 'form', locals: { learning: @learning, learning_categories: @learning_categories }
-
-    # Otherwise render edit.html.erb (full page for non-turbo browsers)
   end
 
   def update
@@ -117,8 +111,6 @@ class LearningsController < ApplicationController
       current_user.learnings.where(organization_id: current_organization.id)
     end
 
-    # Renders the appropriate partial based on Turbo Frame ID
-    # Used in: index (handles both search and infinite scroll frames)
     def render_turbo_frame_response
       if request.headers['Turbo-Frame'] == LEARNINGS_SEARCH_FRAME_ID
         render partial: 'learnings_list', locals: { learnings: @learnings, pagy: @pagy }

@@ -48,4 +48,20 @@ class User < ApplicationRecord
   def name
     "#{first_name} #{last_name}"
   end
+
+  def generate_unique_organization_name
+    base_name = name
+
+    existing_names = Organization.where('name = ? OR name LIKE ?', base_name, "#{base_name} %").pluck(:name).to_set
+
+    return base_name unless existing_names.include?(base_name)
+
+    counter = 2
+    loop do
+      candidate_name = "#{base_name} #{counter}"
+      return candidate_name unless existing_names.include?(candidate_name)
+
+      counter += 1
+    end
+  end
 end

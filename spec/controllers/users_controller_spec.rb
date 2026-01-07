@@ -18,7 +18,6 @@ RSpec.describe UsersController, type: :controller do
         }
       end
 
-      # TO DO: # Add spec with regards to null organization edge case as well and take things from there
       it 'creates a new user, organisation with user name, membership & redirects to one\'s feed after successful sign up' do
         expect do
           post :create, params: valid_attributes
@@ -28,9 +27,10 @@ RSpec.describe UsersController, type: :controller do
 
         expect(response).to have_http_status(:see_other)
 
-        newly_created_user = User.first
+        newly_created_user = User.find_by(email: 'jim.weirich@test.com')
+        expect(newly_created_user).to be_present
 
-        expect(Organization.first.name).to eq(newly_created_user.name)
+        expect(newly_created_user.personal_organization.name).to eq(newly_created_user.name)
         expect(newly_created_user.email).to eq('jim.weirich@test.com')
         expect(newly_created_user.first_name).to eq('Jim')
         expect(newly_created_user.last_name).to eq('Weirich')
@@ -38,6 +38,36 @@ RSpec.describe UsersController, type: :controller do
         expect(response).to redirect_to('/learnings')
 
         expect(flash[:success]).to eq(I18n.t('users.create.welcome', name: 'Jim Weirich'))
+      end
+
+      context 'when organization name already exists' do
+        before do
+          # Create user without factory callback to control organization creation
+          existing_user = User.create!(
+            first_name: 'Jim',
+            last_name: 'Weirich',
+            email: 'jim.existing@test.com',
+            password: 'password123'
+          )
+          organization = Organization.create!(name: 'Jim Weirich', owner: existing_user)
+          existing_user.update!(personal_organization: organization)
+          Membership.create!(member: existing_user, organization: organization)
+        end
+
+        it 'creates organization with unique name using sequential number suffix' do
+          expect do
+            post :create, params: valid_attributes
+          end.to change(User, :count).by(1)
+             .and change(Organization, :count).by(1)
+             .and change(Membership, :count).by(1)
+
+          newly_created_user = User.find_by(email: 'jim.weirich@test.com')
+          expect(newly_created_user).to be_present
+          newly_created_user.reload
+
+          expect(newly_created_user.personal_organization).to be_present
+          expect(newly_created_user.personal_organization.name).to eq('Jim Weirich 2')
+        end
       end
     end
 

@@ -1,0 +1,10 @@
+<div class="notification is-info is-light">
+  <p class="has-text-centered">
+    <% if query.present? %>
+      No learnings found matching "<strong><%= query %></strong>".
+    <% else %>
+      No learnings have been created yet.
+      <%= link_to "Create your first learning", new_learning_path %>
+    <% end %>
+  </p>
+</div>

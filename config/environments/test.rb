@@ -13,6 +13,15 @@ Rails.application.configure do
     Bullet.bullet_logger = true
     Bullet.rails_logger  = true
     Bullet.raise         = true # raise an error if n+1 query occurs
+
+    # Keep unused eager loading detection enabled for catching real issues
+    Bullet.unused_eager_loading_enable = true
+
+    # Safelist for Learning#show - we always eager load categories because the view
+    # always accesses them (even if just to check if empty). Bullet sees this as
+    # "unused" when no categories exist, but it's a false positive.
+    Bullet.add_safelist type: :unused_eager_loading, class_name: 'Learning', association: :categories
+    Bullet.add_safelist type: :unused_eager_loading, class_name: 'Learning', association: :learning_categorizations
   end
 
   config.after_initialize do

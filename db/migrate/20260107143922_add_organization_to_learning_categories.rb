@@ -32,7 +32,7 @@ class AddOrganizationToLearningCategories < ActiveRecord::Migration[8.1]
       end
 
       # Validate FK separately: ensures all organization_ids point to real organizations (checks data integrity without locking table)
-      safety_assured do
+      safety_assured do # Synonmous to asking: Does organization_id point to a REAL organization?
         validate_foreign_key :learning_categories, :organizations
       end
     end
@@ -74,7 +74,7 @@ class AddOrganizationToLearningCategories < ActiveRecord::Migration[8.1]
       end
     end
 
-    def validate_not_null_constraint
+    def validate_not_null_constraint # Synonmous to asking: Does EVERY category HAVE an organization?
       # Validate the constraint (safe, minimal locking)
       say_with_time 'Validating NOT NULL constraint' do
         safety_assured do

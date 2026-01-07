@@ -92,50 +92,14 @@ RSpec.describe UsersController, type: :controller do
         }
       end
 
-      it 'updates a user details, organisation name accordingly if needed and returns related success message' do
-        expect(organization.name).to eq('Rachel Longwood')
-
+      it 'updates user details and returns success message' do
         patch :update, params: valid_attributes
 
         expect(user.reload.last_name).to eq('Peters')
-        expect(organization.reload.name).to eq('Rachel Peters')
         expect(user.email).to eq('rachel.peters@xyz.com')
         expect(response).to have_http_status(:see_other)
         expect(response).to redirect_to(profile_path)
         expect(flash[:success]).to eq(I18n.t('users.update.success'))
-      end
-    end
-
-    context 'when organization with same name already exists' do
-      let(:other_user) { create(:user, first_name: '  Marcus ', last_name: ' Aurelius', email: 'marcus@xyz.com ') }
-      let(:other_organization) { other_user.personal_organization }
-      let(:user_attributes) do
-        {
-          user: {
-            first_name: user.first_name,
-            last_name: user.last_name
-          }
-        }
-      end
-
-      before do
-        sign_in other_user
-      end
-
-      it 'raises an appropriate error and does not update the other organization with the new name' do
-        original_name = other_organization.name
-        patch(:update, params: user_attributes)
-
-        expect(response).to render_template(:edit)
-        expect(response).to have_http_status(:unprocessable_entity)
-
-        expect(other_organization.reload.name).to eq(original_name)
-
-        # Verify error message is present (ActiveRecord validation error for uniqueness)
-        expect(flash.now[:error]).to be_present
-        # The error should mention name uniqueness (could be "Name has already been taken" or similar)
-        error_message = flash.now[:error].join(' ')
-        expect(error_message).to match(/Name has already been taken/i)
       end
     end
 

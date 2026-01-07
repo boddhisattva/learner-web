@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-class NameUpdateError < StandardError; end
-
 class UsersController < ApplicationController
   before_action :authenticate_user!, only: [:update]
 
@@ -21,43 +19,17 @@ class UsersController < ApplicationController
     handle_creation_error(e)
   end
 
-  # TODO: Try to make this method shorter using extract refactoring & when adding specs related to raise NameUpdateError scenarios
-  # rubocop:disable Metrics/AbcSize
   def update
-    user_organization = current_user.personal_organization
-
-    ActiveRecord::Base.transaction do
-      raise NameUpdateError unless current_user.update(user_params)
-
-      raise NameUpdateError if user_name_updated? && user_organization_name_update_failed?(user_organization)
-
+    if current_user.update(user_params)
       flash[:success] = t('.success')
       redirect_to profile_path, status: :see_other
+    else
+      flash.now[:error] = current_user.errors.full_messages
+      render :edit, status: :unprocessable_entity
     end
-  rescue NameUpdateError
-    flash.now[:error] = current_user.errors.full_messages.concat(user_organization.errors.full_messages)
-    render :edit, status: :unprocessable_entity
   end
-  # rubocop:enable Metrics/AbcSize
 
   private
-
-    def user_name_updated?
-      current_user.first_name_previously_changed? || current_user.last_name_previously_changed?
-    end
-
-    def user_organization_name_update_failed?(user_organization)
-      !user_organization&.update!(name: current_user.name)
-    rescue ActiveRecord::RecordInvalid => e
-      user_organization.errors.merge!(e.record.errors)
-      true
-    rescue ActiveRecord::RecordNotUnique => e
-      user_organization.errors.add(:name, e.message)
-      true
-    rescue StandardError => e
-      user_organization.errors.add(:name, e.message)
-      true
-    end
 
     def handle_successful_creation
       sign_in @user

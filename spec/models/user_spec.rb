@@ -14,11 +14,17 @@
 #  reset_password_token        :string
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
+#  personal_organization_id    :bigint
 #
 # Indexes
 #
-#  index_users_on_email                 (email) UNIQUE
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_email                     (email) UNIQUE
+#  index_users_on_personal_organization_id  (personal_organization_id)
+#  index_users_on_reset_password_token      (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (personal_organization_id => organizations.id)
 #
 require 'rails_helper'
 
@@ -53,17 +59,11 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#own_organization' do
-    let(:user) { create(:user) }
-    let(:organization) { create(:organization, name: user.name) }
-
-    before do
-      organization
-    end
-
-    it 'returns the correct organizations' do
-      organization = Organization.find_by(name: user.name)
-      expect(user.own_organization).to eq(organization)
-    end
+  describe 'associations' do
+    it { is_expected.to belong_to(:personal_organization).class_name('Organization').optional }
+    it { is_expected.to have_many(:memberships).with_foreign_key(:member_id).dependent(:destroy) }
+    it { is_expected.to have_many(:organizations).through(:memberships) }
+    it { is_expected.to have_many(:learnings).dependent(:destroy).with_foreign_key(:creator_id) }
+    it { is_expected.to have_many(:learning_categories).dependent(:destroy).with_foreign_key(:creator_id) }
   end
 end

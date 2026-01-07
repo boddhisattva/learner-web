@@ -4,34 +4,22 @@ require 'rails_helper'
 
 RSpec.describe 'Learnings Infinite Scroll', type: :system do
   let(:user) { create(:user) }
-  let(:organization) { create(:organization) }
+  let(:organization) { user.personal_organization }
 
   before do
-    create(:membership, member: user, organization: organization)
     sign_in user
   end
 
   context 'with multiple pages of learnings' do
     before do
-      # Create 50 learnings using insert_all for speed
-      # Pagy limit is 10, so this creates 5 pages
-      # With enough data, not all pages will auto-load on initial visit
-      learnings_data = Array.new(50) do |i|
-        {
-          lesson: "Learning #{i + 1}",
-          description: "Description for learning #{i + 1}",
-          creator_id: user.id,
-          last_modifier_id: user.id,
-          organization_id: organization.id,
-          public_visibility: false,
-          learning_category_ids: [],
-          created_at: Time.zone.now - (49 - i).minutes, # Newest first (Learning 50 is most recent)
-          updated_at: Time.zone.now - (49 - i).minutes
-        }
+      50.times do |i|
+        create(:learning,
+               lesson: "Learning #{i + 1}",
+               creator: user,
+               organization: organization,
+               created_at: Time.zone.now - (49 - i).minutes,
+               updated_at: Time.zone.now - (49 - i).minutes)
       end
-      # rubocop:disable Rails/SkipsModelValidations
-      Learning.insert_all(learnings_data)
-      # rubocop:enable Rails/SkipsModelValidations
     end
 
     it 'loads learnings progressively as user scrolls' do

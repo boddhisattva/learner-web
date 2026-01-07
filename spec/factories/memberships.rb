@@ -5,6 +5,7 @@
 # Table name: memberships
 #
 #  id                                                                               :bigint           not null, primary key
+#  learnings_count(Counter cache for learnings count per user per organization)     :integer          default(0), not null
 #  created_at                                                                       :datetime         not null
 #  updated_at                                                                       :datetime         not null
 #  member_id(This references the user associated with the membership)               :bigint           not null

@@ -14,11 +14,17 @@
 #  reset_password_token        :string
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
+#  personal_organization_id    :bigint
 #
 # Indexes
 #
-#  index_users_on_email                 (email) UNIQUE
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_email                     (email) UNIQUE
+#  index_users_on_personal_organization_id  (personal_organization_id)
+#  index_users_on_reset_password_token      (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (personal_organization_id => organizations.id)
 #
 FactoryBot.define do
   factory :user do
@@ -26,5 +32,14 @@ FactoryBot.define do
     sequence(:last_name) { |n| "surname_#{n}" }
     sequence(:email) { |n| "person_#{n}@example.com" }
     password { 'MyString' }
+
+    after(:create) do |user|
+
+      organization = Organization.create!(name: user.name, owner: user)
+
+      user.update!(personal_organization: organization)
+
+      Membership.find_or_create_by!(member: user, organization: organization)
+    end
   end
 end

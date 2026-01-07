@@ -40,6 +40,6 @@ FactoryBot.define do
     public_visibility { false }
     learning_category_ids { [create(:learning_category).id] }
     last_modifier { creator }
-    organization { create(:organization) }
+    organization { creator.personal_organization }
   end
 end

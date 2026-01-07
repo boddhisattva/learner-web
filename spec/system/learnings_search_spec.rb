@@ -4,13 +4,10 @@ require 'rails_helper'
 
 RSpec.describe 'Learnings Search', :js, type: :system do
   let(:user) { create(:user) }
-  let(:organization) { create(:organization) }
-  let(:membership) { create(:membership, member: user, organization: organization) }
+  let(:organization) { user.personal_organization }
 
   before do
     sign_in user
-    organization
-    membership
   end
 
   describe 'complete search flow' do
@@ -96,41 +93,27 @@ RSpec.describe 'Learnings Search', :js, type: :system do
   describe 'progressive loading of search results' do
     context 'with multiple pages of search results' do
       before do
-        # Create 50 learnings matching "Ruby" search
-        # Pagy limit is 10, so this creates 5 pages of matching results
-        # With enough data, not all pages will auto-load on initial visit
-        ruby_learnings = Array.new(50) do |i|
-          {
-            lesson: "Ruby learning #{i + 1}",
-            description: "Description for Ruby learning #{i + 1}",
-            creator_id: user.id,
-            last_modifier_id: user.id,
-            organization_id: organization.id,
-            public_visibility: false,
-            learning_category_ids: [],
-            created_at: Time.zone.now - (49 - i).minutes, # Newest first (Ruby learning 50 is most recent)
-            updated_at: Time.zone.now - (49 - i).minutes
-          }
+        50.times do |i|
+          create(:learning,
+                 lesson: "Ruby learning #{i + 1}",
+                 description: "Description for Ruby learning #{i + 1}",
+                 creator: user,
+                 last_modifier: user,
+                 organization: organization,
+                 created_at: Time.zone.now - (49 - i).minutes, # Newest first (Ruby learning 50 is most recent)
+                 updated_at: Time.zone.now - (49 - i).minutes)
         end
 
-        # Create 20 learnings that DON'T match search (should never appear)
-        non_matching_learnings = Array.new(20) do |i|
-          {
-            lesson: "JavaScript lesson #{i + 1}",
-            description: "Description for JavaScript lesson #{i + 1}",
-            creator_id: user.id,
-            last_modifier_id: user.id,
-            organization_id: organization.id,
-            public_visibility: false,
-            learning_category_ids: [],
-            created_at: Time.zone.now - (69 - i).minutes,
-            updated_at: Time.zone.now - (69 - i).minutes
-          }
+        20.times do |i|
+          create(:learning,
+                 lesson: "JavaScript lesson #{i + 1}",
+                 description: "Description for JavaScript lesson #{i + 1}",
+                 creator: user,
+                 last_modifier: user,
+                 organization: organization,
+                 created_at: Time.zone.now - (69 - i).minutes,
+                 updated_at: Time.zone.now - (69 - i).minutes)
         end
-
-        # rubocop:disable Rails/SkipsModelValidations
-        Learning.insert_all(ruby_learnings + non_matching_learnings)
-        # rubocop:enable Rails/SkipsModelValidations
       end
 
       it 'loads search results progressively as user scrolls while maintaining search filter' do

@@ -13,19 +13,12 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if create_user_with_organization
-      sign_in @user
-      redirect_to learnings_path,
-                  status: :see_other,
-                  flash: { success: t('.welcome', name: @user.name) }
+      handle_successful_creation
     else
-      flash.now[:error] = @user.errors.full_messages
-      render '/devise/registrations/new', status: :unprocessable_entity
+      handle_failed_creation
     end
   rescue StandardError => e
-    Rails.logger.error "User creation failed: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    flash.now[:error] = ["Error: #{e.message}. Please try again."]
-    render '/devise/registrations/new', status: :unprocessable_entity
+    handle_creation_error(e)
   end
 
   # TODO: Try to make this method shorter using extract refactoring & when adding specs related to raise NameUpdateError scenarios
@@ -64,6 +57,25 @@ class UsersController < ApplicationController
     rescue StandardError => e
       user_organization.errors.add(:name, e.message)
       true
+    end
+
+    def handle_successful_creation
+      sign_in @user
+      redirect_to learnings_path,
+                  status: :see_other,
+                  flash: { success: t('.welcome', name: @user.name) }
+    end
+
+    def handle_failed_creation
+      flash.now[:error] = @user.errors.full_messages
+      render '/devise/registrations/new', status: :unprocessable_entity
+    end
+
+    def handle_creation_error(error)
+      Rails.logger.error "User creation failed: #{error.message}"
+      Rails.logger.error error.backtrace.join("\n")
+      flash.now[:error] = ["Error: #{error.message}. Please try again."]
+      render '/devise/registrations/new', status: :unprocessable_entity
     end
 
     def user_params

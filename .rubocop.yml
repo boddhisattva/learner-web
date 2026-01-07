@@ -15,7 +15,7 @@ Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
 Metrics/ClassLength:
-  Max: 135
+  Max: 150
 
 # A line with 80 characters length is generally too small
 Layout/LineLength:

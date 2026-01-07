@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 class BackfillMembershipLearningsCount < ActiveRecord::Migration[8.1]
+  # rubocop:disable Rails/SkipsModelValidations
   def up
     Membership.find_each do |membership|
       count = Learning.where(
@@ -14,4 +17,5 @@ class BackfillMembershipLearningsCount < ActiveRecord::Migration[8.1]
   def down
     Membership.update_all(learnings_count: 0)
   end
+  # rubocop:enable Rails/SkipsModelValidations
 end

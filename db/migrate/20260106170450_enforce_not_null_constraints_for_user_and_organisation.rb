@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EnforceNotNullConstraintsForUserAndOrganisation < ActiveRecord::Migration[8.1]
   def change
     # Add check constraint (not validated yet) to prevent new NULL values

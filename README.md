@@ -88,3 +88,7 @@ The following **features** are available via both the **Web app & in Mobile**
 * One can run the tests from the project root directory with the command `rspec`
 
 
+#### Areas of Improvement
+* Replace acts_as_paranoid with discard gem as that's more flexible &
+  provides better future readynesss in terms of long term extendability(to allow support of more features etc.,) and maintainability
+* `load_learning_categories`(used in `LearningsController`) currently loads 100 learning categories. We can improve this further by providing UI options in appropriate parts of the app to filter and search learnings by other learning categories

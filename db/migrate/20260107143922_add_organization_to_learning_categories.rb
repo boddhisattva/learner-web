@@ -4,13 +4,13 @@ class AddOrganizationToLearningCategories < ActiveRecord::Migration[8.1]
   disable_ddl_transaction!
 
   def up
-    add_organization_column          # Step 1: Create the organization_id column (like adding a new drawer to a filing cabinet)
-    migrate_existing_categories      # Step 2: Fill in organization_id for existing categories (putting files in the new drawer)
-    add_not_null_constraint          # Step 3: Create a rule that organization_id must exist, but don't enforce it yet (writing the rule on paper)
-    validate_not_null_constraint     # Step 4: Check that all categories follow the rule (verifying everyone has filed correctly)
-    make_organization_required       # Step 5: Make organization_id required in the database (officially enforcing the rule)
-    cleanup_constraint               # Step 6: Remove the temporary rule from Step 3 (throwing away the paper, rule is now official)
-    update_indexes                   # Step 7: Update search indexes to make lookups fast (creating a new index card system)
+    add_organization_column     # Step1: Create the organization_id column(like adding a new drawer to a filing cabinet)
+    migrate_existing_categories # Step2: Fill in organization_id for existing categories(putting files in the new drawer)
+    add_not_null_constraint     # Step3: Create a rule that organization_id must exist, but don't enforce yet(writing rule on paper)
+    validate_not_null_constraint # Step4: Check that all categories follow the rule(verifying everyone has filed correctly)
+    make_organization_required  # Step5: Make organization_id required in the database(officially enforcing the rule)
+    cleanup_constraint          # Step6: Remove the temporary rule from Step 3(throwing away the paper, rule is now official)
+    update_indexes              # Step7: Update search indexes to make lookups fast(creating a new index card system)
   end
 
   def down

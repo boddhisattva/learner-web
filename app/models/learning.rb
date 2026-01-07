@@ -40,6 +40,11 @@ class Learning < ApplicationRecord
   belongs_to :last_modifier, class_name: 'User'
   belongs_to :organization
 
+  # Counter cache for membership learnings_count
+  after_create :increment_membership_counter
+  after_destroy :decrement_membership_counter
+  after_restore :increment_membership_counter
+
   def learning_categories
     LearningCategory.where(id: learning_category_ids)
   end
@@ -47,4 +52,23 @@ class Learning < ApplicationRecord
   def self.search(query)
     where('lesson ILIKE ?', "%#{query}%")
   end
+
+  private
+
+    def increment_membership_counter
+      membership = find_creator_membership
+      membership&.increment!(:learnings_count)
+    end
+
+    def decrement_membership_counter
+      membership = find_creator_membership
+      membership&.decrement!(:learnings_count)
+    end
+
+    def find_creator_membership
+      Membership.find_by(
+        member_id: creator_id,
+        organization_id: organization_id
+      )
+    end
 end

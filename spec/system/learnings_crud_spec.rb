@@ -4,28 +4,25 @@ require 'rails_helper'
 
 RSpec.describe 'Learnings', type: :system do
   let(:user) { create(:user) }
-  let(:learning) { create(:learning, creator: user, last_modifier: user) }
-  let(:organization) { create(:organization) }
-  let(:membership) { create(:membership, member: user, organization: organization) }
+  let(:organization) { user.personal_organization }
+  let(:learning) { create(:learning, creator: user, last_modifier: user, organization: organization) }
   let(:discipline_category) { create(:learning_category, name: 'Discipline') }
   let(:life_category) { create(:learning_category, name: 'Learnings for Life') }
 
   before do
     sign_in user
-    organization
-    membership
     discipline_category
     life_category
   end
 
   describe 'index page' do
     before do
-      create_list(:learning, 3, creator: user, last_modifier: user)
+      create_list(:learning, 3, creator: user, last_modifier: user, organization: organization)
       visit learnings_path
     end
 
-    it 'displays all learnings' do
-      user_learnings = user.learnings
+    it 'displays all learnings corresponding to the user current organization' do
+      user_learnings = user.learnings.where(organization: organization)
       expect(page).to have_content(user_learnings[0].lesson.to_s)
       expect(page).to have_content(user_learnings[1].lesson.to_s)
       expect(page).to have_content(user_learnings[2].lesson.to_s)
@@ -62,6 +59,10 @@ RSpec.describe 'Learnings', type: :system do
 
   describe 'showing a learning' do
     context 'when learning exists' do
+      before do
+        learning
+      end
+
       it 'displays the learning details' do
         visit learning_path(learning)
 

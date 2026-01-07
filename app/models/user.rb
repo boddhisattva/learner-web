@@ -14,11 +14,17 @@
 #  reset_password_token        :string
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
+#  personal_organization_id    :bigint
 #
 # Indexes
 #
-#  index_users_on_email                 (email) UNIQUE
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_email                     (email) UNIQUE
+#  index_users_on_personal_organization_id  (personal_organization_id)
+#  index_users_on_reset_password_token      (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (personal_organization_id => organizations.id)
 #
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
@@ -28,6 +34,8 @@ class User < ApplicationRecord
 
   validates :first_name, presence: true
   validates :last_name, presence: true
+
+  belongs_to :personal_organization, class_name: 'Organization', optional: true
 
   # rubocop:disable Rails / InverseOf
   has_many :memberships, dependent: :destroy, foreign_key: 'member_id'
@@ -39,10 +47,5 @@ class User < ApplicationRecord
 
   def name
     "#{first_name} #{last_name}"
-  end
-
-  # Add test for the same
-  def own_organization
-    Organization.where(name: self.name).first
   end
 end

@@ -8,8 +8,6 @@ describe 'Update user profile details', type: :system do
 
     before do
       sign_in user
-      # Whenever a new user is created via user sign up flow, an organization is created with user name, hence adding relevant setup
-      Organization.create(name: user.name)
     end
 
     it 'Updates user details like first name, email etc., with valid inputs & return success message' do

@@ -5,16 +5,13 @@ require 'rails_helper'
 module Mobile
   describe 'Learnings flow in mobile', type: :system do
     let(:user) { create(:user) }
-    let(:organization) { create(:organization) }
-    let(:membership) { create(:membership, member: user, organization: organization) }
+    let(:organization) { user.personal_organization }
 
     describe 'Learnings CRUD' do
 
       before do
         page.current_window.resize_to(501, 764) # Resize window to a size similar to that of mobile devices
         sign_in user
-        organization
-        membership
       end
 
       after do

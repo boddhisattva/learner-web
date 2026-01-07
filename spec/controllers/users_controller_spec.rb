@@ -76,12 +76,10 @@ RSpec.describe UsersController, type: :controller do
 
   describe '#update' do
     let(:user)         { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
-    let(:organization) { create(:organization, name: user.name)                                                     }
+    let(:organization) { user.personal_organization }
 
     before do
       sign_in user
-      # Whenever a new user is created via user sign up flow, an organization is created with user name, hence adding relevant setup
-      organization
     end
 
     context 'with valid user attributes' do
@@ -110,7 +108,7 @@ RSpec.describe UsersController, type: :controller do
 
     context 'when organization with same name already exists' do
       let(:other_user) { create(:user, first_name: '  Marcus ', last_name: ' Aurelius', email: 'marcus@xyz.com ') }
-      let(:other_organization) { create(:organization, name: other_user.name) }
+      let(:other_organization) { other_user.personal_organization }
       let(:user_attributes) do
         {
           user: {
@@ -122,18 +120,24 @@ RSpec.describe UsersController, type: :controller do
 
       before do
         sign_in other_user
-        other_organization
       end
 
-      # rubocop:disable Layout/LineLength
       it 'raises an appropriate error and does not update the other organization with the new name' do
+        original_name = other_organization.name
         patch(:update, params: user_attributes)
 
         expect(response).to render_template(:edit)
-        expect(flash[:error]).to include(match(/Name PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "index_organizations_on_name"/))
+        expect(response).to have_http_status(:unprocessable_entity)
+
+        expect(other_organization.reload.name).to eq(original_name)
+
+        # Verify error message is present (ActiveRecord validation error for uniqueness)
+        expect(flash.now[:error]).to be_present
+        # The error should mention name uniqueness (could be "Name has already been taken" or similar)
+        error_message = flash.now[:error].join(' ')
+        expect(error_message).to match(/Name has already been taken/i)
       end
     end
-    # rubocop:enable Layout/LineLength
 
     context 'with invalid user attributes' do
       let(:invalid_attributes) do

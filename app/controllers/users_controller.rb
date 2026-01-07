@@ -12,13 +12,8 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    if @user.save
+    if create_user_with_organization
       sign_in @user
-
-      # Every user gets added to their own 'self' related organization on creation
-      # TO DO: Come back to expore how to handle the below code if oragnization creation fails & add relevant spec
-      @organization = Organization.create(members: [@user], name: @user.name)
-
       redirect_to learnings_path,
                   status: :see_other,
                   flash: { success: t('.welcome', name: @user.name) }
@@ -26,12 +21,17 @@ class UsersController < ApplicationController
       flash.now[:error] = @user.errors.full_messages
       render '/devise/registrations/new', status: :unprocessable_entity
     end
+  rescue StandardError => e
+    Rails.logger.error "User creation failed: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    flash.now[:error] = ["Error: #{e.message}. Please try again."]
+    render '/devise/registrations/new', status: :unprocessable_entity
   end
 
   # TODO: Try to make this method shorter using extract refactoring & when adding specs related to raise NameUpdateError scenarios
   # rubocop:disable Metrics/AbcSize
   def update
-    user_organization = current_user.own_organization
+    user_organization = current_user.personal_organization
 
     ActiveRecord::Base.transaction do
       raise NameUpdateError unless current_user.update(user_params)
@@ -55,6 +55,12 @@ class UsersController < ApplicationController
 
     def user_organization_name_update_failed?(user_organization)
       !user_organization&.update!(name: current_user.name)
+    rescue ActiveRecord::RecordInvalid => e
+      user_organization.errors.merge!(e.record.errors)
+      true
+    rescue ActiveRecord::RecordNotUnique => e
+      user_organization.errors.add(:name, e.message)
+      true
     rescue StandardError => e
       user_organization.errors.add(:name, e.message)
       true
@@ -62,5 +68,25 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :password)
+    end
+
+    def create_user_with_organization
+      ActiveRecord::Base.transaction do
+        return false unless @user.save
+
+        organization = Organization.create!(name: @user.name, owner: @user)
+
+        @user.update!(personal_organization: organization)
+
+        Membership.create!(member: @user, organization: organization)
+
+        true
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      @user.errors.add(:base, "Organization: #{e.record.errors.full_messages.join(', ')}") if e.record.is_a?(Organization)
+      false
+    rescue ActiveRecord::RecordNotUnique
+      @user.errors.add(:base, 'An organization with this name already exists')
+      false
     end
 end

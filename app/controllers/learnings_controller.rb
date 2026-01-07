@@ -6,9 +6,11 @@ class LearningsController < ApplicationController
   LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
 
   def index
-    learnings_scope = current_user.learnings.order(created_at: :desc)
+    learnings_scope = current_user_learnings.order(created_at: :desc)
     learnings_scope = learnings_scope.search(params[:query]) if params[:query].present?
     @pagy, @learnings = pagy(learnings_scope)
+
+    @learnings_count = current_membership&.learnings_count || 0
 
     render_turbo_frame_response if turbo_frame_request?
   end
@@ -30,7 +32,7 @@ class LearningsController < ApplicationController
   end
 
   def show
-    @learning = current_user.learnings.find_by(id: params[:id])
+    @learning = current_user_learnings.find_by(id: params[:id])
 
     if @learning.blank?
       redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }
@@ -47,7 +49,7 @@ class LearningsController < ApplicationController
   end
 
   def edit
-    @learning = current_user.learnings.find_by(id: params[:id])
+    @learning = current_user_learnings.find_by(id: params[:id])
     load_learning_categories
 
     if @learning.blank?
@@ -64,7 +66,7 @@ class LearningsController < ApplicationController
   end
 
   def update
-    @learning = current_user.learnings.find_by(id: params[:id])
+    @learning = current_user_learnings.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     @learning.last_modifier_id = current_user.id
@@ -73,7 +75,7 @@ class LearningsController < ApplicationController
   end
 
   def destroy
-    @learning = current_user.learnings.find_by(id: params[:id])
+    @learning = current_user_learnings.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     respond_to do |format|
@@ -82,7 +84,7 @@ class LearningsController < ApplicationController
   end
 
   def cancel
-    @learning = current_user.learnings.find_by(id: params[:id])
+    @learning = current_user_learnings.find_by(id: params[:id])
 
     if @learning.blank?
       redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
@@ -102,11 +104,17 @@ class LearningsController < ApplicationController
     end
 
     def load_paginated_learnings(page = 1)
-      @pagy, @learnings = pagy(current_user.learnings.order(created_at: :desc), page: page)
+      @pagy, @learnings = pagy(current_user_learnings.order(created_at: :desc), page: page)
     end
 
     def load_learning_categories
       @learning_categories = LearningCategory.order(created_at: :desc).limit(100)
+    end
+
+    def current_user_learnings
+      return Learning.none unless current_organization
+
+      current_user.learnings.where(organization_id: current_organization.id)
     end
 
     # Renders the appropriate partial based on Turbo Frame ID

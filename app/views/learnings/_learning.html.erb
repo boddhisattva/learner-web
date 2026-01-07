@@ -4,17 +4,7 @@
     <div><%= learning.lesson %></div>
     <div><%= learning.created_at.strftime("%B %d, %Y") %></div>
     <div>
-      <div class="buttons are-small is-flex-wrap-nowrap">
-        <%= link_to learning_path(learning), data: { turbo: false }, class: "button is-info is-small" do %>
-          <span class="icon is-small"><i class="fas fa-eye"></i></span>
-        <% end %>
-        <%= link_to edit_learning_path(learning), data: { turbo_frame: dom_id(learning) }, class: "button is-warning is-small" do %>
-          <span class="icon is-small"><i class="fas fa-edit"></i></span>
-        <% end %>
-        <%= link_to learning_path(learning), data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }, class: "button is-danger is-small" do %>
-          <span class="icon is-small"><i class="fas fa-trash"></i></span>
-        <% end %>
-      </div>
+      <%= render 'learning_actions', learning: learning %>
     </div>
   </div>
 
@@ -25,17 +15,7 @@
       <div><small class="has-text-grey"><%= learning.created_at.strftime("%B %d, %Y") %></small></div>
     </div>
     <div>
-      <div class="buttons are-small is-flex-wrap-nowrap">
-        <%= link_to learning_path(learning), data: { turbo: false }, class: "button is-info is-small" do %>
-          <span class="icon is-small"><i class="fas fa-eye"></i></span>
-        <% end %>
-        <%= link_to edit_learning_path(learning), data: { turbo_frame: dom_id(learning) }, class: "button is-warning is-small" do %>
-          <span class="icon is-small"><i class="fas fa-edit"></i></span>
-        <% end %>
-        <%= link_to learning_path(learning), data: { "turbo-method": :delete, turbo_confirm: 'Are you sure?' }, class: "button is-danger is-small" do %>
-          <span class="icon is-small"><i class="fas fa-trash"></i></span>
-        <% end %>
-      </div>
+      <%= render 'learning_actions', learning: learning %>
     </div>
   </div>
 <% end %>

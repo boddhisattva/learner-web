@@ -10,32 +10,51 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-user = User.create!(first_name: 'Abhimanyu',
-                    last_name: 'Dharmveer',
-                    email: 'abhimanyud@test.com',
-                    password: 'passwd123',
-                    password_confirmation: 'passwd123') # needs to be at least 8 characters
+user = User.find_or_create_by!(email: 'abhimanyud@test.com') do |u|
+  u.first_name = 'Abhimanyu'
+  u.last_name = 'Dharmveer'
+  u.password = 'passwd123'
+  u.password_confirmation = 'passwd123' # needs to be at least 8 characters
+end
 
-organization = Organization.find_or_create_by(name: user.name)
+personal_organization = Organization.find_or_create_by!(name: user.name) do |org|
+  org.owner = user
+end
 
-Membership.create(member_id: user.id, organization_id: organization.id)
+user.update!(personal_organization: personal_organization) unless user.personal_organization_id
 
-earth_as_organization = Organization.create(name: 'Earth') # This is a worldwide public organization
+Membership.find_or_create_by!(member: user, organization: personal_organization)
 
-Membership.create(member_id: user.id, organization_id: earth_as_organization.id)
+earth_as_organization = Organization.find_or_create_by!(name: 'Earth') do |org|
+  org.owner = user
+end
 
-LearningCategory.create(name: 'Learnings for Life', creator_id: User.first.id,
-                        last_modifier_id: User.first.id)
+Membership.find_or_create_by!(member: user, organization: earth_as_organization)
 
-learning_category = LearningCategory.create(name: 'Discipline', creator_id: User.first.id,
-                                            last_modifier_id: User.first.id)
+LearningCategory.find_or_create_by!(name: 'Learnings for Life') do |cat|
+  cat.creator_id = user.id
+  cat.last_modifier_id = user.id
+end
 
-Learning.create(lesson: 'Karm kar Phal ki chinta na kar', learning_category_ids: [learning_category.id],
-                creator_id: User.first.id, last_modifier_id: User.first.id, organization_id: organization.id)
+discipline_category = LearningCategory.find_or_create_by!(name: 'Discipline') do |cat|
+  cat.creator_id = user.id
+  cat.last_modifier_id = user.id
+end
+
+Learning.find_or_create_by!(lesson: 'Karm kar Phal ki chinta na kar',
+                            creator: user,
+                            organization: personal_organization) do |learning|
+  learning.learning_category_ids = [discipline_category.id]
+  learning.last_modifier_id = user.id
+end
 
 100.times do |n|
-  Learning.create(lesson: "What is delayed is not denied #{n + 1}",
-                  description: "Description for learning #{n + 1}",
-                  learning_category_ids: [learning_category.id],
-                  creator_id: User.first.id, last_modifier_id: User.first.id, organization_id: organization.id)
+  lesson_name = "What is delayed is not denied #{n + 1}"
+  Learning.find_or_create_by!(lesson: lesson_name,
+                              creator: user,
+                              organization: personal_organization) do |learning|
+    learning.description = "Description for learning #{n + 1}"
+    learning.learning_category_ids = [discipline_category.id]
+    learning.last_modifier_id = user.id
+  end
 end

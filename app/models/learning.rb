@@ -56,13 +56,17 @@ class Learning < ApplicationRecord
   private
 
     def increment_membership_counter
+      # rubocop:disable Rails/SkipsModelValidations
       membership = find_creator_membership
-      membership&.increment!(:learnings_count)
+      Membership.update_counters(membership.id, learnings_count: 1) if membership
+      # rubocop:enable Rails/SkipsModelValidations
     end
 
     def decrement_membership_counter
+      # rubocop:disable Rails/SkipsModelValidations
       membership = find_creator_membership
-      membership&.decrement!(:learnings_count)
+      Membership.update_counters(membership.id, learnings_count: -1) if membership
+      # rubocop:enable Rails/SkipsModelValidations
     end
 
     def find_creator_membership

@@ -43,6 +43,6 @@ class LearningCategory < ApplicationRecord
                      message: 'already exists in this organization'
                    }
 
-  has_many :learning_categorizations, foreign_key: :category_id, dependent: :destroy
+  has_many :learning_categorizations, foreign_key: :category_id, dependent: :destroy, inverse_of: :category
   has_many :learnings, through: :learning_categorizations
 end

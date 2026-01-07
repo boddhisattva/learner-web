@@ -58,7 +58,7 @@ class UsersController < ApplicationController
       ActiveRecord::Base.transaction do
         return false unless @user.save
 
-        organization = Organization.create!(name: @user.name, owner: @user)
+        organization = Organization.create!(name: @user.generate_unique_organization_name, owner: @user)
 
         @user.update!(personal_organization: organization)
 
@@ -68,9 +68,6 @@ class UsersController < ApplicationController
       end
     rescue ActiveRecord::RecordInvalid => e
       @user.errors.add(:base, "Organization: #{e.record.errors.full_messages.join(', ')}") if e.record.is_a?(Organization)
-      false
-    rescue ActiveRecord::RecordNotUnique
-      @user.errors.add(:base, 'An organization with this name already exists')
       false
     end
 end

@@ -59,6 +59,68 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#generate_unique_organization_name' do
+    let(:user) { build(:user, first_name: 'John', last_name: 'Smith') }
+
+    context 'when organization name is unique' do
+      it 'returns the user name without suffix' do
+        expect(user.generate_unique_organization_name).to eq('John Smith')
+      end
+    end
+
+    context 'when organization name already exists' do
+      before do
+        # Create user without factory callback to control organization creation
+        existing_user = User.create!(
+          first_name: 'John',
+          last_name: 'Smith',
+          email: 'john1@test.com',
+          password: 'password123'
+        )
+        organization = Organization.create!(name: 'John Smith', owner: existing_user)
+        existing_user.update!(personal_organization: organization)
+      end
+
+      it 'returns name with sequential number suffix' do
+        expect(user.generate_unique_organization_name).to eq('John Smith 2')
+      end
+
+      context 'when multiple duplicates exist' do
+        before do
+          second_user = User.create!(
+            first_name: 'John',
+            last_name: 'Smith',
+            email: 'john2@test.com',
+            password: 'password123'
+          )
+          organization = Organization.create!(name: 'John Smith 2', owner: second_user)
+          second_user.update!(personal_organization: organization)
+        end
+
+        it 'returns next available sequential number' do
+          expect(user.generate_unique_organization_name).to eq('John Smith 3')
+        end
+
+        context 'when more duplicates exist' do
+          before do
+            third_user = User.create!(
+              first_name: 'John',
+              last_name: 'Smith',
+              email: 'john3@test.com',
+              password: 'password123'
+            )
+            organization = Organization.create!(name: 'John Smith 3', owner: third_user)
+            third_user.update!(personal_organization: organization)
+          end
+
+          it 'continues to find next available number' do
+            expect(user.generate_unique_organization_name).to eq('John Smith 4')
+          end
+        end
+      end
+    end
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:personal_organization).class_name('Organization').optional }
     it { is_expected.to have_many(:memberships).with_foreign_key(:member_id).dependent(:destroy) }

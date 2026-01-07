@@ -18,12 +18,13 @@
 #
 # Indexes
 #
-#  index_learnings_on_creator_id             (creator_id)
-#  index_learnings_on_deleted_at             (deleted_at)
-#  index_learnings_on_last_modifier_id       (last_modifier_id)
-#  index_learnings_on_learning_category_ids  (learning_category_ids) USING gin
-#  index_learnings_on_lesson                 (lesson)
-#  index_learnings_on_organization_id        (organization_id)
+#  index_learnings_on_creator_id                      (creator_id)
+#  index_learnings_on_creator_id_and_organization_id  (creator_id,organization_id)
+#  index_learnings_on_deleted_at                      (deleted_at)
+#  index_learnings_on_last_modifier_id                (last_modifier_id)
+#  index_learnings_on_learning_category_ids           (learning_category_ids) USING gin
+#  index_learnings_on_lesson                          (lesson)
+#  index_learnings_on_organization_id                 (organization_id)
 #
 # Foreign Keys
 #
@@ -40,14 +41,13 @@ class Learning < ApplicationRecord
   belongs_to :last_modifier, class_name: 'User'
   belongs_to :organization
 
+  has_many :learning_categorizations, dependent: :destroy
+  has_many :categories, through: :learning_categorizations, source: :category, class_name: 'LearningCategory'
+
   # Counter cache for membership learnings_count
   after_create :increment_membership_counter
   after_destroy :decrement_membership_counter
   after_restore :increment_membership_counter
-
-  def learning_categories
-    LearningCategory.where(id: learning_category_ids)
-  end
 
   def self.search(query)
     where('lesson ILIKE ?', "%#{query}%")

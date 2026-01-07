@@ -6,85 +6,85 @@
     </div>
 
     <%= form_with(model: @learning, id: :new_learning) do |f| %>
-  <% if @learning.errors.any? %>
-  <div class="notification is-danger is-light">
-    <h2 class="subtitle">
-      <%= pluralize(@learning.errors.count, "error") %> prohibited this learning from being saved:
-    </h2>
-    <ul class="ml-4">
-      <% @learning.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-      <% end %>
-    </ul>
-  </div>
-  <% end %>
-
-  <div class="field mb-4">
-    <%= f.label :lesson, class: "label" %>
-    <div class="control">
-      <%= f.text_field :lesson, class: "input" , placeholder: "Enter learning name" %>
-    </div>
-  </div>
-
-  <div class="field mb-4">
-    <%= f.label :description, class: "label" %>
-    <div class="control">
-      <%= f.text_area :description, class: "textarea" , placeholder: "Enter learning description" ,
-                        rows: 5 %>
-    </div>
-  </div>
-
-  <div class="field mb-4">
-    <%= f.label :organization_id, "Organization" , class: "label" %>
-    <div class="control">
-      <div class="select is-fullwidth">
-        <%= f.collection_select :organization_id, current_user.organizations, :id, :name, {
-                          prompt: "Select an organization" }, { class: "select" } %>
-      </div>
-    </div>
-  </div>
-
-  <div class="field mb-5">
-    <%= f.label "Learning Categories" , class: "label mb-3" %>
-    <div class="control">
-      <div class="columns is-multiline is-mobile">
-        <% @learning_categories.each do |category| %>
-        <div class="column is-half-mobile is-one-third-tablet">
-          <label class="checkbox">
-            <%= check_box_tag "learning[learning_category_ids][]" , category.id,
-                                @learning.learning_category_ids.include?(category),
-                                id: "learning_category_#{category.id}" %>
-            <span class="ml-2">
-              <%= category.name %>
-            </span>
-          </label>
-        </div>
+    <% if @learning.errors.any? %>
+    <div class="notification is-danger is-light">
+      <h2 class="subtitle">
+        <%= pluralize(@learning.errors.count, "error") %> prohibited this learning from being saved:
+      </h2>
+      <ul class="ml-4">
+        <% @learning.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
         <% end %>
+      </ul>
+    </div>
+    <% end %>
+
+    <div class="field mb-4">
+      <%= f.label :lesson, class: "label" %>
+      <div class="control">
+        <%= f.text_field :lesson, class: "input" , placeholder: "Enter learning name" %>
       </div>
     </div>
-  </div>
 
-  <div class="field mb-5">
-    <%= f.label :public, class: "label" %>
-    <div class="control">
-      <label class="checkbox">
-        <%= f.check_box :public_visibility %>
-        <span class="ml-2">Make this learning public</span>
-      </label>
-      <p class="help">Public learnings can be viewed by all users</p>
+    <div class="field mb-4">
+      <%= f.label :description, class: "label" %>
+      <div class="control">
+        <%= f.text_area :description, class: "textarea" , placeholder: "Enter learning description" ,
+                        rows: 5 %>
+      </div>
     </div>
-  </div>
 
-  <div class="field is-grouped is-grouped-centered mt-5">
-    <div class="control">
-      <%= f.submit "Create Learning", class: "button is-primary is-medium px-5" %>
+    <div class="field mb-4">
+      <%= f.label :organization_id, "Organization" , class: "label" %>
+      <div class="control">
+        <div class="select is-fullwidth">
+          <%= f.collection_select :organization_id, current_user.organizations, :id, :name, {
+                          prompt: "Select an organization" }, { class: "select" } %>
+        </div>
+      </div>
     </div>
-    <div class="control">
-      <button type="button" class="button is-light is-medium" data-action="click->form-reset#clear">
-        Cancel
-      </button>
+
+    <div class="field mb-5">
+      <%= f.label "Learning Categories" , class: "label mb-3" %>
+      <div class="control">
+        <div class="columns is-multiline is-mobile">
+          <% @learning_categories.each do |category| %>
+          <div class="column is-half-mobile is-one-third-tablet">
+            <label class="checkbox">
+              <%= check_box_tag "learning[category_ids][]" , category.id,
+                                @learning.category_ids.include?(category.id),
+                                id: "learning_category_#{category.id}" %>
+              <span class="ml-2">
+                <%= category.name %>
+              </span>
+            </label>
+          </div>
+          <% end %>
+        </div>
+      </div>
     </div>
-  </div>
-  <% end %>
+
+    <div class="field mb-5">
+      <%= f.label :public, class: "label" %>
+      <div class="control">
+        <label class="checkbox">
+          <%= f.check_box :public_visibility %>
+          <span class="ml-2">Make this learning public</span>
+        </label>
+        <p class="help">Public learnings can be viewed by all users</p>
+      </div>
+    </div>
+
+    <div class="field is-grouped is-grouped-centered mt-5">
+      <div class="control">
+        <%= f.submit "Create Learning", class: "button is-primary is-medium px-5" %>
+      </div>
+      <div class="control">
+        <button type="button" class="button is-light is-medium" data-action="click->form-reset#clear">
+          Cancel
+        </button>
+      </div>
+    </div>
+    <% end %>
   </div>
 </div>

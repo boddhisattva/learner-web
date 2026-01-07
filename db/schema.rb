@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_06_170500) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_07_193727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,11 +21,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_06_170500) do
     t.text "description", comment: "More information about the learning category"
     t.bigint "last_modifier_id", null: false, comment: "User who last modified the learning category"
     t.string "name", null: false, comment: "Name of the learning category"
+    t.bigint "organization_id", null: false
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_learning_categories_on_creator_id"
     t.index ["deleted_at"], name: "index_learning_categories_on_deleted_at"
     t.index ["last_modifier_id"], name: "index_learning_categories_on_last_modifier_id"
-    t.index ["name"], name: "index_learning_categories_on_name", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["organization_id", "name"], name: "index_learning_categories_on_org_and_name", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["organization_id"], name: "index_learning_categories_on_organization_id"
+  end
+
+  create_table "learning_categorizations", force: :cascade do |t|
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "deleted_at"
+    t.bigint "learning_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_learning_categorizations_on_category_id"
+    t.index ["deleted_at"], name: "index_learning_categorizations_on_deleted_at"
+    t.index ["learning_id", "category_id"], name: "index_learning_categorizations_uniqueness", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["learning_id"], name: "index_learning_categorizations_on_learning_id"
   end
 
   create_table "learnings", force: :cascade do |t|
@@ -39,6 +53,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_06_170500) do
     t.bigint "organization_id", null: false, comment: "The organization to which the learning belongs"
     t.boolean "public_visibility", default: false, null: false, comment: "Determines organizational visibility of the learning"
     t.datetime "updated_at", null: false
+    t.index ["creator_id", "organization_id"], name: "index_learnings_on_creator_id_and_organization_id"
     t.index ["creator_id"], name: "index_learnings_on_creator_id"
     t.index ["deleted_at"], name: "index_learnings_on_deleted_at"
     t.index ["last_modifier_id"], name: "index_learnings_on_last_modifier_id"
@@ -83,8 +98,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_06_170500) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "learning_categories", "organizations"
   add_foreign_key "learning_categories", "users", column: "creator_id"
   add_foreign_key "learning_categories", "users", column: "last_modifier_id"
+  add_foreign_key "learning_categorizations", "learning_categories", column: "category_id"
+  add_foreign_key "learning_categorizations", "learnings"
   add_foreign_key "learnings", "organizations"
   add_foreign_key "learnings", "users", column: "creator_id"
   add_foreign_key "learnings", "users", column: "last_modifier_id"

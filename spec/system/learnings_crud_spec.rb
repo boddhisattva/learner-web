@@ -6,8 +6,8 @@ RSpec.describe 'Learnings', type: :system do
   let(:user) { create(:user) }
   let(:organization) { user.personal_organization }
   let(:learning) { create(:learning, creator: user, last_modifier: user, organization: organization) }
-  let(:discipline_category) { create(:learning_category, name: 'Discipline') }
-  let(:life_category) { create(:learning_category, name: 'Learnings for Life') }
+  let(:discipline_category) { create(:learning_category, name: 'Discipline', creator: user, organization: organization) }
+  let(:life_category) { create(:learning_category, name: 'Learnings for Life', creator: user, organization: organization) }
 
   before do
     sign_in user
@@ -105,7 +105,7 @@ RSpec.describe 'Learnings', type: :system do
              creator: user,
              last_modifier: user,
              organization: organization,
-             learning_category_ids: [discipline_category.id])
+             category_ids: [discipline_category.id])
     end
 
     before do
@@ -116,7 +116,7 @@ RSpec.describe 'Learnings', type: :system do
     context 'with valid inputs' do
       it 'updates the learning and pre-selects existing category checkboxes, allows updating categories' do
         # Verify existing category is pre-selected & already in the database
-        expect(learning_with_category.learning_category_ids).to include(discipline_category.id)
+        expect(learning_with_category.category_ids).to include(discipline_category.id)
         expect(page).to have_checked_field("learning_category_#{discipline_category.id}")
         expect(page).to have_unchecked_field("learning_category_#{life_category.id}")
 
@@ -132,7 +132,7 @@ RSpec.describe 'Learnings', type: :system do
         expect(page).to have_content('Updated Description')
 
         learning_with_category.reload
-        expect(learning_with_category.learning_category_ids).to include(discipline_category.id, life_category.id)
+        expect(learning_with_category.category_ids).to include(discipline_category.id, life_category.id)
       end
     end
 

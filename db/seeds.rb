@@ -31,12 +31,12 @@ end
 
 Membership.find_or_create_by!(member: user, organization: earth_as_organization)
 
-LearningCategory.find_or_create_by!(name: 'Learnings for Life') do |cat|
+LearningCategory.find_or_create_by!(name: 'Learnings for Life', organization: personal_organization) do |cat|
   cat.creator_id = user.id
   cat.last_modifier_id = user.id
 end
 
-discipline_category = LearningCategory.find_or_create_by!(name: 'Discipline') do |cat|
+discipline_category = LearningCategory.find_or_create_by!(name: 'Discipline', organization: personal_organization) do |cat|
   cat.creator_id = user.id
   cat.last_modifier_id = user.id
 end
@@ -44,7 +44,7 @@ end
 Learning.find_or_create_by!(lesson: 'Karm kar Phal ki chinta na kar',
                             creator: user,
                             organization: personal_organization) do |learning|
-  learning.learning_category_ids = [discipline_category.id]
+  learning.category_ids = [discipline_category.id]
   learning.last_modifier_id = user.id
 end
 
@@ -54,7 +54,7 @@ end
                               creator: user,
                               organization: personal_organization) do |learning|
     learning.description = "Description for learning #{n + 1}"
-    learning.learning_category_ids = [discipline_category.id]
+    learning.category_ids = [discipline_category.id]
     learning.last_modifier_id = user.id
   end
 end

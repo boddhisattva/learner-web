@@ -87,6 +87,7 @@ RSpec.describe User, type: :model do
 
       context 'when multiple duplicates exist' do
         before do
+          # Create John Smith 2
           second_user = described_class.create!(
             first_name: 'John',
             last_name: 'Smith',
@@ -95,27 +96,20 @@ RSpec.describe User, type: :model do
           )
           organization = Organization.create!(name: 'John Smith 2', owner: second_user)
           second_user.update!(personal_organization: organization)
+
+          # Create John Smith 3
+          third_user = described_class.create!(
+            first_name: 'John',
+            last_name: 'Smith',
+            email: 'john3@test.com',
+            password: 'password123'
+          )
+          organization = Organization.create!(name: 'John Smith 3', owner: third_user)
+          third_user.update!(personal_organization: organization)
         end
 
-        it 'returns next available sequential number' do
-          expect(user.generate_unique_organization_name).to eq('John Smith 3')
-        end
-
-        context 'when more duplicates exist' do
-          before do
-            third_user = described_class.create!(
-              first_name: 'John',
-              last_name: 'Smith',
-              email: 'john3@test.com',
-              password: 'password123'
-            )
-            organization = Organization.create!(name: 'John Smith 3', owner: third_user)
-            third_user.update!(personal_organization: organization)
-          end
-
-          it 'continues to find next available number' do
-            expect(user.generate_unique_organization_name).to eq('John Smith 4')
-          end
+        it 'continues finding next available sequential number' do
+          expect(user.generate_unique_organization_name).to eq('John Smith 4')
         end
       end
     end

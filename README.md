@@ -21,13 +21,116 @@ The following **features** are available via both the **Web app & in Mobile**
 * Learning deletion also implemented with **Turbo Streams** to give a more intuitive user experience
 * **Floating flash notifications** implemented for operations like learning create, update & delete to give a much better User experience.
 
-## App related screenshots
+# Entity Relationship Diagram - Learner Web Application
+
+  <details>
+    <summary>Entity Relationship Diagram</summary>
+
+
+      ┌─────────────────────────────────┐
+      │          Users                  │
+      ├─────────────────────────────────┤
+      │ id                              │
+      │ email                           │────────┐
+      │ encrypted_password              │        │
+      │ first_name                      │        │
+      │ last_name                       │        │
+      │ personal_organization_id (FK)   │─────┐  │  (FK - your "home" org, set once)
+      │ reset_password_token            │     │  │
+      │ remember_created_at             │     │  │
+      │ created_at                      │     │  │
+      │ updated_at                      │     │  │
+      └─────────────────────────────────┘     │  │
+              │                               │  │
+              │ has_many                      │  │
+              │ :memberships                  │  │
+              │                               │  │
+              ▼                               │  │
+      ┌─────────────────────────────────┐     │  │
+      │       Memberships               │◄────┘  │
+      ├─────────────────────────────────┤        │
+      │ id                              │        │
+      │ member_id (FK)                  │────────┘  ← This IS your "organization_ids"!
+      │ organization_id (FK)            │─────┐
+      │ learnings_count                 │     │  (counter cache)
+      │ created_at                      │     │
+      │ updated_at                      │     │
+      └─────────────────────────────────┘     │
+              ▲                               │
+              │                               │
+              │ has_many                      │
+              │ :memberships                  │
+              │                               │
+              │                               ▼
+      ┌─────────────────────────────────┐  ┌─────────────────────────────────┐
+      │      Organizations              │  │                                 │
+      ├─────────────────────────────────┤  │                                 │
+      │ id                              │  │                                 │
+      │ name                            │  │                                 │
+      │ owner_id (FK)                   │──┘  ─→ Users (who created it)      │
+      │ created_at                      │                                    │
+      │ updated_at                      │                                    │
+      └─────────────────────────────────┘                                    │
+              │                                                              │
+              │ has_many                                                     │
+              │ :learnings                                                   │
+              │                                                              │
+              ▼                                                              │
+      ┌─────────────────────────────────┐                                    │
+      │         Learnings               │                                    │
+      ├─────────────────────────────────┤                                    │
+      │ id                              │                                    │
+      │ lesson                          │                                    │
+      │ description                     │                                    │
+      │ creator_id (FK)                 │────────────────────────────────────┘
+      │ last_modifier_id (FK)           │───────┐ ─→ Users
+      │ organization_id (FK)            │       │
+      │ learning_category_ids (array)   │       │
+      │ public_visibility (boolean)     │       │
+      │ deleted_at                      │       │
+      │ created_at                      │       │
+      │ updated_at                      │       │
+      └─────────────────────────────────┘       │
+              │                                 │
+              │ has_many                        │
+              │ :learning_categorizations       │
+              │                                 │
+              ▼                                 │
+      ┌─────────────────────────────────┐       │
+      │  LearningCategorizations        │       │
+      │  (Join Table)                   │       │
+      ├─────────────────────────────────┤       │
+      │ id                              │       │
+      │ learning_id (FK)                │       │
+      │ category_id (FK)                │───┐   │
+      │ deleted_at                      │   │   │
+      │ created_at                      │   │   │
+      │ updated_at                      │   │   │
+      └─────────────────────────────────┘   │   │
+                                            │   │
+                                            ▼   │
+      ┌─────────────────────────────────┐       │
+      │     LearningCategories          │       │
+      ├─────────────────────────────────┤       │
+      │ id                              │       │
+      │ name                            │       │
+      │ description                     │       │
+      │ organization_id (FK)            │───┐   │
+      │ creator_id (FK)                 │───┼───┘
+      │ last_modifier_id (FK)           │───┘ ─→ Users
+      │ deleted_at                      │
+      │ created_at                      │
+      │ updated_at                      │
+      └─────────────────────────────────┘
+
+
+  </details>
 
 <details>
   <summary>View App related screenshots</summary>
 
 1. Create New Inline Learning
-  ![Alt text](https://imgur.com/Z8meaL7.png "Create New Inline Learning")
+  ![Alt text](https://imgur.com/mthO2YB.png "Create New Inline Learning")
 
 2. Learnings Index
   ![Alt text](https://imgur.com/eXSWUzi.png "Learnings Index")
@@ -51,11 +154,16 @@ The following **features** are available via both the **Web app & in Mobile**
   ![Alt text](https://imgur.com/kQ7JD2W.png "Mobile Search")
 
 
-
 </details>
 
 ## Features that are currently a Work in Progress(WIP)
 * Implementing Learning Categories, Memberships & Organisations fully pertaining to a user's learning is a current WIP
+
+#### Areas of Improvement
+* Replace acts_as_paranoid with discard gem as that's more flexible &
+  provides better future readynesss in terms of long term extendability(to allow support of more features etc.,) and maintainability
+* `load_learning_categories`(used in `LearningsController`) currently loads 100 learning categories. We can improve this further by providing UI options in appropriate parts of the app to filter and search learnings by other learning categories
+* The `public_visibility` for a Learning hasn't yet been implemented and will be done in a future iteration.
 
 ## Usage
 
@@ -88,8 +196,3 @@ The following **features** are available via both the **Web app & in Mobile**
 * One can run the tests from the project root directory with the command `rspec`
 
 
-#### Areas of Improvement
-* Replace acts_as_paranoid with discard gem as that's more flexible &
-  provides better future readynesss in terms of long term extendability(to allow support of more features etc.,) and maintainability
-* `load_learning_categories`(used in `LearningsController`) currently loads 100 learning categories. We can improve this further by providing UI options in appropriate parts of the app to filter and search learnings by other learning categories
-* The `public_visibility` for a Learning hasn't yet been implemented and will be done in a future iteration.

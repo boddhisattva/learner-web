@@ -71,7 +71,7 @@ RSpec.describe User, type: :model do
     context 'when organization name already exists' do
       before do
         # Create user without factory callback to control organization creation
-        existing_user = User.create!(
+        existing_user = described_class.create!(
           first_name: 'John',
           last_name: 'Smith',
           email: 'john1@test.com',
@@ -87,7 +87,7 @@ RSpec.describe User, type: :model do
 
       context 'when multiple duplicates exist' do
         before do
-          second_user = User.create!(
+          second_user = described_class.create!(
             first_name: 'John',
             last_name: 'Smith',
             email: 'john2@test.com',
@@ -103,7 +103,7 @@ RSpec.describe User, type: :model do
 
         context 'when more duplicates exist' do
           before do
-            third_user = User.create!(
+            third_user = described_class.create!(
               first_name: 'John',
               last_name: 'Smith',
               email: 'john3@test.com',

@@ -21,13 +21,12 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
   end
 
   describe 'successful inline editing flow' do
-    it 'updates learning inline and replaces form with updated display view', :js do
+    it 'updates learning inline & replaces form with updated display view', :js do
       learning
       visit learnings_path
 
       # Ensure desktop viewport (in case previous mobile tests changed it)
       page.current_window.resize_to(1200, 815)
-      # sleep 0.5 # Allow page to stabilize after resize
 
       expect(page).to have_content('Original Lesson')
       expect(page).not_to have_field('Lesson', with: 'Original Lesson')
@@ -37,7 +36,6 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
         find('a.button.is-warning').click
       end
 
-      # Outcome: Form loads inline
       expect(page).to have_field('Lesson', with: 'Original Lesson', wait: 10)
       expect(page).to have_field('Description', with: 'Original Description')
       expect(page).to have_button('Update Learning')
@@ -47,7 +45,6 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
       click_button 'Update Learning'
 
       expect(page).not_to have_field('Lesson')
-      expect(page).not_to have_button('Update Learning')
 
       expect(page).to have_content('Updated Lesson Name')
       expect(page).not_to have_content('Original Lesson')

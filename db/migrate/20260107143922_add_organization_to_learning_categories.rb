@@ -74,7 +74,8 @@ class AddOrganizationToLearningCategories < ActiveRecord::Migration[8.1]
       end
     end
 
-    def validate_not_null_constraint # Synonmous to asking: Does EVERY category HAVE an organization?
+    # Synonmous to asking: Does EVERY category HAVE an organization?
+    def validate_not_null_constraint
       # Validate the constraint (safe, minimal locking)
       say_with_time 'Validating NOT NULL constraint' do
         safety_assured do

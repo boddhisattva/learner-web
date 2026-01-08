@@ -65,9 +65,7 @@ class LearningsController < ApplicationController
     @learning = current_user_learnings.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
-    @learning.last_modifier_id = current_user.id
-    @learning.organization_id = current_organization.id
-
+    prepare_learning_for_update
     @learning.update(learnings_params) ? handle_update_success : handle_update_failure
   end
 
@@ -182,5 +180,10 @@ class LearningsController < ApplicationController
       flash.now[:error] = @learning.errors.full_messages
       format.turbo_stream { render :destroy, status: :see_other }
       format.html { redirect_to learnings_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
+    end
+
+    def prepare_learning_for_update
+      @learning.last_modifier_id = current_user.id
+      @learning.organization_id = current_organization.id
     end
 end

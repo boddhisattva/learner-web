@@ -25,7 +25,6 @@ module Mobile
 
           fill_in 'learning[lesson]', with: 'Mobile Test Learning'
           fill_in 'learning[description]', with: 'Created from mobile view'
-          select organization.name, from: 'Organization'
           click_button 'Create Learning'
 
           expect(page).to have_content('Mobile Test Learning')
@@ -34,7 +33,10 @@ module Mobile
       end
 
       context 'when viewing a learning' do
-        let(:learning) { create(:learning, lesson: 'Existing Learning', description: 'Test Description', creator: user) }
+        let(:learning) do
+          create(:learning, lesson: 'Existing Learning', description: 'Test Description',
+                            creator: user, last_modifier: user, organization: organization)
+        end
 
         it 'can view learning details via mobile interface' do
           visit learning_path(learning)
@@ -45,7 +47,10 @@ module Mobile
       end
 
       context 'when updating a learning' do
-        let(:learning) { create(:learning, lesson: 'Original Learning', description: 'Original Description', creator: user) }
+        let(:learning) do
+          create(:learning, lesson: 'Original Learning', description: 'Original Description',
+                            creator: user, last_modifier: user, organization: organization)
+        end
 
         it 'can edit a learning via mobile interface' do
           visit edit_learning_path(learning)
@@ -60,7 +65,10 @@ module Mobile
       end
 
       context 'when deleting a learning' do
-        let(:learning) { create(:learning, lesson: 'Learning to Delete', description: 'Will be deleted', creator: user) }
+        let(:learning) do
+          create(:learning, lesson: 'Learning to Delete', description: 'Will be deleted',
+                            creator: user, last_modifier: user, organization: organization)
+        end
 
         before do
           learning

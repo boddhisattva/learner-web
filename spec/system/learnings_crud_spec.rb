@@ -35,16 +35,31 @@ RSpec.describe 'Learnings', type: :system do
       visit new_learning_path
     end
 
+    it 'displays organization as read-only and auto-assigns current organization' do
+      # Organization dropdown should not exist
+      expect(page).not_to have_select('Organization')
+
+      # Hidden field should exist with correct organization ID
+      expect(page).to have_css("input[type=\"hidden\"][id=\"learning_organization_id\"][value=\"#{organization.id}\"]",
+                               visible: false)
+
+      # Organization name should be displayed as read-only text
+      expect(page).to have_css("input[disabled][readonly][value=\"#{organization.name}\"]")
+    end
+
     context 'with valid inputs' do
-      it 'creates a new learning' do
+      it 'creates a new learning with auto-assigned organization' do
         fill_in 'Lesson', with: 'Test Lesson'
         fill_in 'Description', with: 'Test Description'
-        select organization.name, from: 'Organization'
 
         click_button 'Create Learning'
 
         expect(page).to have_content(I18n.t('learnings.create.success', lesson: 'Test Lesson'))
         expect(page).to have_content('Test Lesson')
+
+        # Verify the learning was created with correct organization
+        created_learning = Learning.find_by(lesson: 'Test Lesson')
+        expect(created_learning.organization_id).to eq(organization.id)
       end
     end
 

@@ -132,7 +132,7 @@ RSpec.describe LearningsController, type: :controller do
 
         post :create, params: invalid_params
         expect(response).to render_template(:new)
-        expect(flash.now[:error]).to eq(["Lesson can't be blank", 'Organization must exist'])
+        expect(flash.now[:error]).to eq(["Lesson can't be blank"])
       end
     end
   end

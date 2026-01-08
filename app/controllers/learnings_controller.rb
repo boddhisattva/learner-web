@@ -17,7 +17,7 @@ class LearningsController < ApplicationController
   end
 
   def new
-    @learning = Learning.new
+    @learning = Learning.new(organization_id: current_organization.id)
     load_learning_categories
   end
 
@@ -25,6 +25,7 @@ class LearningsController < ApplicationController
     @learning = Learning.new(learnings_params)
     @learning.creator_id = current_user.id
     @learning.last_modifier_id = current_user.id
+    @learning.organization_id = current_organization.id
     load_learning_categories
 
     respond_to do |format|
@@ -65,6 +66,7 @@ class LearningsController < ApplicationController
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     @learning.last_modifier_id = current_user.id
+    @learning.organization_id = current_organization.id
 
     @learning.update(learnings_params) ? handle_update_success : handle_update_failure
   end

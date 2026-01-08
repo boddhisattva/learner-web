@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
 
   before_action :set_current_organization
 
+  helper_method :current_organization
+
   def after_sign_in_path_for(_resource)
     learnings_path
   end

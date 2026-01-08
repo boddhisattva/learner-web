@@ -1,6 +1,6 @@
 <nav class="navbar is-link" data-controller="navbar">
   <div class="navbar-brand">
-    <%= link_to root_path, class: "navbar-item" do %>
+    <%= link_to (user_signed_in? ? learnings_path : new_user_session_path), class: "navbar-item" do %>
       <strong class="is-size-3">Learner</strong>
     <% end %>
 

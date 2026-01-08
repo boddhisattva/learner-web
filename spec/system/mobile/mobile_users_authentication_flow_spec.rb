@@ -16,7 +16,7 @@ module Mobile
       end
 
       it 'can access mobile sign up page via burger menu' do
-        visit root_path
+        visit new_user_session_path
 
         find('.navbar-burger').click
         click_on I18n.t('shared.navbar.sign_up')

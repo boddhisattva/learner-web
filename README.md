@@ -21,7 +21,7 @@ The following **features** are available via both the **Web app & in Mobile**
 * Learning deletion also implemented with **Turbo Streams** to give a more intuitive user experience
 * **Floating flash notifications** implemented for operations like learning create, update & delete to give a much better User experience.
 
-# Entity Relationship Diagram - Learner Web Application
+# Entity Relationship Diagram & Learner App Screenshots
 
   <details>
     <summary>Entity Relationship Diagram</summary>

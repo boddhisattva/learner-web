@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_09_184113) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_10_201623) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,14 +50,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_09_184113) do
     t.bigint "last_modifier_id", null: false, comment: "User who last modified the learning"
     t.string "lesson", null: false, comment: "Learning lesson learnt"
     t.bigint "organization_id", null: false, comment: "The organization to which the learning belongs"
-    t.boolean "public_visibility", default: false, null: false, comment: "Determines organizational visibility of the learning"
     t.datetime "updated_at", null: false
+    t.integer "visibility", default: 0, null: false
     t.index ["creator_id", "organization_id"], name: "index_learnings_on_creator_id_and_organization_id"
     t.index ["creator_id"], name: "index_learnings_on_creator_id"
     t.index ["deleted_at"], name: "index_learnings_on_deleted_at"
     t.index ["last_modifier_id"], name: "index_learnings_on_last_modifier_id"
     t.index ["lesson"], name: "index_learnings_on_lesson"
     t.index ["organization_id"], name: "index_learnings_on_organization_id"
+    t.index ["visibility", "organization_id"], name: "index_learnings_on_visibility_and_org_id"
+    t.check_constraint "visibility = ANY (ARRAY[0, 1, 2])", name: "learnings_visibility_check"
   end
 
   create_table "memberships", force: :cascade do |t|

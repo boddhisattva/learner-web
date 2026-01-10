@@ -4,16 +4,16 @@
 #
 # Table name: learnings
 #
-#  id                                                                      :bigint           not null, primary key
-#  deleted_at                                                              :datetime
-#  description(Learning lesson in more detail)                             :text
-#  lesson(Learning lesson learnt)                                          :string           not null
-#  public_visibility(Determines organizational visibility of the learning) :boolean          default(FALSE), not null
-#  created_at                                                              :datetime         not null
-#  updated_at                                                              :datetime         not null
-#  creator_id(User who created the learning)                               :bigint           not null
-#  last_modifier_id(User who last modified the learning)                   :bigint           not null
-#  organization_id(The organization to which the learning belongs)         :bigint           not null
+#  id                                                              :bigint           not null, primary key
+#  deleted_at                                                      :datetime
+#  description(Learning lesson in more detail)                     :text
+#  lesson(Learning lesson learnt)                                  :string           not null
+#  visibility                                                      :integer          default(0), not null
+#  created_at                                                      :datetime         not null
+#  updated_at                                                      :datetime         not null
+#  creator_id(User who created the learning)                       :bigint           not null
+#  last_modifier_id(User who last modified the learning)           :bigint           not null
+#  organization_id(The organization to which the learning belongs) :bigint           not null
 #
 # Indexes
 #
@@ -23,6 +23,7 @@
 #  index_learnings_on_last_modifier_id                (last_modifier_id)
 #  index_learnings_on_lesson                          (lesson)
 #  index_learnings_on_organization_id                 (organization_id)
+#  index_learnings_on_visibility_and_org_id           (visibility,organization_id)
 #
 # Foreign Keys
 #
@@ -37,6 +38,12 @@ class Learning < ApplicationRecord
   acts_as_paranoid
 
   validates :lesson, presence: true
+
+  enum :visibility, {
+    personal: 0, # Only visible to the creator
+    organization: 1,
+    open: 2 # Open to public/all
+  }
 
   belongs_to :creator, class_name: 'User'
   belongs_to :last_modifier, class_name: 'User'

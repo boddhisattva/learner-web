@@ -12,22 +12,28 @@
           data: { turbo: false }
         ) do |form| %>
 
-      <div class="block">
-        <%= form.label :email, class: "label" %>
-        <%= form.email_field :email, class: "input" %>
-      </div>
+    <div class="block">
+      <%= form.label :email, class: "label" %>
+      <%= form.email_field :email, class: "input" %>
+    </div>
 
-      <div class="block">
-        <%= form.label :password, class: "label" %>
-        <%= form.password_field :password, class: "input" %>
-      </div>
+    <div class="block">
+      <%= form.label :password, class: "label" %>
+      <%= form.password_field :password, class: "input" %>
+    </div>
 
-      <%= form.submit t(".submit"),
+    <!-- TODO: Add later: @organizations that are top 100 by created_at descending as Organization.all is not an ideal way to do it-->
+    <div class="block">
+      <%= form.label :organization_id, class: "label" %>
+      <%= form.select :organization_id, options_from_collection_for_select(Organization.all, :id, :name), { include_blank: 'Select Organization' }, class: "input" %>
+    </div>
+
+    <%= form.submit t(".submit"),
             class: "button is-primary is-large
               is-align-self-flex-end mb-3 mt-3" %>
     <% end %>
 
-  <%= render "devise/shared/links" %>
+    <%= render "devise/shared/links" %>
 
   </layout-column>
 </layout-columns>

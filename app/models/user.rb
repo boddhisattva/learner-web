@@ -30,7 +30,21 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         authentication_keys: %i[email organization_id]
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    organization_id = conditions.delete(:organization_id)
+    email = conditions.delete(:email)
+
+    user = where(email: email).first
+    return nil unless user
+
+    return nil if organization_id.present? && !user.organizations.exists?(id: organization_id)
+
+    user
+  end
 
   validates :first_name, presence: true
   validates :last_name, presence: true

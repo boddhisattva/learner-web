@@ -196,4 +196,12 @@ The following **features** are available via both the **Web app & in Mobile**
 
 * One can run the tests from the project root directory with the command `rspec`
 
+### Use BE & FE Linters for better long term App Maintainability
 
+#### Rubocop for linting `.rb` specific files
+
+* One can benefit with more consistent and better quality Ruby code with `rubocop -a` & `rubocop -A` to auto fix rubocop specific lint issues
+
+#### Herb linter for linting `.html.erb` specific files
+
+* One can encourage use of best practices & catch common errors to improve view related code(as mentioned [docs here](https://herb-tools.dev/projects/linter))) regularly by using the Herb linter via the command `npx @herb-tools/linter app/views/ --fix`

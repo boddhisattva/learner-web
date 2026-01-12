@@ -49,6 +49,10 @@
             </div>
           <% end %>
 
+          <% if current_organization %>
+            <%= turbo_stream_from "learnings_org_#{current_organization.id}" %>
+          <% end %>
+
           <!-- Collapsible inline form container -->
           <div id="new_learning_form" class="mt-4"></div>
 

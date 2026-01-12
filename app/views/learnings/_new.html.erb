@@ -6,9 +6,9 @@
     </div>
 
     <%= form_with(model: @learning, id: :new_learning) do |f| %>
-      <%= render "form_fields", f: f, learning: @learning, learning_categories: @learning_categories %>
+    <%= render "form_fields", f: f, learning: @learning, learning_categories: @learning_categories %>
 
-      <div class="field is-grouped is-grouped-centered mt-5">
+    <div class="field is-grouped is-grouped-centered mt-5">
       <div class="control">
         <%= f.submit "Create Learning", class: "button is-primary is-medium px-5" %>
       </div>

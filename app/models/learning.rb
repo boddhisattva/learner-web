@@ -39,6 +39,18 @@ class Learning < ApplicationRecord
 
   validates :lesson, presence: true
 
+  # Broadcast CREATE operations (prepend new learning to page 1)
+  broadcasts_to ->(learning) { "learnings_org_#{learning.organization_id}" },
+                inserts_by: :prepend,
+                target: 'learning_page_1',
+                if: :broadcastable?
+
+  # Broadcast UPDATE operations (replace or remove based on visibility changes)
+  after_update_commit :broadcast_visibility_change
+
+  # Broadcast DESTROY operations (remove the learning from the list)
+  after_destroy_commit -> { broadcast_remove_to_organization if was_broadcastable_before_destroy? }
+
   enum :visibility, {
     personal: 0, # Only visible to the creator
     organization: 1,
@@ -62,6 +74,60 @@ class Learning < ApplicationRecord
   end
 
   private
+
+    def broadcastable?
+      organization_id.present? && (open? || organization?)
+    end
+
+    def was_broadcastable?(visibility_value)
+      %w[organization open].include?(visibility_value)
+    end
+
+    def was_broadcastable_before_destroy?
+      # For destroy, check current state before deletion
+      broadcastable?
+    end
+
+    def broadcast_visibility_change
+      # Check if visibility changed
+      if saved_change_to_visibility?
+        old_visibility = visibility_before_last_save
+        new_visibility = visibility
+
+        was_broadcastable_before = was_broadcastable?(old_visibility)
+        is_broadcastable_now = broadcastable?
+
+        if was_broadcastable_before && !is_broadcastable_now
+          # Changed from organization/open → personal
+          # Remove from other users' views
+          broadcast_remove_to_organization
+        elsif is_broadcastable_now
+          # Is currently organization/open
+          # Replace/update in views (works for both update and personal→org/open changes)
+          broadcast_replace_to_organization
+        end
+        # If was personal and still personal, do nothing
+      elsif broadcastable?
+        # Visibility didn't change but other fields did, and it's broadcastable
+        broadcast_replace_to_organization
+      end
+    end
+
+    def broadcast_replace_to_organization
+      broadcast_replace_to(
+        "learnings_org_#{organization_id}",
+        target: self,
+        partial: 'learnings/learning',
+        locals: { learning: self }
+      )
+    end
+
+    def broadcast_remove_to_organization
+      broadcast_remove_to(
+        "learnings_org_#{organization_id}",
+        target: self
+      )
+    end
 
     def update_membership_counter(count_change)
       # rubocop:disable Rails/SkipsModelValidations

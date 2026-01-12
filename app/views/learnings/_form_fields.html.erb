@@ -33,6 +33,51 @@
   </div>
 </div>
 
+<div class="field mb-4">
+  <%= f.label :visibility, "Visibility", class: "label mb-3" %>
+  <div class="control">
+    <div class="field">
+      <label class="radio">
+        <%= f.radio_button :visibility, :personal, checked: learning.visibility == 'personal' %>
+        <span class="ml-2">
+          <span class="icon-text">
+            <span class="icon has-text-warning">
+              <i class="fas fa-lock"></i>
+            </span>
+            <span><strong>Personal</strong> - Only visible to you</span>
+          </span>
+        </span>
+      </label>
+    </div>
+    <div class="field">
+      <label class="radio">
+        <%= f.radio_button :visibility, :organization, checked: learning.visibility == 'organization' %>
+        <span class="ml-2">
+          <span class="icon-text">
+            <span class="icon has-text-info">
+              <i class="fas fa-building"></i>
+            </span>
+            <span><strong>Organization</strong> - Visible to all members of <%= current_organization.name %></span>
+          </span>
+        </span>
+      </label>
+    </div>
+    <div class="field">
+      <label class="radio">
+        <%= f.radio_button :visibility, :open, checked: learning.visibility == 'open' %>
+        <span class="ml-2">
+          <span class="icon-text">
+            <span class="icon has-text-success">
+              <i class="fas fa-globe"></i>
+            </span>
+            <span><strong>Open</strong> - Publicly visible to everyone(outside of one's organization too)</span>
+          </span>
+        </span>
+      </label>
+    </div>
+  </div>
+</div>
+
 <div class="field mb-5">
   <%= f.label "Learning Categories", class: "label mb-3" %>
   <div class="control">

@@ -82,7 +82,7 @@ class LearningsController < ApplicationController
   private
 
     def learnings_params
-      params.require(:learning).permit(:lesson, :description, :public_visibility, :organization_id, category_ids: [])
+      params.require(:learning).permit(:lesson, :description, :visibility, :organization_id, category_ids: [])
     end
 
     def load_paginated_learnings(page = 1)
@@ -101,7 +101,14 @@ class LearningsController < ApplicationController
     def current_user_learnings
       return Learning.none unless current_organization
 
-      current_user.learnings.where(organization_id: current_organization.id)
+      Learning.where(organization_id: current_organization.id)
+              .where(
+                'visibility = ? OR visibility = ? OR (visibility = ? AND creator_id = ?)',
+                Learning.visibilities[:organization],
+                Learning.visibilities[:open],
+                Learning.visibilities[:personal],
+                current_user.id
+              )
     end
 
     def render_turbo_frame_response

@@ -25,12 +25,12 @@
             <div class="level-right">
               <div class="level-item">
                 <div class="buttons">
-                  <span class="button <%= @learning.public_visibility ? 'is-success' : 'is-warning' %>" style="pointer-events: none;">
+                  <span class="button <%= @learning.open? ? 'is-success' : 'is-warning' %>" style="pointer-events: none;">
                     <span class="icon">
-                      <i class="fas <%= @learning.public_visibility ? 'fa-globe' : 'fa-lock' %>"></i>
+                      <i class="fas <%= @learning.open? ? 'fa-globe' : 'fa-lock' %>"></i>
                     </span>
                     <span>
-                      <%= @learning.public_visibility ? 'Public' : 'Private' %>
+                      <%= @learning.visibility.titleize %>
                     </span>
                   </span>
                 </div>

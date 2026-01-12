@@ -1,0 +1,6 @@
+<%= turbo_stream.append "flash_notifications_container" do %>
+  <div class="flash-notification notification is-success is-light"
+       data-controller="flash-notification">
+    <%= flash[:success] %>
+  </div>
+<% end %>

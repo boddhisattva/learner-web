@@ -18,15 +18,7 @@
                 <% end %>
         </div>
 
-        <div class="has-text-centered mt-4 mb-4">
-          <%= link_to learnings_path, class: "has-text-grey is-flex is-align-items-center is-justify-content-center" do
-            %>
-            <span class="icon">
-              <i class="fas fa-arrow-left"></i>
-            </span>
-            <span>Back to Learnings</span>
-            <% end %>
-        </div>
+        <%= render 'back_to_learnings_link' %>
       </div>
     </div>
   </div>

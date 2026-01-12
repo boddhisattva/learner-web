@@ -15,7 +15,7 @@
     <%= render partial: "learnings_list", locals: { learnings: @learnings, pagy: @pagy } %>
   <% end %>
 <% else %>
-  <%#  Replace page 1 with updated data to show new learning while preserving infinite scroll structure %>
+  <%# Replace page 1 with updated data to show new learning while preserving infinite scroll structure %>
   <%= turbo_stream.replace "learning_page_1" do %>
     <%= render partial: "learnings_page", locals: { learnings: @learnings, pagy: @pagy } %>
   <% end %>

@@ -37,7 +37,7 @@ FactoryBot.define do
     description { 'MyText' }
     creator { create(:user) }
     deleted_at { '' }
-    public_visibility { false }
+    visibility { :personal }
     last_modifier { creator }
     organization { creator.personal_organization }
 

@@ -2,6 +2,7 @@
 
 class LearningsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_learning, only: [:edit, :update, :destroy, :cancel]
 
   LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
 
@@ -47,7 +48,6 @@ class LearningsController < ApplicationController
   end
 
   def edit
-    @learning = current_user_learnings.find_by(id: params[:id])
     load_learning_categories
 
     if @learning.blank?
@@ -62,7 +62,6 @@ class LearningsController < ApplicationController
   end
 
   def update
-    @learning = current_user_learnings.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     prepare_learning_for_update
@@ -70,7 +69,6 @@ class LearningsController < ApplicationController
   end
 
   def destroy
-    @learning = current_user_learnings.find_by(id: params[:id])
     return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
 
     respond_to do |format|
@@ -79,8 +77,6 @@ class LearningsController < ApplicationController
   end
 
   def cancel
-    @learning = current_user_learnings.find_by(id: params[:id])
-
     if @learning.blank?
       redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
       return
@@ -185,5 +181,9 @@ class LearningsController < ApplicationController
     def prepare_learning_for_update
       @learning.last_modifier_id = current_user.id
       @learning.organization_id = current_organization.id
+    end
+
+    def set_learning
+      @learning = current_user_learnings.find_by(id: params[:id])
     end
 end

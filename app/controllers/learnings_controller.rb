@@ -36,10 +36,7 @@ class LearningsController < ApplicationController
   def show
     @learning = current_user_learnings.includes(:categories).find_by(id: params[:id])
 
-    if @learning.blank?
-      redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }
-      return
-    end
+    redirect_to learnings_path, status: :see_other, flash: { error: t('.error') } if @learning.blank?
   end
 
   def edit

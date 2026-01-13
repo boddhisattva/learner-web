@@ -40,12 +40,6 @@ class LearningsController < ApplicationController
       redirect_to learnings_path, status: :see_other, flash: { error: t('.error') }
       return
     end
-
-    respond_to do |format|
-      format.html do
-        render partial: 'learning', locals: { learning: @learning } if turbo_frame_request?
-      end
-    end
   end
 
   def edit

@@ -124,14 +124,19 @@ class LearningsController < ApplicationController
       end
     end
 
-    def handle_create_success(format)
+    def handle_success(format, action:, page: nil, status: :ok)
       flash.now[:success] = t('.success', lesson: @learning.lesson)
-      # Explicitly load page 1 after creating a new learning to see latest learnings first
-      load_paginated_learnings(1)
-      format.turbo_stream { render :create, status: :created }
+      load_paginated_learnings(page)
+
+      format.turbo_stream { render action, status: status }
       format.html do
         redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
       end
+    end
+
+    def handle_create_success(format)
+      # Explicitly load page 1 after creating a new learning to see latest learnings first
+      handle_success(format, action: :create, page: 1, status: :created)
     end
 
     def handle_create_failure(format)
@@ -166,12 +171,7 @@ class LearningsController < ApplicationController
     end
 
     def handle_destroy_success(format)
-      flash.now[:success] = t('.success', lesson: @learning.lesson)
-      load_paginated_learnings
-      format.turbo_stream { render :destroy, status: :see_other }
-      format.html do
-        redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
-      end
+      handle_success(format, action: :destroy, status: :see_other)
     end
 
     def handle_destroy_failure(format)

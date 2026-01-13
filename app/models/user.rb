@@ -27,6 +27,8 @@
 #  fk_rails_...  (personal_organization_id => organizations.id)
 #
 class User < ApplicationRecord
+  attr_accessor :organization_id
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,

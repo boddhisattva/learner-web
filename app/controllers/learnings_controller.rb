@@ -2,7 +2,7 @@
 
 class LearningsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_learning, only: [:edit, :update, :destroy, :cancel]
+  before_action :set_learning, only: %i[edit update destroy cancel]
 
   LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
 
@@ -42,9 +42,11 @@ class LearningsController < ApplicationController
       return
     end
 
-    return unless turbo_frame_request?
-
-    render partial: 'learning', locals: { learning: @learning }
+    respond_to do |format|
+      format.html do
+        render partial: 'learning', locals: { learning: @learning } if turbo_frame_request?
+      end
+    end
   end
 
   def edit
@@ -55,10 +57,11 @@ class LearningsController < ApplicationController
       return
     end
 
-    # Turbo Frame requests need just the partial, not the full page
-    return unless turbo_frame_request?
-
-    render partial: 'form', locals: { learning: @learning, learning_categories: @learning_categories }
+    respond_to do |format|
+      format.html do
+        render partial: 'form', locals: { learning: @learning, learning_categories: @learning_categories } if turbo_frame_request?
+      end
+    end
   end
 
   def update

@@ -64,4 +64,156 @@ RSpec.describe Learning, type: :model do
       expect(learning.categories).to contain_exactly(category, another_category)
     end
   end
+
+  describe 'broadcasting behavior' do
+    let(:user) { create(:user) }
+    let(:organization) { user.personal_organization }
+    let(:stream_name) { "learnings_org_#{organization.id}" }
+
+    describe 'CREATE operations' do
+      it 'broadcasts open & organization learnings but not personal learnings' do
+        personal_learning = build(:learning,
+                                  creator: user,
+                                  last_modifier: user,
+                                  organization: organization,
+                                  visibility: :personal)
+
+        expect { personal_learning.save! }.not_to have_broadcasted_to(stream_name)
+        expect(personal_learning.persisted?).to be true
+
+        org_learning = build(:learning,
+                             creator: user,
+                             last_modifier: user,
+                             organization: organization,
+                             visibility: :organization)
+
+        expect { org_learning.save! }.to have_broadcasted_to(stream_name)
+        expect(org_learning.persisted?).to be true
+
+        open_learning = build(:learning,
+                              creator: user,
+                              last_modifier: user,
+                              organization: organization,
+                              visibility: :open)
+
+        expect { open_learning.save! }.to have_broadcasted_to(stream_name)
+        expect(open_learning.persisted?).to be true
+      end
+    end
+
+    describe 'UPDATE operations' do
+      it 'broadcasts when changing from personal to open or organization visibility' do
+        learning = create(:learning,
+                          creator: user,
+                          last_modifier: user,
+                          organization: organization,
+                          visibility: :personal)
+
+        expect { learning.update!(visibility: :organization) }.to have_broadcasted_to(stream_name)
+        expect(learning.reload.visibility).to eq('organization')
+
+        learning.update!(visibility: :personal)
+
+        expect { learning.update!(visibility: :open) }.to have_broadcasted_to(stream_name)
+        expect(learning.reload.visibility).to eq('open')
+      end
+
+      it 'broadcasts when changing from open or organization to personal visibility' do
+        org_learning = create(:learning,
+                              creator: user,
+                              last_modifier: user,
+                              organization: organization,
+                              visibility: :organization)
+
+        expect { org_learning.update!(visibility: :personal) }.to have_broadcasted_to(stream_name)
+        expect(org_learning.reload.visibility).to eq('personal')
+
+        open_learning = create(:learning,
+                               creator: user,
+                               last_modifier: user,
+                               organization: organization,
+                               visibility: :open)
+
+        expect { open_learning.update!(visibility: :personal) }.to have_broadcasted_to(stream_name)
+        expect(open_learning.reload.visibility).to eq('personal')
+      end
+
+      it 'broadcasts when changing between open or organization visibility types' do
+        learning = create(:learning,
+                          creator: user,
+                          last_modifier: user,
+                          organization: organization,
+                          visibility: :organization)
+
+        expect { learning.update!(visibility: :open) }.to have_broadcasted_to(stream_name)
+        expect(learning.reload.visibility).to eq('open')
+
+        expect { learning.update!(visibility: :organization) }.to have_broadcasted_to(stream_name)
+        expect(learning.reload.visibility).to eq('organization')
+      end
+
+      it 'broadcasts content updates for open or organization learnings but not personal' do
+        org_learning = create(:learning,
+                              creator: user,
+                              last_modifier: user,
+                              organization: organization,
+                              visibility: :organization,
+                              lesson: 'Original lesson')
+
+        expect { org_learning.update!(lesson: 'Updated org lesson') }.to have_broadcasted_to(stream_name)
+        expect(org_learning.reload.lesson).to eq('Updated org lesson')
+
+        open_learning = create(:learning,
+                               creator: user,
+                               last_modifier: user,
+                               organization: organization,
+                               visibility: :open,
+                               lesson: 'Original lesson')
+
+        expect { open_learning.update!(lesson: 'Updated open lesson') }.to have_broadcasted_to(stream_name)
+        expect(open_learning.reload.lesson).to eq('Updated open lesson')
+
+        personal_learning = create(:learning,
+                                   creator: user,
+                                   last_modifier: user,
+                                   organization: organization,
+                                   visibility: :personal,
+                                   lesson: 'Original lesson')
+
+        expect { personal_learning.update!(lesson: 'Updated personal lesson') }.not_to have_broadcasted_to(stream_name)
+        expect(personal_learning.reload.lesson).to eq('Updated personal lesson')
+      end
+    end
+
+    describe 'DESTROY operations' do
+      it 'broadcasts when destroying open or organization learnings but not personal' do
+        org_learning = create(:learning,
+                              creator: user,
+                              last_modifier: user,
+                              organization: organization,
+                              visibility: :organization)
+
+        expect { org_learning.destroy! }.to have_broadcasted_to(stream_name)
+        expect(org_learning.deleted_at).not_to be_nil
+
+        open_learning = create(:learning,
+                               creator: user,
+                               last_modifier: user,
+                               organization: organization,
+                               visibility: :open)
+
+        expect { open_learning.destroy! }.to have_broadcasted_to(stream_name)
+        expect(open_learning.deleted_at).not_to be_nil
+
+        personal_learning = create(:learning,
+                                   creator: user,
+                                   last_modifier: user,
+                                   organization: organization,
+                                   visibility: :personal)
+
+        expect { personal_learning.destroy! }.not_to have_broadcasted_to(stream_name)
+        expect(personal_learning.deleted_at).not_to be_nil
+      end
+    end
+  end
 end

@@ -3,6 +3,7 @@
 class LearningsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_learning, only: %i[edit update destroy cancel]
+  before_action :load_learning_categories, only: %i[new create edit]
 
   LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
 
@@ -19,7 +20,6 @@ class LearningsController < ApplicationController
 
   def new
     @learning = Learning.new(organization_id: current_organization.id)
-    load_learning_categories
   end
 
   def create
@@ -27,7 +27,6 @@ class LearningsController < ApplicationController
     @learning.creator_id = current_user.id
     @learning.last_modifier_id = current_user.id
     @learning.organization_id = current_organization.id
-    load_learning_categories
 
     respond_to do |format|
       @learning.save ? handle_create_success(format) : handle_create_failure(format)
@@ -50,8 +49,6 @@ class LearningsController < ApplicationController
   end
 
   def edit
-    load_learning_categories
-
     if @learning.blank?
       redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
       return

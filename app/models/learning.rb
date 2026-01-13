@@ -92,7 +92,6 @@ class Learning < ApplicationRecord
       # Check if visibility changed
       if saved_change_to_visibility?
         old_visibility = visibility_before_last_save
-        new_visibility = visibility
 
         was_broadcastable_before = was_broadcastable?(old_visibility)
         is_broadcastable_now = broadcastable?

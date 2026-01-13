@@ -39,11 +39,7 @@ class Learning < ApplicationRecord
 
   validates :lesson, presence: true
 
-  # Broadcast CREATE operations (prepend new learning to page 1)
-  broadcasts_to ->(learning) { "learnings_org_#{learning.organization_id}" },
-                inserts_by: :prepend,
-                target: 'learning_page_1',
-                if: :broadcastable?
+  after_create_commit :broadcast_create_to_organization, if: -> { broadcastable? }
 
   # Broadcast UPDATE operations (replace or remove based on visibility changes)
   after_update_commit :broadcast_visibility_change
@@ -86,6 +82,13 @@ class Learning < ApplicationRecord
     def was_broadcastable_before_destroy?
       # For destroy, check current state before deletion
       broadcastable?
+    end
+
+    def broadcast_create_to_organization
+      broadcast_prepend_to("learnings_org_#{organization_id}",
+                           target: 'learning_page_1',
+                           partial: 'learnings/learning',
+                           locals: { learning: self })
     end
 
     def broadcast_visibility_change

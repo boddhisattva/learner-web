@@ -8,7 +8,7 @@
 #  deleted_at                                                      :datetime
 #  description(Learning lesson in more detail)                     :text
 #  lesson(Learning lesson learnt)                                  :string           not null
-#  visibility                                                      :integer          default(0), not null
+#  visibility                                                      :integer          default("personal"), not null
 #  created_at                                                      :datetime         not null
 #  updated_at                                                      :datetime         not null
 #  creator_id(User who created the learning)                       :bigint           not null

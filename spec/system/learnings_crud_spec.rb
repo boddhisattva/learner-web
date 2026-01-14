@@ -17,7 +17,9 @@ RSpec.describe 'Learnings', type: :system do
 
   describe 'index page' do
     before do
+      Prosopite.pause
       create_list(:learning, 3, creator: user, last_modifier: user, organization: organization)
+      Prosopite.resume
       visit learnings_path
     end
 

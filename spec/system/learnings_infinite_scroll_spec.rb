@@ -12,6 +12,7 @@ RSpec.describe 'Learnings Infinite Scroll', type: :system do
 
   context 'with multiple pages of learnings' do
     before do
+      Prosopite.pause
       50.times do |i|
         create(:learning,
                lesson: "Learning #{i + 1}",
@@ -20,6 +21,7 @@ RSpec.describe 'Learnings Infinite Scroll', type: :system do
                created_at: Time.zone.now - (49 - i).minutes,
                updated_at: Time.zone.now - (49 - i).minutes)
       end
+      Prosopite.resume
     end
 
     it 'loads learnings progressively as user scrolls' do

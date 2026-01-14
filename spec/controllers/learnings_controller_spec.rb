@@ -26,7 +26,9 @@ RSpec.describe LearningsController, type: :controller do
 
     context 'with pagination' do
       before do
+        Prosopite.pause
         create_list(:learning, 25, creator: user)
+        Prosopite.resume
       end
 
       it 'sets up pagination with correct first page of results' do
@@ -59,8 +61,10 @@ RSpec.describe LearningsController, type: :controller do
 
     context 'with search query parameter' do
       it 'paginates only the filtered search results' do
+        Prosopite.pause
         15.times { |i| create(:learning, lesson: "New learning test #{i + 1}", creator: user) }
         10.times { |i| create(:learning, lesson: "Different topic #{i + 1}", creator: user) }
+        Prosopite.resume
 
         get :index, params: { query: 'New learning', page: 1 }
 
@@ -70,8 +74,9 @@ RSpec.describe LearningsController, type: :controller do
       end
 
       it 'preserves query parameter when paginating search results' do
+        Prosopite.pause
         15.times { |i| create(:learning, lesson: "Test learning #{i + 1}", creator: user) }
-
+        Prosopite.resume
         get :index, params: { query: 'Test', page: 2 }
 
         expect(assigns(:pagy).page).to eq(2)
@@ -177,7 +182,9 @@ RSpec.describe LearningsController, type: :controller do
     context 'with Turbo Stream request' do
       before do
         learning
+        Prosopite.pause
         create_list(:learning, 3, creator: user)
+        Prosopite.resume
       end
 
       it 'deletes the learning, sets up pagination for re-render, and returns success' do

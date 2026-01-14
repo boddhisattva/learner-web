@@ -4,7 +4,7 @@
     <div><%= learning.lesson %></div>
     <div><%= learning.created_at.strftime("%B %d, %Y") %></div>
     <div>
-      <%= render 'learning_actions', learning: learning %>
+      <%= render 'learnings/learning_actions', learning: learning %>
     </div>
   </div>
 
@@ -15,7 +15,7 @@
       <div><small class="has-text-grey"><%= learning.created_at.strftime("%B %d, %Y") %></small></div>
     </div>
     <div>
-      <%= render 'learning_actions', learning: learning %>
+      <%= render 'learnings/learning_actions', learning: learning %>
     </div>
   </div>
 <% end %>

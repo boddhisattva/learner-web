@@ -4,16 +4,16 @@
 #
 # Table name: learnings
 #
-#  id                                                                      :bigint           not null, primary key
-#  deleted_at                                                              :datetime
-#  description(Learning lesson in more detail)                             :text
-#  lesson(Learning lesson learnt)                                          :string           not null
-#  public_visibility(Determines organizational visibility of the learning) :boolean          default(FALSE), not null
-#  created_at                                                              :datetime         not null
-#  updated_at                                                              :datetime         not null
-#  creator_id(User who created the learning)                               :bigint           not null
-#  last_modifier_id(User who last modified the learning)                   :bigint           not null
-#  organization_id(The organization to which the learning belongs)         :bigint           not null
+#  id                                                              :bigint           not null, primary key
+#  deleted_at                                                      :datetime
+#  description(Learning lesson in more detail)                     :text
+#  lesson(Learning lesson learnt)                                  :string           not null
+#  visibility                                                      :integer          default("personal"), not null
+#  created_at                                                      :datetime         not null
+#  updated_at                                                      :datetime         not null
+#  creator_id(User who created the learning)                       :bigint           not null
+#  last_modifier_id(User who last modified the learning)           :bigint           not null
+#  organization_id(The organization to which the learning belongs) :bigint           not null
 #
 # Indexes
 #
@@ -23,6 +23,7 @@
 #  index_learnings_on_last_modifier_id                (last_modifier_id)
 #  index_learnings_on_lesson                          (lesson)
 #  index_learnings_on_organization_id                 (organization_id)
+#  index_learnings_on_visibility_and_org_id           (visibility,organization_id)
 #
 # Foreign Keys
 #
@@ -37,6 +38,20 @@ class Learning < ApplicationRecord
   acts_as_paranoid
 
   validates :lesson, presence: true
+
+  after_create_commit :broadcast_create_to_organization, if: -> { broadcastable? }
+
+  # Broadcast UPDATE operations (replace or remove based on visibility changes)
+  after_update_commit :broadcast_visibility_change
+
+  # Broadcast DESTROY operations (remove the learning from the list)
+  after_destroy_commit -> { broadcast_remove_to_organization if was_broadcastable_before_destroy? }
+
+  enum :visibility, {
+    personal: 0, # Only visible to the creator
+    organization: 1,
+    open: 2 # Open to public/all
+  }
 
   belongs_to :creator, class_name: 'User'
   belongs_to :last_modifier, class_name: 'User'
@@ -55,6 +70,82 @@ class Learning < ApplicationRecord
   end
 
   private
+
+    def broadcastable?
+      organization_id.present? && (open? || organization?)
+    end
+
+    def was_broadcastable?(visibility_value)
+      %w[organization open].include?(visibility_value)
+    end
+
+    def was_broadcastable_before_destroy?
+      # For destroy, check current state before deletion
+      broadcastable?
+    end
+
+    def first_organizational_learning?
+      Learning.where(organization_id: organization_id)
+              .where(visibility: %i[organization open])
+              .count == 1
+    end
+
+    def broadcast_create_to_organization
+      if first_organizational_learning?
+        broadcast_render_to(
+          "learnings_org_#{organization_id}",
+          partial: 'learnings/broadcast_first_learning',
+          locals: { learning: self }
+        )
+      else
+        broadcast_prepend_to(
+          "learnings_org_#{organization_id}",
+          target: 'learning_page_1',
+          partial: 'learnings/learning',
+          locals: { learning: self }
+        )
+      end
+    end
+
+    def broadcast_visibility_change
+      # Check if visibility changed
+      if saved_change_to_visibility?
+        old_visibility = visibility_before_last_save
+
+        was_broadcastable_before = was_broadcastable?(old_visibility)
+        is_broadcastable_now = broadcastable?
+
+        if was_broadcastable_before && !is_broadcastable_now
+          # Changed from organization/open → personal
+          # Remove from other users' views
+          broadcast_remove_to_organization
+        elsif is_broadcastable_now
+          # Is currently organization/open
+          # Replace/update in views (works for both update and personal→org/open changes)
+          broadcast_replace_to_organization
+        end
+        # If was personal and still personal, do nothing
+      elsif broadcastable?
+        # Visibility didn't change but other fields did, and it's broadcastable
+        broadcast_replace_to_organization
+      end
+    end
+
+    def broadcast_replace_to_organization
+      broadcast_replace_to(
+        "learnings_org_#{organization_id}",
+        target: self,
+        partial: 'learnings/learning',
+        locals: { learning: self }
+      )
+    end
+
+    def broadcast_remove_to_organization
+      broadcast_remove_to(
+        "learnings_org_#{organization_id}",
+        target: self
+      )
+    end
 
     def update_membership_counter(count_change)
       # rubocop:disable Rails/SkipsModelValidations

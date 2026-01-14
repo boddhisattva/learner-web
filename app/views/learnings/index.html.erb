@@ -7,7 +7,7 @@
           <div class="mb-4">
             <h1 class="title has-text-centered is-flex is-flex-wrap-wrap is-justify-content-center is-align-items-center mb-2">
               <span class="mr-2">Learning Lessons</span>
-              <small id="learnings_count" class="has-text-grey">
+              <small id="learnings_count" class="has-text-grey" data-controller="counter" data-counter-target="value">
                 <% if params[:query].present? %>
                   (<%= @pagy.count %> of <%= @learnings_count %> total)
                 <% else %>
@@ -47,6 +47,10 @@
               </div>
               <% end %>
             </div>
+          <% end %>
+
+          <% if current_organization %>
+            <%= turbo_stream_from "learnings_org_#{current_organization.id}" %>
           <% end %>
 
           <!-- Collapsible inline form container -->

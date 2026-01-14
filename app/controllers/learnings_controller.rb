@@ -13,7 +13,7 @@ class LearningsController < ApplicationController
     learnings_scope = learnings_scope.search(params[:query]) if params[:query].present?
     @pagy, @learnings = pagy(learnings_scope)
 
-    @learnings_count = current_membership&.learnings_count || 0
+    @learnings_count = current_user_learnings.count
 
     render_turbo_frame_response if turbo_frame_request?
   end
@@ -82,7 +82,7 @@ class LearningsController < ApplicationController
   private
 
     def learnings_params
-      params.require(:learning).permit(:lesson, :description, :public_visibility, :organization_id, category_ids: [])
+      params.require(:learning).permit(:lesson, :description, :visibility, :organization_id, category_ids: [])
     end
 
     def load_paginated_learnings(page = 1)
@@ -101,7 +101,14 @@ class LearningsController < ApplicationController
     def current_user_learnings
       return Learning.none unless current_organization
 
-      current_user.learnings.where(organization_id: current_organization.id)
+      Learning.where(organization_id: current_organization.id)
+              .where(
+                'visibility = ? OR visibility = ? OR (visibility = ? AND creator_id = ?)',
+                Learning.visibilities[:organization],
+                Learning.visibilities[:open],
+                Learning.visibilities[:personal],
+                current_user.id
+              )
     end
 
     def render_turbo_frame_response

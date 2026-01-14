@@ -36,8 +36,11 @@ describe 'User sign up & sign in flow', type: :system do
   end
 
   describe 'User sign in flow' do
+    let(:user) { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
+    let(:organization) { user.organizations.first }
+
     before do
-      create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ')
+      user
     end
 
     it 'returns error with invalid credentials & logs in user with correct credentials' do
@@ -45,12 +48,14 @@ describe 'User sign up & sign in flow', type: :system do
 
       fill_in User.human_attribute_name(:email), with: 'rachel@xyz.com'
       fill_in User.human_attribute_name(:password), with: 'random invalid password'
+      select organization.name, from: User.human_attribute_name(:organization_id)
 
       click_button 'Login'
 
-      expect(page).to have_text(I18n.t('devise.failure.invalid', authentication_keys: 'Email'))
+      expect(page).to have_text(I18n.t('devise.failure.invalid', authentication_keys: 'Email, Organization'))
 
       fill_in User.human_attribute_name(:password), with: 'MyString'
+      select organization.name, from: User.human_attribute_name(:organization_id)
 
       click_button 'Login'
 

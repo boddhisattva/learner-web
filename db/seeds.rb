@@ -17,6 +17,13 @@ user = User.find_or_create_by!(email: 'abhimanyud@test.com') do |u|
   u.password_confirmation = 'passwd123' # needs to be at least 8 characters
 end
 
+chris_user = User.find_or_create_by!(email: 'chrish@test.com') do |u|
+  u.first_name = 'Chris'
+  u.last_name = 'Hemsworth'
+  u.password = 'tester1234'
+  u.password_confirmation = 'tester1234'
+end
+
 personal_organization = Organization.find_or_create_by!(name: user.name) do |org|
   org.owner = user
 end
@@ -25,15 +32,25 @@ user.update!(personal_organization: personal_organization) unless user.personal_
 
 Membership.find_or_create_by!(member: user, organization: personal_organization)
 
-earth_as_organization = Organization.find_or_create_by!(name: 'Earth') do |org|
+Organization.find_or_create_by!(name: 'Earth') do |org|
   org.owner = user
 end
 
+earth_as_organization = Organization.find_or_create_by!(name: 'Earth') do |org|
+  org.owner = chris_user
+end
+
 Membership.find_or_create_by!(member: user, organization: earth_as_organization)
+Membership.find_or_create_by!(member: chris_user, organization: earth_as_organization)
 
 LearningCategory.find_or_create_by!(name: 'Learnings for Life', organization: personal_organization) do |cat|
   cat.creator_id = user.id
   cat.last_modifier_id = user.id
+end
+
+LearningCategory.find_or_create_by!(name: 'Learnings for Life', organization: earth_as_organization) do |cat|
+  cat.creator_id = chris_user.id
+  cat.last_modifier_id = chris_user.id
 end
 
 discipline_category = LearningCategory.find_or_create_by!(name: 'Discipline', organization: personal_organization) do |cat|

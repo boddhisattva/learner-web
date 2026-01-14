@@ -1,0 +1,17 @@
+<%= turbo_stream.replace "learnings_list" do %>
+  <div class="box" id="all_learnings">
+    <%= render 'learnings/learnings_table_header' %>
+
+    <div id="learnings_container">
+      <%= turbo_frame_tag "learning_page_1" do %>
+        <%= render 'learnings/learning', learning: learning %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<%= turbo_stream.update "learnings_count" do %>
+  <small id="learnings_count" class="has-text-grey" data-controller="counter" data-counter-target="value">
+    (1 total)
+  </small>
+<% end %>

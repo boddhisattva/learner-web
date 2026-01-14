@@ -84,11 +84,27 @@ class Learning < ApplicationRecord
       broadcastable?
     end
 
+    def first_organizational_learning?
+      Learning.where(organization_id: organization_id)
+              .where(visibility: %i[organization open])
+              .count == 1
+    end
+
     def broadcast_create_to_organization
-      broadcast_prepend_to("learnings_org_#{organization_id}",
-                           target: 'learning_page_1',
-                           partial: 'learnings/learning',
-                           locals: { learning: self })
+      if first_organizational_learning?
+        broadcast_render_to(
+          "learnings_org_#{organization_id}",
+          partial: 'learnings/broadcast_first_learning',
+          locals: { learning: self }
+        )
+      else
+        broadcast_prepend_to(
+          "learnings_org_#{organization_id}",
+          target: 'learning_page_1',
+          partial: 'learnings/learning',
+          locals: { learning: self }
+        )
+      end
     end
 
     def broadcast_visibility_change

@@ -25,7 +25,9 @@
     <!-- TODO: Add later: @organizations that are top 100 by created_at descending as Organization.all is not an ideal way to do it-->
     <div class="block">
       <%= form.label :organization_id, class: "label" %>
-      <%= form.select :organization_id, options_from_collection_for_select(Organization.all, :id, :name), { include_blank: 'Select Organization' }, class: "input" %>
+      <div class="select is-fullwidth">
+        <%= form.select :organization_id, options_from_collection_for_select(Organization.all, :id, :name), { include_blank: 'Select Organization' } %>
+      </div>
     </div>
 
     <%= form.submit t(".submit"),

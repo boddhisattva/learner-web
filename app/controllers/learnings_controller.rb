@@ -13,7 +13,7 @@ class LearningsController < ApplicationController
     learnings_scope = learnings_scope.search(params[:query]) if params[:query].present?
     @pagy, @learnings = pagy(learnings_scope)
 
-    @learnings_count = current_membership&.learnings_count || 0
+    @learnings_count = current_user_learnings.count
 
     render_turbo_frame_response if turbo_frame_request?
   end

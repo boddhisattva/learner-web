@@ -18,3 +18,6 @@ application.register("flash-notification", FlashNotificationController)
 
 import SearchController from "./search_controller"
 application.register("search", SearchController)
+
+import CounterController from "./counter_controller"
+application.register("counter", CounterController)

@@ -32,7 +32,7 @@ user.update!(personal_organization: personal_organization) unless user.personal_
 
 Membership.find_or_create_by!(member: user, organization: personal_organization)
 
-earth_as_organization = Organization.find_or_create_by!(name: 'Earth') do |org|
+Organization.find_or_create_by!(name: 'Earth') do |org|
   org.owner = user
 end
 

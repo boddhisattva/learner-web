@@ -71,30 +71,22 @@ RSpec.describe Learning, type: :model do
     let(:stream_name) { "learnings_org_#{organization.id}" }
 
     describe 'CREATE operations' do
-      it 'broadcasts open & organization learnings but not personal learnings' do
-        personal_learning = build(:learning,
-                                  creator: user,
-                                  last_modifier: user,
-                                  organization: organization,
-                                  visibility: :personal)
+      let(:personal_learning) do
+        build(:learning, creator: user, last_modifier: user, organization: organization, visibility: :personal)
+      end
+      let(:org_learning) do
+        build(:learning, creator: user, last_modifier: user, organization: organization, visibility: :organization)
+      end
+      let(:open_learning) do
+        build(:learning, creator: user, last_modifier: user, organization: organization, visibility: :open)
+      end
 
+      it 'broadcasts open & organization learnings but not personal learnings' do
         expect { personal_learning.save! }.not_to have_broadcasted_to(stream_name)
         expect(personal_learning.persisted?).to be true
 
-        org_learning = build(:learning,
-                             creator: user,
-                             last_modifier: user,
-                             organization: organization,
-                             visibility: :organization)
-
         expect { org_learning.save! }.to have_broadcasted_to(stream_name)
         expect(org_learning.persisted?).to be true
-
-        open_learning = build(:learning,
-                              creator: user,
-                              last_modifier: user,
-                              organization: organization,
-                              visibility: :open)
 
         expect { open_learning.save! }.to have_broadcasted_to(stream_name)
         expect(open_learning.persisted?).to be true
@@ -186,30 +178,19 @@ RSpec.describe Learning, type: :model do
     end
 
     describe 'DESTROY operations' do
+      let(:personal_learning) do
+        create(:learning, creator: user, last_modifier: user, organization: organization, visibility: :personal)
+      end
+
       it 'broadcasts when destroying open or organization learnings but not personal' do
-        org_learning = create(:learning,
-                              creator: user,
-                              last_modifier: user,
-                              organization: organization,
-                              visibility: :organization)
+        org_learning = create(:learning, creator: user, last_modifier: user, organization: organization, visibility: :organization)
+        open_learning = create(:learning, creator: user, last_modifier: user, organization: organization, visibility: :open)
 
         expect { org_learning.destroy! }.to have_broadcasted_to(stream_name)
         expect(org_learning.deleted_at).not_to be_nil
 
-        open_learning = create(:learning,
-                               creator: user,
-                               last_modifier: user,
-                               organization: organization,
-                               visibility: :open)
-
         expect { open_learning.destroy! }.to have_broadcasted_to(stream_name)
         expect(open_learning.deleted_at).not_to be_nil
-
-        personal_learning = create(:learning,
-                                   creator: user,
-                                   last_modifier: user,
-                                   organization: organization,
-                                   visibility: :personal)
 
         expect { personal_learning.destroy! }.not_to have_broadcasted_to(stream_name)
         expect(personal_learning.deleted_at).not_to be_nil

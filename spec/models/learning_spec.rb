@@ -145,22 +145,13 @@ RSpec.describe Learning, type: :model do
       end
 
       it 'broadcasts content updates for open or organization learnings but not personal' do
-        org_learning = create(:learning,
-                              creator: user,
-                              last_modifier: user,
-                              organization: organization,
-                              visibility: :organization,
-                              lesson: 'Original lesson')
-
+        org_learning = create(:learning, creator: user, last_modifier: user, organization: organization,
+                                         visibility: :organization, lesson: 'Original lesson')
         expect { org_learning.update!(lesson: 'Updated org lesson') }.to have_broadcasted_to(stream_name)
         expect(org_learning.reload.lesson).to eq('Updated org lesson')
 
-        open_learning = create(:learning,
-                               creator: user,
-                               last_modifier: user,
-                               organization: organization,
-                               visibility: :open,
-                               lesson: 'Original lesson')
+        open_learning = create(:learning, creator: user, last_modifier: user, organization: organization,
+                                          visibility: :open, lesson: 'Original lesson')
 
         expect { open_learning.update!(lesson: 'Updated open lesson') }.to have_broadcasted_to(stream_name)
         expect(open_learning.reload.lesson).to eq('Updated open lesson')

@@ -1,18 +1,13 @@
 en:
   learnings:
+    not_found: "Learning not found"
     create:
       success: 'Your Learning "%{lesson}" is created successfully'
     destroy:
-      not_found: Learning to be deleted was not found
       success: 'Your Learning "%{lesson}" is removed successfully'
       error: Failed to remove Learning
-    show:
-      error: Learning not found
     edit:
       title: "Edit Learning"
-      not_found: "Learning to be updated was not found"
     update:
       success: 'Your Learning "%{lesson}" is updated successfully'
-      not_found: "Learning not found"
     cancel:
-      not_found: "Learning not found"

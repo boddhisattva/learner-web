@@ -3,6 +3,7 @@
 class LearningsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_learning, only: %i[edit update destroy cancel]
+  before_action :ensure_learning_exists!, only: %i[edit update destroy cancel]
   before_action :load_learning_categories, only: %i[new create edit]
 
   LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
@@ -37,15 +38,10 @@ class LearningsController < ApplicationController
   def show
     @learning = user_learnings_in_current_organization.includes(:categories).find_by(id: params[:id])
 
-    redirect_to learnings_path, status: :see_other, flash: { error: t('.error') } if @learning.blank?
+    redirect_to learnings_path, status: :see_other, flash: { error: t('learnings.not_found') } if @learning.blank?
   end
 
   def edit
-    if @learning.blank?
-      redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
-      return
-    end
-
     respond_to do |format|
       format.html do
         render partial: 'form', locals: { learning: @learning, learning_categories: @learning_categories } if turbo_frame_request?
@@ -54,26 +50,17 @@ class LearningsController < ApplicationController
   end
 
   def update
-    return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
-
     prepare_learning_for_update
     @learning.update(learnings_params) ? handle_update_success : handle_update_failure
   end
 
   def destroy
-    return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
-
     respond_to do |format|
       @learning.destroy ? handle_destroy_success(format) : handle_destroy_failure(format)
     end
   end
 
   def cancel
-    if @learning.blank?
-      redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
-      return
-    end
-
     respond_to do |format|
       format.turbo_stream { render :cancel }
       format.html { redirect_to learning_path(@learning), status: :see_other }
@@ -177,5 +164,11 @@ class LearningsController < ApplicationController
 
     def set_learning
       @learning = user_learnings_in_current_organization.find_by(id: params[:id])
+    end
+
+    def ensure_learning_exists!
+      return if @learning.present?
+
+      redirect_to learnings_path, status: :see_other, flash: { error: t('learnings.not_found') }
     end
 end

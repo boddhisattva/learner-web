@@ -46,6 +46,7 @@ class Learning < ApplicationRecord
   after_create :increment_membership_counter
   after_destroy :decrement_membership_counter
   after_restore :increment_membership_counter
+  after_real_destroy :decrement_membership_counter
 
   def self.search(query)
     where('lesson ILIKE ?', "%#{sanitize_sql_like(query)}%")

@@ -75,8 +75,6 @@ module Mobile
         end
 
         it 'can delete a learning via mobile interface' do
-          skip 'Failing when running entire test suite, needs more research'
-
           visit learnings_path
 
           expect(page).to have_content('Learning to Delete')

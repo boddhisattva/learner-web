@@ -37,11 +37,9 @@ class User < ApplicationRecord
 
   belongs_to :personal_organization, class_name: 'Organization', optional: true
 
-  # rubocop:disable Rails / InverseOf
-  has_many :memberships, dependent: :destroy, foreign_key: 'member_id'
-  has_many :learnings, dependent: :destroy, foreign_key: 'creator_id'
-  has_many :learning_categories, dependent: :destroy, foreign_key: 'creator_id'
-  # rubocop:enable Rails / InverseOf
+  has_many :memberships, dependent: :destroy, foreign_key: 'member_id', inverse_of: :member
+  has_many :learnings, dependent: :destroy, foreign_key: 'creator_id', inverse_of: :creator
+  has_many :learning_categories, dependent: :destroy, foreign_key: 'creator_id', inverse_of: :creator
 
   has_many :organizations, through: :memberships
 

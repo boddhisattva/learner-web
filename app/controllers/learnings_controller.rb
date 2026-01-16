@@ -6,6 +6,7 @@ class LearningsController < ApplicationController
   before_action :load_learning_categories, only: %i[new create edit]
 
   LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
+  LEARNING_CATEGORY_LIMIT = 100
 
   def index
     learnings_scope = user_learnings_in_current_organization
@@ -95,7 +96,7 @@ class LearningsController < ApplicationController
       @learning_categories = LearningCategory
                              .where(organization_id: current_organization.id)
                              .order(created_at: :desc)
-                             .limit(100)
+                             .limit(LEARNING_CATEGORY_LIMIT)
     end
 
     def user_learnings_in_current_organization

@@ -31,9 +31,6 @@
 #  fk_rails_...  (organization_id => organizations.id)
 #
 class Learning < ApplicationRecord
-  # TODO: Remove this L36 line in 1-2 days as Rails caches column information that was used earlier
-  # Hence safer to remove this in a few days
-  self.ignored_columns = %w[learning_category_ids]
   acts_as_paranoid
 
   validates :lesson, presence: true

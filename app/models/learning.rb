@@ -48,7 +48,7 @@ class Learning < ApplicationRecord
   after_restore :increment_membership_counter
 
   def self.search(query)
-    where('lesson ILIKE ?', "%#{query}%")
+    where('lesson ILIKE ?', "%#{sanitize_sql_like(query)}%")
   end
 
   private

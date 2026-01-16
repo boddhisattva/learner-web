@@ -83,7 +83,7 @@ class LearningsController < ApplicationController
   private
 
     def learnings_params
-      params.require(:learning).permit(:lesson, :description, :public_visibility, :organization_id, category_ids: [])
+      params.require(:learning).permit(:lesson, :description, :public_visibility, category_ids: [])
     end
 
     def load_paginated_learnings(page = 1)

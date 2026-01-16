@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveLearningCategoryIdsFromLearnings < ActiveRecord::Migration[8.1]
   def change
     remove_index :learnings, :learning_category_ids, using: 'gin'

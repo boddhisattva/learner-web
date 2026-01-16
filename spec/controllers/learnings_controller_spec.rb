@@ -149,7 +149,7 @@ RSpec.describe LearningsController, type: :controller do
       it 'redirects to index with error message' do
         get :show, params: { id: 'nonexistent' }
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.show.error'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
 
@@ -166,7 +166,7 @@ RSpec.describe LearningsController, type: :controller do
         get :show, params: { id: alice_learning.id }
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.show.error'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end
@@ -223,7 +223,7 @@ RSpec.describe LearningsController, type: :controller do
         expect do
           delete :destroy, params: { id: 'nonexistent' }
         end.not_to change(Learning, :count)
-        expect(flash.now[:error]).to eq(I18n.t('learnings.destroy.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
 
       it 'sets error flash message' do
@@ -252,7 +252,7 @@ RSpec.describe LearningsController, type: :controller do
         end.not_to change(Learning, :count)
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.destroy.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end
@@ -269,7 +269,7 @@ RSpec.describe LearningsController, type: :controller do
       it 'redirects to index with error message' do
         get :edit, params: { id: 'nonexistent' }
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.edit.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
 
@@ -286,7 +286,7 @@ RSpec.describe LearningsController, type: :controller do
         get :edit, params: { id: alice_learning.id }
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.edit.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end
@@ -346,7 +346,7 @@ RSpec.describe LearningsController, type: :controller do
       it 'redirects to index with error message' do
         patch :update, params: { id: 'nonexistent', learning: { lesson: 'Updated' } }
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.update.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
 
@@ -365,7 +365,7 @@ RSpec.describe LearningsController, type: :controller do
 
         expect(alice_learning.reload.lesson).to eq(original_lesson)
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.update.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end
@@ -397,7 +397,7 @@ RSpec.describe LearningsController, type: :controller do
         get :cancel, params: { id: 'nonexistent' }
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.cancel.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
 
@@ -414,7 +414,7 @@ RSpec.describe LearningsController, type: :controller do
         get :cancel, params: { id: alice_learning.id }
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.cancel.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end

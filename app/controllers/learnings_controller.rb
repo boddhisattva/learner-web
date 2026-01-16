@@ -8,7 +8,7 @@ class LearningsController < ApplicationController
   LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
 
   def index
-    learnings_scope = current_user_learnings
+    learnings_scope = user_learnings_in_current_organization
                       .order(created_at: :desc)
     learnings_scope = learnings_scope.search(params[:query]) if params[:query].present?
     @pagy, @learnings = pagy(learnings_scope)
@@ -34,7 +34,7 @@ class LearningsController < ApplicationController
   end
 
   def show
-    @learning = current_user_learnings.includes(:categories).find_by(id: params[:id])
+    @learning = user_learnings_in_current_organization.includes(:categories).find_by(id: params[:id])
 
     redirect_to learnings_path, status: :see_other, flash: { error: t('.error') } if @learning.blank?
   end
@@ -86,7 +86,7 @@ class LearningsController < ApplicationController
     end
 
     def load_paginated_learnings(page = 1)
-      @pagy, @learnings = pagy(current_user_learnings.order(created_at: :desc), page: page)
+      @pagy, @learnings = pagy(user_learnings_in_current_organization.order(created_at: :desc), page: page)
     end
 
     def load_learning_categories
@@ -98,7 +98,7 @@ class LearningsController < ApplicationController
                              .limit(100)
     end
 
-    def current_user_learnings
+    def user_learnings_in_current_organization
       return Learning.none unless current_organization
 
       current_user.learnings.where(organization_id: current_organization.id)
@@ -175,6 +175,6 @@ class LearningsController < ApplicationController
     end
 
     def set_learning
-      @learning = current_user_learnings.find_by(id: params[:id])
+      @learning = user_learnings_in_current_organization.find_by(id: params[:id])
     end
 end

@@ -84,4 +84,39 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
       expect(learning.lesson).not_to eq('')
     end
   end
+
+  describe 'canceling inline edit' do
+    it 'discards changes & returns to display view without saving', :js do
+      learning
+      visit learnings_path
+
+      page.current_window.resize_to(1200, 815)
+
+      expect(page).to have_content('Original Lesson')
+      expect(page).not_to have_field('Lesson')
+
+      within("turbo-frame##{dom_id(learning)}") do
+        find('a.button.is-warning').click
+      end
+
+      expect(page).to have_field('Lesson', with: 'Original Lesson')
+      expect(page).to have_field('Description', with: 'Original Description')
+      expect(page).to have_button('Update Learning')
+
+      fill_in 'Lesson', with: 'Changed Lesson'
+      fill_in 'Description', with: 'Changed Description'
+      click_link 'Cancel'
+
+      expect(page).not_to have_field('Lesson')
+      expect(page).not_to have_button('Update Learning')
+      expect(page).not_to have_link('Cancel')
+
+      expect(page).to have_content('Original Lesson')
+      expect(page).not_to have_content('Changed Lesson')
+
+      learning.reload
+      expect(learning.lesson).to eq('Original Lesson')
+      expect(learning.description).to eq('Original Description')
+    end
+  end
 end

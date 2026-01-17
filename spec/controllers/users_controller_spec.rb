@@ -5,101 +5,69 @@ require 'rails_helper'
 RSpec.describe UsersController, type: :controller do
 
   describe '#create' do
-
-    context 'with valid user attributes' do
-      let(:valid_attributes) do
-        {
-          user: {
-            first_name: 'Jim',
-            last_name: 'Weirich',
-            email: 'jim.weirich@test.com',
-            password: 'tester768'
-          }
+    let(:valid_attributes) do
+      {
+        user: {
+          first_name: 'Jim',
+          last_name: 'Weirich',
+          email: 'jim.weirich@test.com',
+          password: 'tester768'
         }
-      end
+      }
+    end
+    let(:invalid_attributes) do
+      {
+        user: {
+          first_name: 'Jim',
+          last_name: 'Weirich',
+          email: 'jim.weirich@test.com',
+          password: 'test'
+        }
+      }
+    end
+    let(:service) { instance_double(UserRegistration) }
 
-      it 'creates a new user, organisation with user name, membership & redirects to one\'s feed after successful sign up' do
-        expect do
-          post :create, params: valid_attributes
-        end.to change(User, :count).by(1)
-           .and change(Organization, :count).by(1)
-           .and change(Membership, :count).by(1)
+    context 'when service succeeds' do
+      it 'signs in user, redirects to learnings path with success message' do
+        allow(UserRegistration).to receive(:new).and_return(service)
+        allow(service).to receive(:call).and_return(true)
 
+        post :create, params: valid_attributes
+
+        expect(UserRegistration).to have_received(:new)
+        expect(service).to have_received(:call)
         expect(response).to have_http_status(:see_other)
-
-        newly_created_user = User.find_by(email: 'jim.weirich@test.com')
-        expect(newly_created_user).to be_present
-
-        expect(newly_created_user.personal_organization.name).to eq(newly_created_user.name)
-        expect(newly_created_user.email).to eq('jim.weirich@test.com')
-        expect(newly_created_user.first_name).to eq('Jim')
-        expect(newly_created_user.last_name).to eq('Weirich')
-
         expect(response).to redirect_to('/learnings')
-
         expect(flash[:success]).to eq(I18n.t('users.create.welcome', name: 'Jim Weirich'))
-      end
-
-      context 'when organization name already exists' do
-        before do
-          # Create user without factory callback to control organization creation
-          existing_user = User.create!(
-            first_name: 'Jim',
-            last_name: 'Weirich',
-            email: 'jim.existing@test.com',
-            password: 'password123'
-          )
-          organization = Organization.create!(name: 'Jim Weirich', owner: existing_user)
-          existing_user.update!(personal_organization: organization)
-          Membership.create!(member: existing_user, organization: organization)
-        end
-
-        it 'creates organization with unique name using sequential number suffix' do
-          expect do
-            post :create, params: valid_attributes
-          end.to change(User, :count).by(1)
-             .and change(Organization, :count).by(1)
-             .and change(Membership, :count).by(1)
-
-          newly_created_user = User.find_by(email: 'jim.weirich@test.com')
-          expect(newly_created_user).to be_present
-          newly_created_user.reload
-
-          expect(newly_created_user.personal_organization).to be_present
-          expect(newly_created_user.personal_organization.name).to eq('Jim Weirich 2')
-        end
       end
     end
 
-    # TODO: If needed, Look into adding a test case if organization name update fails
-    context 'with one or more invalid user attributes' do
-      let(:invalid_attributes) do
-        {
-          user: {
-            first_name: 'Jim',
-            last_name: 'Weirich',
-            email: 'jim.weirich@test.com',
-            password: 'test'
-          }
-        }
-      end
+    context 'when service fails' do
+      it 'renders new template with unprocessable entity status' do
+        allow(UserRegistration).to receive(:new).and_return(service)
+        allow(service).to receive(:call).and_return(false)
 
-      it 'renders errors if input data is invalid and no new users and organisations are created' do
-        # rubocop:disable RSpec / ChangeByZero
-        expect do
-          post :create, params: invalid_attributes
-        end.to change(User, :count).by(0)
-           .and change(Organization, :count).by(0)
-           .and change(Membership, :count).by(0)
-        # rubocop:enable RSpec / ChangeByZero
+        post :create, params: invalid_attributes
+
+        expect(UserRegistration).to have_received(:new)
+        expect(service).to have_received(:call)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to render_template('devise/registrations/new')
+      end
+    end
+
+    context 'when service raises an exception' do
+      let(:error_message) { 'Something went wrong' }
+
+      it 'logs error, renders new template with error message and unprocessable entity status' do
+        allow(UserRegistration).to receive(:new).and_return(service)
+        allow(service).to receive(:call).and_raise(StandardError.new(error_message))
+
+        post :create, params: valid_attributes
 
         expect(response).to have_http_status(:unprocessable_entity)
-
         expect(response).to render_template('devise/registrations/new')
-
-        expect(flash[:error].first)
-          .to eq("Password #{I18n.t('activerecord.errors.models.user.attributes.password.too_short')}")
-
+        expect(flash[:error]).to eq(["Error: #{error_message}. Please try again."])
       end
     end
   end

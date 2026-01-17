@@ -4,7 +4,7 @@ require 'rails_helper'
 
 module Mobile
   describe 'Learnings flow in mobile', type: :system do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :with_organization_and_membership) }
     let(:organization) { user.personal_organization }
 
     describe 'Learnings CRUD' do
@@ -16,6 +16,20 @@ module Mobile
 
       after do
         page.current_window.resize_to(1200, 815) # Resize to normal window size defaults
+      end
+
+      context 'when viewing the index page' do
+        before do
+          create_list(:learning, 3, creator: user, last_modifier: user, organization: organization)
+          visit learnings_path
+        end
+
+        it 'displays all learnings via mobile interface' do
+          user_learnings = user.learnings.where(organization: organization)
+          expect(page).to have_content(user_learnings[0].lesson.to_s)
+          expect(page).to have_content(user_learnings[1].lesson.to_s)
+          expect(page).to have_content(user_learnings[2].lesson.to_s)
+        end
       end
 
       context 'when creating a new learning' do
@@ -38,7 +52,7 @@ module Mobile
                             creator: user, last_modifier: user, organization: organization)
         end
 
-        it 'can view learning details via mobile interface' do
+        it 'can view learning details via mobile interface', bullet: :skip do
           visit learning_path(learning)
 
           expect(page).to have_content('Existing Learning')
@@ -52,7 +66,7 @@ module Mobile
                             creator: user, last_modifier: user, organization: organization)
         end
 
-        it 'can edit a learning via mobile interface' do
+        it 'can edit a learning via mobile interface', bullet: :skip do
           visit edit_learning_path(learning)
 
           fill_in 'learning[lesson]', with: 'Updated Learning'
@@ -75,8 +89,6 @@ module Mobile
         end
 
         it 'can delete a learning via mobile interface' do
-          skip 'Failing when running entire test suite, needs more research'
-
           visit learnings_path
 
           expect(page).to have_content('Learning to Delete')

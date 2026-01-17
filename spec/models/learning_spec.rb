@@ -22,6 +22,7 @@
 #  index_learnings_on_deleted_at                      (deleted_at)
 #  index_learnings_on_last_modifier_id                (last_modifier_id)
 #  index_learnings_on_lesson                          (lesson)
+#  index_learnings_on_lesson_trgm                     (lesson) USING gin
 #  index_learnings_on_organization_id                 (organization_id)
 #
 # Foreign Keys
@@ -46,7 +47,7 @@ RSpec.describe Learning, type: :model do
   end
 
   describe '#categories' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :with_organization_and_membership) }
     let(:organization) { user.personal_organization }
     let(:category) { create(:learning_category, creator: user, organization: organization) }
     let(:another_category) { create(:learning_category, creator: user, organization: organization) }

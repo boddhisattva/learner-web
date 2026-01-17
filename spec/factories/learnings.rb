@@ -22,6 +22,7 @@
 #  index_learnings_on_deleted_at                      (deleted_at)
 #  index_learnings_on_last_modifier_id                (last_modifier_id)
 #  index_learnings_on_lesson                          (lesson)
+#  index_learnings_on_lesson_trgm                     (lesson) USING gin
 #  index_learnings_on_organization_id                 (organization_id)
 #
 # Foreign Keys
@@ -34,7 +35,7 @@ FactoryBot.define do
   factory :learning do
     sequence(:lesson) { |n| "Learning #{n}" }
     description { 'MyText' }
-    creator { create(:user) }
+    creator { create(:user, :with_organization_and_membership) }
     deleted_at { '' }
     public_visibility { false }
     last_modifier { creator }

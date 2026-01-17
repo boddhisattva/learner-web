@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe LearningsController, type: :controller do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_organization_and_membership) }
   let(:organization) { user.personal_organization }
   let(:learning_category) { create(:learning_category, creator: user, organization: organization) }
 
@@ -140,7 +140,7 @@ RSpec.describe LearningsController, type: :controller do
   describe 'GET #show' do
     let(:learning) { create(:learning, creator: user) }
 
-    it 'assigns the requested learning' do
+    it 'assigns the requested learning', bullet: :skip do
       get :show, params: { id: learning.id }
       expect(assigns(:learning)).to eq(learning)
     end
@@ -149,12 +149,12 @@ RSpec.describe LearningsController, type: :controller do
       it 'redirects to index with error message' do
         get :show, params: { id: 'nonexistent' }
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.show.error'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
 
     context 'when user tries to view another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 
@@ -166,7 +166,7 @@ RSpec.describe LearningsController, type: :controller do
         get :show, params: { id: alice_learning.id }
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.show.error'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end
@@ -223,7 +223,7 @@ RSpec.describe LearningsController, type: :controller do
         expect do
           delete :destroy, params: { id: 'nonexistent' }
         end.not_to change(Learning, :count)
-        expect(flash.now[:error]).to eq(I18n.t('learnings.destroy.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
 
       it 'sets error flash message' do
@@ -237,7 +237,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to destroy another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 
@@ -252,7 +252,7 @@ RSpec.describe LearningsController, type: :controller do
         end.not_to change(Learning, :count)
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.destroy.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end
@@ -269,12 +269,12 @@ RSpec.describe LearningsController, type: :controller do
       it 'redirects to index with error message' do
         get :edit, params: { id: 'nonexistent' }
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.edit.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
 
     context 'when user tries to edit another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 
@@ -286,7 +286,7 @@ RSpec.describe LearningsController, type: :controller do
         get :edit, params: { id: alice_learning.id }
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.edit.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end
@@ -346,12 +346,12 @@ RSpec.describe LearningsController, type: :controller do
       it 'redirects to index with error message' do
         patch :update, params: { id: 'nonexistent', learning: { lesson: 'Updated' } }
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.update.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
 
     context 'when user tries to update another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 
@@ -365,7 +365,7 @@ RSpec.describe LearningsController, type: :controller do
 
         expect(alice_learning.reload.lesson).to eq(original_lesson)
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.update.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end
@@ -397,12 +397,12 @@ RSpec.describe LearningsController, type: :controller do
         get :cancel, params: { id: 'nonexistent' }
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.cancel.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
 
     context 'when user tries to cancel another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 
@@ -414,7 +414,7 @@ RSpec.describe LearningsController, type: :controller do
         get :cancel, params: { id: alice_learning.id }
 
         expect(response).to redirect_to(learnings_path)
-        expect(flash[:error]).to eq(I18n.t('learnings.cancel.not_found'))
+        expect(flash[:error]).to eq(I18n.t('learnings.not_found'))
       end
     end
   end

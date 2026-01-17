@@ -33,13 +33,12 @@ FactoryBot.define do
     sequence(:email) { |n| "person_#{n}@example.com" }
     password { 'MyString' }
 
-    after(:create) do |user|
-
-      organization = Organization.create!(name: user.name, owner: user)
-
-      user.update!(personal_organization: organization)
-
-      Membership.find_or_create_by!(member: user, organization: organization)
+    trait :with_organization_and_membership do
+      after(:create) do |user|
+        organization = Organization.create!(name: user.name, owner: user)
+        user.update!(personal_organization: organization)
+        Membership.find_or_create_by!(member: user, organization: organization)
+      end
     end
   end
 end

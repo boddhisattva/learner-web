@@ -22,6 +22,7 @@
 #  index_learnings_on_deleted_at                      (deleted_at)
 #  index_learnings_on_last_modifier_id                (last_modifier_id)
 #  index_learnings_on_lesson                          (lesson)
+#  index_learnings_on_lesson_trgm                     (lesson) USING gin
 #  index_learnings_on_organization_id                 (organization_id)
 #
 # Foreign Keys
@@ -31,9 +32,6 @@
 #  fk_rails_...  (organization_id => organizations.id)
 #
 class Learning < ApplicationRecord
-  # TODO: Remove this L36 line in 1-2 days as Rails caches column information that was used earlier
-  # Hence safer to remove this in a few days
-  self.ignored_columns = %w[learning_category_ids]
   acts_as_paranoid
 
   validates :lesson, presence: true
@@ -49,9 +47,10 @@ class Learning < ApplicationRecord
   after_create :increment_membership_counter
   after_destroy :decrement_membership_counter
   after_restore :increment_membership_counter
+  after_real_destroy :decrement_membership_counter
 
   def self.search(query)
-    where('lesson ILIKE ?', "%#{query}%")
+    where('lesson ILIKE ?', "%#{sanitize_sql_like(query)}%")
   end
 
   private

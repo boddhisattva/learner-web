@@ -41,23 +41,23 @@ discipline_category = LearningCategory.find_or_create_by!(name: 'Discipline', or
   cat.last_modifier_id = user.id
 end
 
-Learning.find_or_create_by!(lesson: 'Karm kar Phal ki chinta na kar',
-                            creator: user,
-                            organization: personal_organization) do |learning|
-  learning.category_ids = [discipline_category.id]
+learning = Learning.find_or_create_by!(lesson: 'Karm kar Phal ki chinta na kar',
+                                       creator: user,
+                                       organization: personal_organization) do |learning|
   learning.last_modifier_id = user.id
 end
+learning.update!(category_ids: [discipline_category.id])
 
 100.times do |n|
   lesson_name = "What is delayed is not denied #{n + 1}"
   learning = Learning.find_or_create_by!(lesson: lesson_name,
                                          creator: user,
                                          organization: personal_organization) do |l|
-    l.category_ids = [discipline_category.id]
     l.last_modifier_id = user.id
   end
   # Update lesson and description to match actual ID after creation/finding
   learning.update!(lesson: "What is delayed is not denied #{learning.id}",
                    description: "Description for learning #{learning.id}",
+                   category_ids: [discipline_category.id],
                    last_modifier_id: user.id)
 end

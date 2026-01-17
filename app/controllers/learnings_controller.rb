@@ -3,12 +3,14 @@
 class LearningsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_learning, only: %i[edit update destroy cancel]
+  before_action :ensure_learning_exists!, only: %i[edit update destroy cancel]
   before_action :load_learning_categories, only: %i[new create edit]
 
   LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
+  LEARNING_CATEGORY_LIMIT = 100
 
   def index
-    learnings_scope = current_user_learnings
+    learnings_scope = user_learnings_in_current_organization
                       .order(created_at: :desc)
     learnings_scope = learnings_scope.search(params[:query]) if params[:query].present?
     @pagy, @learnings = pagy(learnings_scope)
@@ -28,23 +30,22 @@ class LearningsController < ApplicationController
     @learning.last_modifier_id = current_user.id
     @learning.organization_id = current_organization.id
 
-    respond_to do |format|
-      @learning.save ? handle_create_success(format) : handle_create_failure(format)
+    if @learning.save
+      render_success_with_learnings_list(page: 1, status: :created, template: :create)
+    else
+      render_failure(template: :new)
     end
   end
 
   def show
-    @learning = current_user_learnings.includes(:categories).find_by(id: params[:id])
+    @learning = user_learnings_in_current_organization
+                .includes(:categories, :creator, :last_modifier, :organization)
+                .find_by(id: params[:id])
 
-    redirect_to learnings_path, status: :see_other, flash: { error: t('.error') } if @learning.blank?
+    redirect_to learnings_path, status: :see_other, flash: { error: t('learnings.not_found') } if @learning.blank?
   end
 
   def edit
-    if @learning.blank?
-      redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
-      return
-    end
-
     respond_to do |format|
       format.html do
         render partial: 'form', locals: { learning: @learning, learning_categories: @learning_categories } if turbo_frame_request?
@@ -53,26 +54,46 @@ class LearningsController < ApplicationController
   end
 
   def update
-    return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
-
     prepare_learning_for_update
-    @learning.update(learnings_params) ? handle_update_success : handle_update_failure
+
+    if @learning.update(learnings_params)
+      if turbo_frame_request?
+        flash.now[:success] = t('.success', lesson: @learning.lesson)
+        render :update, status: :ok
+      else
+        redirect_to learning_path(@learning),
+                    status: :see_other,
+                    flash: { success: t('.success', lesson: @learning.lesson) }
+      end
+    else
+      load_learning_categories
+
+      if turbo_frame_request?
+        render partial: 'form',
+               locals: { learning: @learning, learning_categories: @learning_categories },
+               status: :unprocessable_entity
+      else
+        flash.now[:error] = @learning.errors.full_messages
+        render :edit, status: :unprocessable_entity
+      end
+    end
   end
 
   def destroy
-    return redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') } if @learning.blank?
+    if @learning.destroy
+      render_success_with_learnings_list(status: :see_other, template: :destroy)
+    else
+      load_paginated_learnings
+      flash.now[:error] = @learning.errors.full_messages
 
-    respond_to do |format|
-      @learning.destroy ? handle_destroy_success(format) : handle_destroy_failure(format)
+      respond_to do |format|
+        format.turbo_stream { render :destroy, status: :see_other }
+        format.html { redirect_to learnings_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
+      end
     end
   end
 
   def cancel
-    if @learning.blank?
-      redirect_to learnings_path, status: :see_other, flash: { error: t('.not_found') }
-      return
-    end
-
     respond_to do |format|
       format.turbo_stream { render :cancel }
       format.html { redirect_to learning_path(@learning), status: :see_other }
@@ -82,11 +103,11 @@ class LearningsController < ApplicationController
   private
 
     def learnings_params
-      params.require(:learning).permit(:lesson, :description, :public_visibility, :organization_id, category_ids: [])
+      params.require(:learning).permit(:lesson, :description, :public_visibility, category_ids: [])
     end
 
     def load_paginated_learnings(page = 1)
-      @pagy, @learnings = pagy(current_user_learnings.order(created_at: :desc), page: page)
+      @pagy, @learnings = pagy(user_learnings_in_current_organization.order(created_at: :desc), page: page)
     end
 
     def load_learning_categories
@@ -95,10 +116,10 @@ class LearningsController < ApplicationController
       @learning_categories = LearningCategory
                              .where(organization_id: current_organization.id)
                              .order(created_at: :desc)
-                             .limit(100)
+                             .limit(LEARNING_CATEGORY_LIMIT)
     end
 
-    def current_user_learnings
+    def user_learnings_in_current_organization
       return Learning.none unless current_organization
 
       current_user.learnings.where(organization_id: current_organization.id)
@@ -112,61 +133,26 @@ class LearningsController < ApplicationController
       end
     end
 
-    def handle_success(format, action:, page: nil, status: :ok)
+    def render_success_with_learnings_list(status:, template:, page: nil)
       flash.now[:success] = t('.success', lesson: @learning.lesson)
       load_paginated_learnings(page)
 
-      format.turbo_stream { render action, status: status }
-      format.html do
-        redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
+      respond_to do |format|
+        format.turbo_stream { render template, status: status }
+        format.html do
+          redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
+        end
       end
     end
 
-    def handle_create_success(format)
-      # Explicitly load page 1 after creating a new learning to see latest learnings first
-      handle_success(format, action: :create, page: 1, status: :created)
-    end
-
-    def handle_create_failure(format)
-      format.turbo_stream { render :new, status: :unprocessable_entity }
-      format.html do
-        flash.now[:error] = @learning.errors.full_messages
-        render :new, status: :unprocessable_entity
+    def render_failure(template:)
+      respond_to do |format|
+        format.turbo_stream { render template, status: :unprocessable_entity }
+        format.html do
+          flash.now[:error] = @learning.errors.full_messages
+          render template, status: :unprocessable_entity
+        end
       end
-    end
-
-    def handle_update_success
-      if turbo_frame_request?
-        flash.now[:success] = t('.success', lesson: @learning.lesson)
-        render :update, status: :ok
-      else
-        redirect_to learning_path(@learning),
-                    status: :see_other,
-                    flash: { success: t('.success', lesson: @learning.lesson) }
-      end
-    end
-
-    def handle_update_failure
-      load_learning_categories
-      if turbo_frame_request?
-        render partial: 'form',
-               locals: { learning: @learning, learning_categories: @learning_categories },
-               status: :unprocessable_entity
-      else
-        flash.now[:error] = @learning.errors.full_messages
-        render :edit, status: :unprocessable_entity
-      end
-    end
-
-    def handle_destroy_success(format)
-      handle_success(format, action: :destroy, status: :see_other)
-    end
-
-    def handle_destroy_failure(format)
-      load_paginated_learnings
-      flash.now[:error] = @learning.errors.full_messages
-      format.turbo_stream { render :destroy, status: :see_other }
-      format.html { redirect_to learnings_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
     end
 
     def prepare_learning_for_update
@@ -175,6 +161,12 @@ class LearningsController < ApplicationController
     end
 
     def set_learning
-      @learning = current_user_learnings.find_by(id: params[:id])
+      @learning = user_learnings_in_current_organization.find_by(id: params[:id])
+    end
+
+    def ensure_learning_exists!
+      return if @learning.present?
+
+      redirect_to learnings_path, status: :see_other, flash: { error: t('learnings.not_found') }
     end
 end

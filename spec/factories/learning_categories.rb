@@ -33,7 +33,7 @@ FactoryBot.define do
   factory :learning_category do
     sequence(:name) { |n| "Category #{n}" }
     description { 'MyText' }
-    association :creator, factory: :user
+    creator { create(:user, :with_organization_and_membership) }
     last_modifier { creator }
     organization { creator.personal_organization }
     deleted_at { '' }

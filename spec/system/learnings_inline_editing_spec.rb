@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Learnings Inline Editing', type: :system do
   include ActionView::RecordIdentifier
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_organization_and_membership) }
   let(:organization) { user.personal_organization }
   let(:learning) do
     create(:learning,
@@ -36,7 +36,7 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
         find('a.button.is-warning').click
       end
 
-      expect(page).to have_field('Lesson', with: 'Original Lesson', wait: 10)
+      expect(page).to have_field('Lesson', with: 'Original Lesson')
       expect(page).to have_field('Description', with: 'Original Description')
       expect(page).to have_button('Update Learning')
 
@@ -60,23 +60,18 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
       learning
       visit learnings_path
 
-      # Ensure desktop viewport (in case previous mobile tests changed it)
       page.current_window.resize_to(1200, 815)
-      # sleep 0.5 # Allow page to stabilize after resize
 
-      # Action: Click edit button
       within("turbo-frame##{dom_id(learning)}") do
         find('a.button.is-warning').click
       end
 
-      # Outcome: Form loads
-      expect(page).to have_field('Lesson', with: 'Original Lesson', wait: 10)
+      expect(page).to have_field('Lesson', with: 'Original Lesson')
 
       fill_in 'Lesson', with: ''
       fill_in 'Description', with: 'This description should be preserved'
       click_button 'Update Learning'
 
-      # Outcome: Still in edit mode
       expect(page).to have_field('Lesson')
       expect(page).to have_button('Update Learning')
 
@@ -87,6 +82,41 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
       learning.reload
       expect(learning.lesson).to eq('Original Lesson')
       expect(learning.lesson).not_to eq('')
+    end
+  end
+
+  describe 'canceling inline edit' do
+    it 'discards changes & returns to display view without saving', :js do
+      learning
+      visit learnings_path
+
+      page.current_window.resize_to(1200, 815)
+
+      expect(page).to have_content('Original Lesson')
+      expect(page).not_to have_field('Lesson')
+
+      within("turbo-frame##{dom_id(learning)}") do
+        find('a.button.is-warning').click
+      end
+
+      expect(page).to have_field('Lesson', with: 'Original Lesson')
+      expect(page).to have_field('Description', with: 'Original Description')
+      expect(page).to have_button('Update Learning')
+
+      fill_in 'Lesson', with: 'Changed Lesson'
+      fill_in 'Description', with: 'Changed Description'
+      click_link 'Cancel'
+
+      expect(page).not_to have_field('Lesson')
+      expect(page).not_to have_button('Update Learning')
+      expect(page).not_to have_link('Cancel')
+
+      expect(page).to have_content('Original Lesson')
+      expect(page).not_to have_content('Changed Lesson')
+
+      learning.reload
+      expect(learning.lesson).to eq('Original Lesson')
+      expect(learning.description).to eq('Original Description')
     end
   end
 end

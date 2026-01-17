@@ -10,7 +10,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    if create_user_with_organization
+    if UserRegistration.new(@user).call
       handle_successful_creation
     else
       handle_failed_creation
@@ -44,30 +44,11 @@ class UsersController < ApplicationController
     end
 
     def handle_creation_error(error)
-      Rails.logger.error "User creation failed: #{error.message}"
-      Rails.logger.error error.backtrace.join("\n")
       flash.now[:error] = ["Error: #{error.message}. Please try again."]
       render '/devise/registrations/new', status: :unprocessable_entity
     end
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :password)
-    end
-
-    def create_user_with_organization
-      ActiveRecord::Base.transaction do
-        return false unless @user.save
-
-        organization = Organization.create!(name: @user.generate_unique_organization_name, owner: @user)
-
-        @user.update!(personal_organization: organization)
-
-        Membership.create!(member: @user, organization: organization)
-
-        true
-      end
-    rescue ActiveRecord::RecordInvalid => e
-      @user.errors.add(:base, "Organization: #{e.record.errors.full_messages.join(', ')}") if e.record.is_a?(Organization)
-      false
     end
 end

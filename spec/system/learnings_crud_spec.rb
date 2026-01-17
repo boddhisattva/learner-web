@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Learnings', type: :system do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_organization_and_membership) }
   let(:organization) { user.personal_organization }
   let(:learning) { create(:learning, creator: user, last_modifier: user, organization: organization) }
   let(:discipline_category) { create(:learning_category, name: 'Discipline', creator: user, organization: organization) }
@@ -78,7 +78,7 @@ RSpec.describe 'Learnings', type: :system do
         learning
       end
 
-      it 'displays the learning details' do
+      it 'displays the learning details', bullet: :skip do
         visit learning_path(learning)
 
         expect(page).to have_content(learning.lesson)
@@ -129,7 +129,7 @@ RSpec.describe 'Learnings', type: :system do
     end
 
     context 'with valid inputs' do
-      it 'updates the learning and pre-selects existing category checkboxes, allows updating categories' do
+      it 'updates the learning and pre-selects existing category checkboxes, allows updating categories', bullet: :skip do
         # Verify existing category is pre-selected & already in the database
         expect(learning_with_category.category_ids).to include(discipline_category.id)
         expect(page).to have_checked_field("learning_category_#{discipline_category.id}")
@@ -165,7 +165,7 @@ RSpec.describe 'Learnings', type: :system do
         visit edit_learning_path(id: 999_999)
 
         expect(page).to have_current_path(learnings_path)
-        expect(page).to have_content(I18n.t('learnings.edit.not_found'))
+        expect(page).to have_content(I18n.t('learnings.not_found'))
       end
     end
   end

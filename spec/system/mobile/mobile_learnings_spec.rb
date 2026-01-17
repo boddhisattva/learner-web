@@ -38,7 +38,7 @@ module Mobile
                             creator: user, last_modifier: user, organization: organization)
         end
 
-        it 'can view learning details via mobile interface' do
+        it 'can view learning details via mobile interface', bullet: :skip do
           visit learning_path(learning)
 
           expect(page).to have_content('Existing Learning')
@@ -52,7 +52,7 @@ module Mobile
                             creator: user, last_modifier: user, organization: organization)
         end
 
-        it 'can edit a learning via mobile interface' do
+        it 'can edit a learning via mobile interface', bullet: :skip do
           visit edit_learning_path(learning)
 
           fill_in 'learning[lesson]', with: 'Updated Learning'

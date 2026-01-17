@@ -36,7 +36,9 @@ class LearningsController < ApplicationController
   end
 
   def show
-    @learning = user_learnings_in_current_organization.includes(:categories).find_by(id: params[:id])
+    @learning = user_learnings_in_current_organization
+                .includes(:categories, :creator, :last_modifier, :organization)
+                .find_by(id: params[:id])
 
     redirect_to learnings_path, status: :see_other, flash: { error: t('learnings.not_found') } if @learning.blank?
   end

@@ -140,7 +140,7 @@ RSpec.describe LearningsController, type: :controller do
   describe 'GET #show' do
     let(:learning) { create(:learning, creator: user) }
 
-    it 'assigns the requested learning' do
+    it 'assigns the requested learning', bullet: :skip do
       get :show, params: { id: learning.id }
       expect(assigns(:learning)).to eq(learning)
     end

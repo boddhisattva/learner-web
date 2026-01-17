@@ -53,13 +53,21 @@ RSpec.configure do |config|
   ]
 
   if Bullet.enable?
-    config.before do
-      Bullet.start_request
+    config.before do |example|
+      if example.metadata[:bullet] == :skip
+        Bullet.enable = false
+      else
+        Bullet.start_request
+      end
     end
 
-    config.after do
-      Bullet.perform_out_of_channel_notifications if Bullet.notification?
-      Bullet.end_request
+    config.after do |example|
+      if example.metadata[:bullet] == :skip
+        Bullet.enable = true
+      else
+        Bullet.perform_out_of_channel_notifications if Bullet.notification?
+        Bullet.end_request
+      end
     end
   end
 

@@ -36,7 +36,7 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
         find('a.button.is-warning').click
       end
 
-      expect(page).to have_field('Lesson', with: 'Original Lesson', wait: 10)
+      expect(page).to have_field('Lesson', with: 'Original Lesson')
       expect(page).to have_field('Description', with: 'Original Description')
       expect(page).to have_button('Update Learning')
 
@@ -60,23 +60,18 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
       learning
       visit learnings_path
 
-      # Ensure desktop viewport (in case previous mobile tests changed it)
       page.current_window.resize_to(1200, 815)
-      # sleep 0.5 # Allow page to stabilize after resize
 
-      # Action: Click edit button
       within("turbo-frame##{dom_id(learning)}") do
         find('a.button.is-warning').click
       end
 
-      # Outcome: Form loads
-      expect(page).to have_field('Lesson', with: 'Original Lesson', wait: 10)
+      expect(page).to have_field('Lesson', with: 'Original Lesson')
 
       fill_in 'Lesson', with: ''
       fill_in 'Description', with: 'This description should be preserved'
       click_button 'Update Learning'
 
-      # Outcome: Still in edit mode
       expect(page).to have_field('Lesson')
       expect(page).to have_button('Update Learning')
 

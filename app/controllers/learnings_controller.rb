@@ -30,8 +30,10 @@ class LearningsController < ApplicationController
     @learning.last_modifier_id = current_user.id
     @learning.organization_id = current_organization.id
 
-    respond_to do |format|
-      @learning.save ? handle_create_success(format) : handle_create_failure(format)
+    if @learning.save
+      render_success_with_learnings_list(page: 1, status: :created, template: :create)
+    else
+      render_failure(template: :new)
     end
   end
 
@@ -53,12 +55,41 @@ class LearningsController < ApplicationController
 
   def update
     prepare_learning_for_update
-    @learning.update(learnings_params) ? handle_update_success : handle_update_failure
+
+    if @learning.update(learnings_params)
+      if turbo_frame_request?
+        flash.now[:success] = t('.success', lesson: @learning.lesson)
+        render :update, status: :ok
+      else
+        redirect_to learning_path(@learning),
+                    status: :see_other,
+                    flash: { success: t('.success', lesson: @learning.lesson) }
+      end
+    else
+      load_learning_categories
+
+      if turbo_frame_request?
+        render partial: 'form',
+               locals: { learning: @learning, learning_categories: @learning_categories },
+               status: :unprocessable_entity
+      else
+        flash.now[:error] = @learning.errors.full_messages
+        render :edit, status: :unprocessable_entity
+      end
+    end
   end
 
   def destroy
-    respond_to do |format|
-      @learning.destroy ? handle_destroy_success(format) : handle_destroy_failure(format)
+    if @learning.destroy
+      render_success_with_learnings_list(status: :see_other, template: :destroy)
+    else
+      load_paginated_learnings
+      flash.now[:error] = @learning.errors.full_messages
+
+      respond_to do |format|
+        format.turbo_stream { render :destroy, status: :see_other }
+        format.html { redirect_to learnings_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
+      end
     end
   end
 
@@ -102,61 +133,26 @@ class LearningsController < ApplicationController
       end
     end
 
-    def handle_success(format, action:, page: nil, status: :ok)
+    def render_success_with_learnings_list(status:, template:, page: nil)
       flash.now[:success] = t('.success', lesson: @learning.lesson)
       load_paginated_learnings(page)
 
-      format.turbo_stream { render action, status: status }
-      format.html do
-        redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
+      respond_to do |format|
+        format.turbo_stream { render template, status: status }
+        format.html do
+          redirect_to learnings_path, status: :see_other, flash: { success: t('.success', lesson: @learning.lesson) }
+        end
       end
     end
 
-    def handle_create_success(format)
-      # Explicitly load page 1 after creating a new learning to see latest learnings first
-      handle_success(format, action: :create, page: 1, status: :created)
-    end
-
-    def handle_create_failure(format)
-      format.turbo_stream { render :new, status: :unprocessable_entity }
-      format.html do
-        flash.now[:error] = @learning.errors.full_messages
-        render :new, status: :unprocessable_entity
+    def render_failure(template:)
+      respond_to do |format|
+        format.turbo_stream { render template, status: :unprocessable_entity }
+        format.html do
+          flash.now[:error] = @learning.errors.full_messages
+          render template, status: :unprocessable_entity
+        end
       end
-    end
-
-    def handle_update_success
-      if turbo_frame_request?
-        flash.now[:success] = t('.success', lesson: @learning.lesson)
-        render :update, status: :ok
-      else
-        redirect_to learning_path(@learning),
-                    status: :see_other,
-                    flash: { success: t('.success', lesson: @learning.lesson) }
-      end
-    end
-
-    def handle_update_failure
-      load_learning_categories
-      if turbo_frame_request?
-        render partial: 'form',
-               locals: { learning: @learning, learning_categories: @learning_categories },
-               status: :unprocessable_entity
-      else
-        flash.now[:error] = @learning.errors.full_messages
-        render :edit, status: :unprocessable_entity
-      end
-    end
-
-    def handle_destroy_success(format)
-      handle_success(format, action: :destroy, status: :see_other)
-    end
-
-    def handle_destroy_failure(format)
-      load_paginated_learnings
-      flash.now[:error] = @learning.errors.full_messages
-      format.turbo_stream { render :destroy, status: :see_other }
-      format.html { redirect_to learnings_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
     end
 
     def prepare_learning_for_update

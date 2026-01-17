@@ -82,4 +82,26 @@ RSpec.describe 'Inline Learning Creation', type: :system do
       expect(current_path).to eq(learnings_path)
     end
   end
+
+  describe 'canceling new learning form' do
+    it 'clears form and scrolls back to New Learning link when user cancels', :js do
+      visit learnings_path
+
+      click_link 'New Learning'
+
+      expect(page).to have_selector('#new_learning_form form', wait: 5)
+
+      expect(page).to have_content('Learning categories')
+
+      fill_in 'Lesson', with: 'Test Learning'
+
+      click_button 'Cancel'
+
+      expect(page).not_to have_selector('#new_learning_form form')
+
+      expect(page).not_to have_field('Lesson')
+
+      expect(page).not_to have_content('Learning categories')
+    end
+  end
 end

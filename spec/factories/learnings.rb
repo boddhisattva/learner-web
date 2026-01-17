@@ -34,7 +34,7 @@ FactoryBot.define do
   factory :learning do
     sequence(:lesson) { |n| "Learning #{n}" }
     description { 'MyText' }
-    creator { create(:user) }
+    creator { create(:user, :with_organization_and_membership) }
     deleted_at { '' }
     public_visibility { false }
     last_modifier { creator }

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Learnings Search', :js, type: :system do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_organization_and_membership) }
   let(:organization) { user.personal_organization }
 
   before do

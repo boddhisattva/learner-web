@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe LearningsController, type: :controller do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_organization_and_membership) }
   let(:organization) { user.personal_organization }
   let(:learning_category) { create(:learning_category, creator: user, organization: organization) }
 
@@ -154,7 +154,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to view another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 
@@ -237,7 +237,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to destroy another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 
@@ -274,7 +274,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to edit another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 
@@ -351,7 +351,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to update another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 
@@ -402,7 +402,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to cancel another users learning' do
-      let(:alice) { create(:user) }
+      let(:alice) { create(:user, :with_organization_and_membership) }
       let(:bob) { create(:user) }
       let(:alice_learning) { create(:learning, creator: alice) }
 

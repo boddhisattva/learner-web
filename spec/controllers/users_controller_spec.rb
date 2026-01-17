@@ -73,7 +73,9 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe '#update' do
-    let(:user)         { create(:user, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ') }
+    let(:user) do
+      create(:user, :with_organization_and_membership, first_name: '  Rachel ', last_name: ' Longwood', email: '  rachel@xyz.com ')
+    end
     let(:organization) { user.personal_organization }
 
     before do

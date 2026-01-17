@@ -46,7 +46,7 @@ RSpec.describe Learning, type: :model do
   end
 
   describe '#categories' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :with_organization_and_membership) }
     let(:organization) { user.personal_organization }
     let(:category) { create(:learning_category, creator: user, organization: organization) }
     let(:another_category) { create(:learning_category, creator: user, organization: organization) }

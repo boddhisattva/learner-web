@@ -3,14 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe 'Learning Form Reset Functionality', type: :system do
-  let(:user) { create(:user) }
-  let(:organization) { create(:organization) }
-  let(:membership) { create(:membership, member: user, organization: organization) }
+  let(:user) { create(:user, :with_organization_and_membership) }
+  let(:organization) { user.personal_organization }
 
   before do
     sign_in user
-    organization
-    membership
   end
 
   describe 'canceling new learning form', :js do

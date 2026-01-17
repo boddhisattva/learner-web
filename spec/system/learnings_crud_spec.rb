@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Learnings', type: :system do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_organization_and_membership) }
   let(:organization) { user.personal_organization }
   let(:learning) { create(:learning, creator: user, last_modifier: user, organization: organization) }
   let(:discipline_category) { create(:learning_category, name: 'Discipline', creator: user, organization: organization) }

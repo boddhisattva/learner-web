@@ -4,7 +4,7 @@ require 'rails_helper'
 
 module Mobile
   describe 'Learnings flow in mobile', type: :system do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :with_organization_and_membership) }
     let(:organization) { user.personal_organization }
 
     describe 'Learnings CRUD' do

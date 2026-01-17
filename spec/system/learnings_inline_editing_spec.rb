@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Learnings Inline Editing', type: :system do
   include ActionView::RecordIdentifier
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_organization_and_membership) }
   let(:organization) { user.personal_organization }
   let(:learning) do
     create(:learning,

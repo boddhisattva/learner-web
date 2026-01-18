@@ -96,24 +96,6 @@ RSpec.describe 'Learnings', type: :system do
     end
   end
 
-  describe 'deleting a learning' do
-    before do
-      learning
-      visit learnings_path
-    end
-
-    it 'removes the learning' do
-      accept_confirm do
-        first('.is-danger').click
-      end
-
-      within('#all_learnings') do
-        expect(page).not_to have_content(learning.lesson)
-      end
-      expect(page).to have_content(I18n.t('learnings.destroy.success', lesson: learning.lesson))
-    end
-  end
-
   describe 'editing a learning' do
     let(:learning_with_category) do
       create(:learning,

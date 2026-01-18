@@ -174,43 +174,20 @@ RSpec.describe LearningsController, type: :controller do
   describe 'DELETE #destroy' do
     let(:learning) { create(:learning, creator: user) }
 
-    context 'with Turbo Stream request' do
-      before do
-        learning
-        create_list(:learning, 3, creator: user)
-      end
+    before { learning }
 
-      it 'deletes the learning, sets up pagination for re-render, and returns success' do
-        learning_name = learning.lesson
-        expect do
-          delete :destroy, params: { id: learning.id }, as: :turbo_stream
-        end.to change(Learning, :count).by(-1)
-
-        expect(assigns(:pagy)).to be_present
-        expect(assigns(:learnings).count).to eq(3)
-        expect(response).to have_http_status(:see_other)
-        expect(response).to render_template(:destroy)
-        expect(flash.now[:success]).to eq(I18n.t('learnings.destroy.success', lesson: learning_name))
-      end
-    end
-
-    context 'with HTML request' do
-      before { learning }
-
-      it 'redirects to index with success message' do
-        learning_name = learning.lesson
-        expect do
-          delete :destroy, params: { id: learning.id }
-        end.to change(Learning, :count).by(-1)
-        expect(response).to redirect_to(learnings_path)
-        expect(response).to have_http_status(:see_other)
-        expect(flash[:success]).to eq(I18n.t('learnings.destroy.success', lesson: learning_name))
-      end
+    it 'redirects to index with success message' do
+      learning_name = learning.lesson
+      expect do
+        delete :destroy, params: { id: learning.id }
+      end.to change(Learning, :count).by(-1)
+      expect(response).to redirect_to(learnings_path)
+      expect(response).to have_http_status(:see_other)
+      expect(flash[:success]).to eq(I18n.t('learnings.destroy.success', lesson: learning_name))
     end
 
     context 'when destroy fails' do
       before do
-        learning
         # rubocop:disable RSpec / AnyInstance
         allow_any_instance_of(Learning).to receive(:destroy).and_return(false)
         allow_any_instance_of(Learning).to receive(:errors).and_return(

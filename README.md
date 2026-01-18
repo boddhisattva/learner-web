@@ -86,7 +86,6 @@ The following **features** are available via both the **Web app & in Mobile**
       │ last_modifier_id (FK)           │───────┐ ─→ Users
       │ organization_id (FK)            │       │
       │ learning_category_ids (array)   │       │
-      │ public_visibility (boolean)     │       │
       │ deleted_at                      │       │
       │ created_at                      │       │
       │ updated_at                      │       │
@@ -164,7 +163,6 @@ The following **features** are available via both the **Web app & in Mobile**
 * Replace acts_as_paranoid with discard gem as that's more flexible &
   provides better future readynesss in terms of long term extendability(to allow support of more features etc.,) and maintainability
 * `load_learning_categories`(used in `LearningsController`) currently loads 100 learning categories. We can improve this further by providing UI options in appropriate parts of the app to filter and search learnings by other learning categories
-* The `public_visibility` for a Learning hasn't yet been implemented and will be done in a future iteration.
 
 ## Usage
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_18_063737) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_18_152259) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -51,7 +51,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_18_063737) do
     t.bigint "last_modifier_id", null: false, comment: "User who last modified the learning"
     t.string "lesson", null: false, comment: "Learning lesson learnt"
     t.bigint "organization_id", null: false, comment: "The organization to which the learning belongs"
-    t.boolean "public_visibility", default: false, null: false, comment: "Determines organizational visibility of the learning"
     t.datetime "updated_at", null: false
     t.index "lower((lesson)::text) gin_trgm_ops", name: "index_learnings_on_lesson_trgm", using: :gin
     t.index ["creator_id", "organization_id"], name: "index_learnings_on_creator_id_and_organization_id"

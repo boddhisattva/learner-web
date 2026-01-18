@@ -93,7 +93,6 @@ RSpec.describe LearningsController, type: :controller do
         learning: {
           lesson: 'Test Lesson',
           description: 'Test Description',
-          public_visibility: true,
           organization_id: organization.id,
           category_ids: [learning_category.id]
         }
@@ -111,7 +110,6 @@ RSpec.describe LearningsController, type: :controller do
 
         expect(learning.lesson).to eq('Test Lesson')
         expect(learning.description).to eq('Test Description')
-        expect(learning.public_visibility).to be(true)
         expect(learning.organization).to eq(organization)
         expect(learning.category_ids).to eq([learning_category.id])
         expect(learning.creator).to eq(user)
@@ -276,7 +274,6 @@ RSpec.describe LearningsController, type: :controller do
         learning: {
           lesson: 'Updated Lesson',
           description: 'Updated Description',
-          public_visibility: false,
           organization_id: organization.id,
           category_ids: [learning_category.id]
         }
@@ -290,7 +287,6 @@ RSpec.describe LearningsController, type: :controller do
 
         expect(learning.lesson).to eq('Updated Lesson')
         expect(learning.description).to eq('Updated Description')
-        expect(learning.public_visibility).to be(false)
         expect(learning.organization).to eq(organization)
         expect(learning.category_ids).to eq([learning_category.id])
         expect(learning.last_modifier).to eq(user)

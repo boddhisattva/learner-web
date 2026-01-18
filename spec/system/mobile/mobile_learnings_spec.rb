@@ -18,17 +18,26 @@ module Mobile
         page.current_window.resize_to(1200, 815) # Resize to normal window size defaults
       end
 
-      context 'when viewing the index page' do
+      context 'index page and related search functionality' do
         before do
           create_list(:learning, 3, creator: user, last_modifier: user, organization: organization)
           visit learnings_path
         end
 
+        let(:user_learnings) { user.learnings.where(organization: organization) }
+
         it 'displays all learnings via mobile interface' do
-          user_learnings = user.learnings.where(organization: organization)
-          expect(page).to have_content(user_learnings[0].lesson.to_s)
-          expect(page).to have_content(user_learnings[1].lesson.to_s)
-          expect(page).to have_content(user_learnings[2].lesson.to_s)
+          expect(page).to have_content(user_learnings[0].lesson)
+          expect(page).to have_content(user_learnings[1].lesson)
+          expect(page).to have_content(user_learnings[2].lesson)
+        end
+
+        it 'filters search results' do
+          fill_in 'query', with: user_learnings[0].lesson
+
+          expect(page).to have_content(user_learnings[0].lesson)
+          expect(page).not_to have_content(user_learnings[1].lesson)
+          expect(page).not_to have_content(user_learnings[2].lesson)
         end
       end
 

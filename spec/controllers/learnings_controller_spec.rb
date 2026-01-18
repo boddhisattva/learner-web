@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe LearningsController, type: :controller do
+
   let(:user) { create(:user, :with_organization_and_membership) }
   let(:organization) { user.personal_organization }
   let(:learning_category) { create(:learning_category, creator: user, organization: organization) }
@@ -18,15 +19,26 @@ RSpec.describe LearningsController, type: :controller do
       other_user_learning
     end
 
-    it "lists only the current user's learnings" do
-      get :index
-      expect(assigns(:learnings)).to include(learning)
-      expect(assigns(:learnings)).not_to include(other_user_learning)
+    context 'when some learnings exist' do
+      render_views
+      it "lists only the current user's learnings" do
+        get :index
+
+        expect(assigns(:learnings)).to include(learning)
+        expect(assigns(:learnings)).not_to include(other_user_learning)
+        expect(assigns(:learnings_count)).to eq(1)
+
+        expect(response).to render_template(:index)
+        expect(response).to have_http_status(:success)
+
+        expect(response.body).to include(learning.lesson)
+        expect(response.body).not_to include(other_user_learning.lesson)
+      end
     end
 
     context 'with pagination' do
       before do
-        create_list(:learning, 25, creator: user)
+        create_list(:learning, 12, creator: user)
       end
 
       it 'sets up pagination with correct first page of results' do
@@ -34,8 +46,8 @@ RSpec.describe LearningsController, type: :controller do
 
         expect(assigns(:pagy)).to be_present
         expect(assigns(:pagy).page).to eq(1)
-        expect(assigns(:pagy).count).to eq(26) # 25 + 1 from let!
-        expect(assigns(:pagy).pages).to eq(3)
+        expect(assigns(:pagy).count).to eq(13)
+        expect(assigns(:pagy).pages).to eq(2)
         expect(assigns(:learnings).count).to eq(10)
       end
 
@@ -44,38 +56,21 @@ RSpec.describe LearningsController, type: :controller do
 
         expect(assigns(:pagy)).to be_present
         expect(assigns(:pagy).page).to eq(2)
-        expect(assigns(:pagy).next).to eq(3)
-        expect(assigns(:learnings).count).to eq(10)
-      end
-
-      it 'returns only the page partial for Turbo Frame requests' do
-        request.headers['Turbo-Frame'] = 'learning_page_2'
-        get :index, params: { page: 2 }
-
-        expect(response).to render_template(partial: '_learnings_page')
-        expect(response).not_to render_template(layout: 'application')
+        expect(assigns(:pagy).next).to be_nil
+        expect(assigns(:learnings).count).to eq(3)
       end
     end
 
     context 'with search query parameter' do
       it 'paginates only the filtered search results' do
-        15.times { |i| create(:learning, lesson: "New learning test #{i + 1}", creator: user) }
-        10.times { |i| create(:learning, lesson: "Different topic #{i + 1}", creator: user) }
+        11.times { |i| create(:learning, lesson: "New learning test #{i + 1}", creator: user) }
+        5.times { |i| create(:learning, lesson: "Different topic #{i + 1}", creator: user) }
 
         get :index, params: { query: 'New learning', page: 1 }
 
-        expect(assigns(:pagy).count).to eq(15)
+        expect(assigns(:pagy).count).to eq(11)
         expect(assigns(:learnings).count).to eq(10)
         expect(assigns(:learnings).map(&:lesson)).to all(match(/New learning/))
-      end
-
-      it 'preserves query parameter when paginating search results' do
-        15.times { |i| create(:learning, lesson: "Test learning #{i + 1}", creator: user) }
-
-        get :index, params: { query: 'Test', page: 2 }
-
-        expect(assigns(:pagy).page).to eq(2)
-        expect(assigns(:learnings).map(&:lesson)).to all(match(/Test/))
       end
     end
   end

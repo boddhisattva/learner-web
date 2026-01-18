@@ -5,6 +5,7 @@ class LearningsController < ApplicationController
   before_action :set_learning, only: %i[edit update destroy cancel]
   before_action :ensure_learning_exists!, only: %i[edit update destroy cancel]
   before_action :load_learning_categories, only: %i[new create edit]
+  around_action :skip_bullet, only: [:show], if: -> { defined?(Bullet) }
 
   LEARNINGS_SEARCH_FRAME_ID = 'learnings_list'
   LEARNING_CATEGORY_LIMIT = 100

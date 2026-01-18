@@ -21,62 +21,46 @@ RSpec.describe 'Learnings Search', :js, type: :system do
     end
 
     it 'shows filtered results, displays Clear button, & allows clearing to show all results' do
-      # Verify search input has correct attributes (setup check)
       expect(page).to have_field('query', type: 'search', placeholder: 'Type to search lessons...')
 
-      # Initially, no Clear button should be visible
       expect(page).not_to have_link('Clear')
 
-      # Page heading should be present before search
       expect(page).to have_content('Learning Lessons')
 
-      # Type in search field - triggers auto-search without clicking button
       fill_in 'query', with: 'Ruby'
 
-      # Should see filtered results (Turbo Frame updated without page reload)
       expect(page).to have_content('Ruby basics for beginners')
       expect(page).to have_content('Ruby on Rails deployment')
       expect(page).not_to have_content('JavaScript fundamentals')
       expect(page).not_to have_content('Rails advanced patterns')
 
-      # Clear button should appear when search is active
       expect(page).to have_link('Clear')
 
-      # Click Clear button to reset search
       click_link 'Clear'
 
-      # Should show all learnings again after clearing
       expect(page).to have_content('Ruby basics for beginners')
       expect(page).to have_content('Rails advanced patterns')
       expect(page).to have_content('JavaScript fundamentals')
       expect(page).to have_content('Ruby on Rails deployment')
 
-      # Search field should be empty after clearing
       expect(find_field('query').value).to be_blank
 
-      # Clear button should disappear after clearing
       expect(page).not_to have_link('Clear')
     end
   end
 
   describe 'searching when there are no matching learnings, no learnings exist, and Clear button' do
     it 'shows no results message when no learnings match and shows Clear button' do
-      # Setup: Create a learning for testing
       create(:learning, lesson: 'Ruby basics', creator: user, last_modifier: user)
 
-      # Visit search page with query parameter (simulates bookmarked search URL)
       visit learnings_path(query: 'Ruby')
 
-      # Clear button should be visible when visiting with query param
       expect(page).to have_link('Clear')
       expect(page).to have_content('Ruby basics')
 
-      # Search for something that doesn't exist
       fill_in 'query', with: 'Python Programming'
 
-      # Should show "no results found" message
       expect(page).to have_content('No learnings found matching "Python Programming"')
-
     end
 
     it 'shows empty state when no learnings exist' do
@@ -119,28 +103,21 @@ RSpec.describe 'Learnings Search', :js, type: :system do
       it 'loads search results progressively as user scrolls while maintaining search filter' do
         visit learnings_path
 
-        # Search for "Ruby" - should match 50 learnings (5 pages)
         fill_in 'query', with: 'Ruby'
 
-        # Initial page shows newest matching results (page 1)
         expect(page).to have_content('Ruby learning 50')
         expect(page).not_to have_content('Ruby learning 25')
         expect(page).not_to have_content('Ruby learning 1')
 
-        # Non-matching results should NEVER appear
         expect(page).not_to have_content('JavaScript lesson')
 
-        # Scroll until we see a middle page item (around page 3)
         scroll_until_content_appears('Ruby learning 25')
         expect(page).not_to have_content('Ruby learning 1')
 
-        # Still no JavaScript results
         expect(page).not_to have_content('JavaScript lesson')
 
-        # Scroll until we see the oldest matching item (all pages loaded)
         scroll_until_content_appears('Ruby learning 1')
 
-        # Verify JavaScript results still don't appear even after all scrolling
         expect(page).not_to have_content('JavaScript lesson')
       end
 

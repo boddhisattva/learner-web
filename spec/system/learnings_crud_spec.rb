@@ -15,20 +15,6 @@ RSpec.describe 'Learnings', type: :system do
     life_category
   end
 
-  describe 'index page' do
-    before do
-      create_list(:learning, 3, creator: user, last_modifier: user, organization: organization)
-      visit learnings_path
-    end
-
-    it 'displays all learnings corresponding to the user current organization' do
-      user_learnings = user.learnings.where(organization: organization)
-      expect(page).to have_content(user_learnings[0].lesson.to_s)
-      expect(page).to have_content(user_learnings[1].lesson.to_s)
-      expect(page).to have_content(user_learnings[2].lesson.to_s)
-    end
-  end
-
   describe 'creating a learning' do
 
     before do

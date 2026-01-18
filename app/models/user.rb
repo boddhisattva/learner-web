@@ -50,7 +50,8 @@ class User < ApplicationRecord
   def generate_unique_organization_name
     base_name = name
 
-    existing_names = Organization.where('name = ? OR name LIKE ?', base_name, "#{base_name} %").pluck(:name).to_set
+    sanitized_name = Organization.sanitize_sql_like(base_name)
+    existing_names = Organization.where('name = ? OR name LIKE ?', base_name, "#{sanitized_name} %").pluck(:name).to_set
 
     return base_name unless existing_names.include?(base_name)
 

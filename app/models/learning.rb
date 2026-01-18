@@ -33,6 +33,8 @@
 class Learning < ApplicationRecord
   acts_as_paranoid
 
+  include MembershipCounterUpdater
+
   validates :lesson, presence: true
 
   belongs_to :creator, class_name: 'User'
@@ -42,37 +44,7 @@ class Learning < ApplicationRecord
   has_many :learning_categorizations, dependent: :destroy
   has_many :categories, through: :learning_categorizations, source: :category, class_name: 'LearningCategory'
 
-  # Counter cache for membership learnings_count
-  after_create :increment_membership_counter
-  after_destroy :decrement_membership_counter
-  after_restore :increment_membership_counter
-  after_real_destroy :decrement_membership_counter
-
   def self.search(query)
     where('lower(lesson) LIKE lower(?)', "%#{sanitize_sql_like(query)}%")
   end
-
-  private
-
-    def update_membership_counter(count_change)
-      # rubocop:disable Rails/SkipsModelValidations
-      membership = find_creator_membership
-      Membership.update_counters(membership.id, learnings_count: count_change) if membership
-      # rubocop:enable Rails/SkipsModelValidations
-    end
-
-    def increment_membership_counter
-      update_membership_counter(1)
-    end
-
-    def decrement_membership_counter
-      update_membership_counter(-1)
-    end
-
-    def find_creator_membership
-      Membership.find_by(
-        member_id: creator_id,
-        organization_id: organization_id
-      )
-    end
 end

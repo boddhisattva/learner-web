@@ -23,18 +23,6 @@
               </div>
             </div>
             <div class="level-right">
-              <div class="level-item">
-                <div class="buttons">
-                  <span class="button <%= @learning.public_visibility ? 'is-success' : 'is-warning' %>" style="pointer-events: none;">
-                    <span class="icon">
-                      <i class="fas <%= @learning.public_visibility ? 'fa-globe' : 'fa-lock' %>"></i>
-                    </span>
-                    <span>
-                      <%= @learning.public_visibility ? 'Public' : 'Private' %>
-                    </span>
-                  </span>
-                </div>
-              </div>
               <!-- TODO: add permissions later when needed around edit -->
               <div class="level-item">
                 <div class="buttons">

@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_16_181040) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_09_184113) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
-  enable_extension "pg_trgm"
 
   create_table "learning_categories", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -58,7 +57,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_16_181040) do
     t.index ["deleted_at"], name: "index_learnings_on_deleted_at"
     t.index ["last_modifier_id"], name: "index_learnings_on_last_modifier_id"
     t.index ["lesson"], name: "index_learnings_on_lesson"
-    t.index ["lesson"], name: "index_learnings_on_lesson_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["organization_id"], name: "index_learnings_on_organization_id"
   end
 

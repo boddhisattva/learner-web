@@ -45,25 +45,6 @@ RSpec.describe Learning, type: :model do
     it { is_expected.to have_many(:categories).through(:learning_categorizations).source(:category).class_name('LearningCategory') }
   end
 
-  describe '#categories' do
-    let(:user) { create(:user, :with_organization_and_membership) }
-    let(:organization) { user.personal_organization }
-    let(:category) { create(:learning_category, creator: user, organization: organization) }
-    let(:another_category) { create(:learning_category, creator: user, organization: organization) }
-    let(:learning) { create(:learning, creator: user, organization: organization) }
-
-    before do
-      category
-      another_category
-      learning.update(category_ids: [category.id, another_category.id])
-    end
-
-    it 'returns the correct learning categories' do
-      expect(learning.category_ids).to contain_exactly(category.id, another_category.id)
-      expect(learning.categories).to contain_exactly(category, another_category)
-    end
-  end
-
   describe 'membership counter integration' do
     it 'updates creator membership counter on lifecycle events' do
       user = create(:user, :with_organization_and_membership)

@@ -87,7 +87,7 @@ class LearningsController < ApplicationController
       flash.now[:error] = @learning.errors.full_messages
 
       respond_to do |format|
-        format.turbo_stream { render :destroy, status: :see_other }
+        format.turbo_stream { render :destroy, status: :unprocessable_entity }
         format.html { redirect_to learnings_path, status: :see_other, flash: { error: @learning.errors.full_messages } }
       end
     end

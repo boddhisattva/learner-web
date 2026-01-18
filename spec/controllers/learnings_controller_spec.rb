@@ -101,12 +101,11 @@ RSpec.describe LearningsController, type: :controller do
 
     context 'with valid parameters' do
       it 'creates a new learning, sets the attributes and redirects to index with success message' do
-        post :create, params: valid_params
-        learning = Learning.last
-
         expect do
           post :create, params: valid_params
         end.to change(Learning, :count).by(1)
+
+        learning = Learning.last
 
         expect(learning.lesson).to eq('Test Lesson')
         expect(learning.description).to eq('Test Description')
@@ -128,7 +127,6 @@ RSpec.describe LearningsController, type: :controller do
           post :create, params: invalid_params
         end.not_to change(Learning, :count)
 
-        post :create, params: invalid_params
         expect(response).to render_template(:new)
         expect(flash.now[:error]).to eq(["Lesson can't be blank"])
       end

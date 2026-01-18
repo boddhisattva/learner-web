@@ -22,6 +22,7 @@
 #  index_learnings_on_deleted_at                      (deleted_at)
 #  index_learnings_on_last_modifier_id                (last_modifier_id)
 #  index_learnings_on_lesson                          (lesson)
+#  index_learnings_on_lesson_trgm                     (lower((lesson)::text) gin_trgm_ops) USING gin
 #  index_learnings_on_organization_id                 (organization_id)
 #
 # Foreign Keys

@@ -63,4 +63,18 @@ RSpec.describe Learning, type: :model do
       expect(learning.categories).to contain_exactly(category, another_category)
     end
   end
+
+  describe 'membership counter integration' do
+    it 'updates creator membership counter on lifecycle events' do
+      user = create(:user, :with_organization_and_membership)
+      organization = user.personal_organization
+      membership = Membership.find_by(member: user, organization: organization)
+
+      learning = create(:learning, creator: user, organization: organization)
+      expect(membership.reload.learnings_count).to eq(1)
+
+      learning.destroy
+      expect(membership.reload.learnings_count).to eq(0)
+    end
+  end
 end

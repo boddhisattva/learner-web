@@ -78,6 +78,9 @@ RSpec.configure do |config|
 
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :system
+  config.include ViewComponent::TestHelpers, type: :component
+  config.include Rails.application.routes.url_helpers, type: :component
+  config.include ActionView::RecordIdentifier, type: :component
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false

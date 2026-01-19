@@ -12,7 +12,9 @@ RSpec.describe 'Learning Deletion', type: :system do
 
   describe 'successful deletion flow' do
     it 'deletes a learning and removes it from the list with success message', :js do
+      Prosopite.pause
       learnings = create_list(:learning, 2, creator: user, last_modifier: user, organization: organization)
+      Prosopite.resume
       learning_to_delete = learnings.first
 
       visit learnings_path

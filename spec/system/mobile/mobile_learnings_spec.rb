@@ -18,7 +18,7 @@ module Mobile
         page.current_window.resize_to(1200, 815) # Resize to normal window size defaults
       end
 
-      context 'index page and related search functionality' do
+      context 'when on index page with search functionality' do
         before do
           Prosopite.pause
           create_list(:learning, 3, creator: user, last_modifier: user, organization: organization)

@@ -32,13 +32,15 @@
 require 'rails_helper'
 
 RSpec.describe LearningCategory, type: :model do
-  subject { build(:learning_category) }
+  subject(:learning_category) { build(:learning_category) }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
 
     it 'validates uniqueness of name scoped to organization_id', prosopite: :skip do
-      expect(subject).to validate_uniqueness_of(:name).scoped_to(:organization_id).with_message('already exists in this organization')
+      expect(learning_category).to validate_uniqueness_of(:name)
+        .scoped_to(:organization_id)
+        .with_message('already exists in this organization')
     end
   end
 

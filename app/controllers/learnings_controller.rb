@@ -58,25 +58,9 @@ class LearningsController < ApplicationController
     prepare_learning_for_update
 
     if @learning.update(learnings_params)
-      if turbo_frame_request?
-        flash.now[:success] = t('.success', lesson: @learning.lesson)
-        render :update, status: :ok
-      else
-        redirect_to learning_path(@learning),
-                    status: :see_other,
-                    flash: { success: t('.success', lesson: @learning.lesson) }
-      end
+      handle_successful_update
     else
-      load_learning_categories
-
-      if turbo_frame_request?
-        render partial: 'form',
-               locals: { learning: @learning, learning_categories: @learning_categories },
-               status: :unprocessable_entity
-      else
-        flash.now[:error] = @learning.errors.full_messages
-        render :edit, status: :unprocessable_entity
-      end
+      handle_failed_update
     end
   end
 
@@ -159,6 +143,30 @@ class LearningsController < ApplicationController
     def prepare_learning_for_update
       @learning.last_modifier_id = current_user.id
       @learning.organization_id = current_organization.id
+    end
+
+    def handle_successful_update
+      if turbo_frame_request?
+        flash.now[:success] = t('.success', lesson: @learning.lesson)
+        render :update, status: :ok
+      else
+        redirect_to learning_path(@learning),
+                    status: :see_other,
+                    flash: { success: t('.success', lesson: @learning.lesson) }
+      end
+    end
+
+    def handle_failed_update
+      load_learning_categories
+
+      if turbo_frame_request?
+        render partial: 'form',
+               locals: { learning: @learning, learning_categories: @learning_categories },
+               status: :unprocessable_entity
+      else
+        flash.now[:error] = @learning.errors.full_messages
+        render :edit, status: :unprocessable_entity
+      end
     end
 
     def set_learning

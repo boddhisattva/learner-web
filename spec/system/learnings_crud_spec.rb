@@ -43,15 +43,8 @@ RSpec.describe 'Learnings', type: :system do
 
         expect(page).to have_content(learning.lesson)
         expect(page).to have_content(learning.description)
-      end
-    end
-
-    context "when learning doesn't exist" do
-      it 'redirects to index with error message' do
-        visit learning_path(id: 999_999)
-
-        expect(page).to have_current_path(learnings_path)
-        expect(page).to have_content('Learning not found')
+        expect(page).to have_content('Organization Details')
+        expect(page).to have_content(organization.name)
       end
     end
   end

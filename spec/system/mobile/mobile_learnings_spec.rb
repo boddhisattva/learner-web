@@ -7,7 +7,7 @@ module Mobile
     let(:user) { create(:user, :with_organization_and_membership) }
     let(:organization) { user.personal_organization }
 
-    describe 'Learnings CRUD' do
+    describe 'Learnings CRUD & Search functionality' do
 
       before do
         page.current_window.resize_to(501, 764) # Resize window to a size similar to that of mobile devices

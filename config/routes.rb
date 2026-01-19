@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # TODO: Improve this as /learnings should be the same as doing /learnings/index, so we may not need the explicit '/index'
   devise_for :users
 
   devise_scope :user do

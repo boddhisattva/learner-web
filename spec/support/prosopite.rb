@@ -2,11 +2,11 @@
 
 RSpec.configure do |config|
   # Prosopite configuration - N+1 query detection
-  config.before do
-    Prosopite.scan
+  config.before do |example|
+    Prosopite.scan unless example.metadata[:prosopite] == :skip
   end
 
-  config.after do
-    Prosopite.finish
+  config.after do |example|
+    Prosopite.finish unless example.metadata[:prosopite] == :skip
   end
 end

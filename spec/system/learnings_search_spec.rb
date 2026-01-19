@@ -67,6 +67,7 @@ RSpec.describe 'Learnings Search', :js, type: :system do
   describe 'progressive loading of search results' do
     context 'with multiple pages of search results' do
       before do
+        Prosopite.pause
         50.times do |i|
           create(:learning,
                  lesson: "Ruby learning #{i + 1}",
@@ -88,6 +89,7 @@ RSpec.describe 'Learnings Search', :js, type: :system do
                  created_at: Time.zone.now - (69 - i).minutes,
                  updated_at: Time.zone.now - (69 - i).minutes)
         end
+        Prosopite.resume
       end
 
       it 'loads search results progressively as user scrolls while maintaining search filter' do

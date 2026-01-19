@@ -12,8 +12,9 @@ RSpec.describe 'Inline Learning Creation', type: :system do
 
   describe 'successful inline creation flow' do
     it 'creates a learning inline without page navigation and updates the list', :js do
-      # Setup: Start with 2 existing learnings
+      Prosopite.pause
       create_list(:learning, 2, creator: user, last_modifier: user, organization: organization)
+      Prosopite.resume
       visit learnings_path
 
       # Ensure desktop viewport (in case previous mobile tests changed it)
@@ -51,7 +52,9 @@ RSpec.describe 'Inline Learning Creation', type: :system do
 
   describe 'validation error handling' do
     it 'shows inline errors without page reload and preserves form state', :js do
+      Prosopite.pause
       create_list(:learning, 2, creator: user, last_modifier: user, organization: organization)
+      Prosopite.resume
       visit learnings_path
 
       page.current_window.resize_to(1200, 815)

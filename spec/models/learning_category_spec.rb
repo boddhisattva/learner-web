@@ -36,7 +36,10 @@ RSpec.describe LearningCategory, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:organization_id).with_message('already exists in this organization') }
+
+    it 'validates uniqueness of name scoped to organization_id', prosopite: :skip do
+      expect(subject).to validate_uniqueness_of(:name).scoped_to(:organization_id).with_message('already exists in this organization')
+    end
   end
 
   describe 'uniqueness validation with paranoia' do

@@ -38,7 +38,9 @@ RSpec.describe LearningsController, type: :controller do
 
     context 'with pagination' do
       before do
+        Prosopite.pause
         create_list(:learning, 12, creator: user)
+        Prosopite.resume
       end
 
       it 'sets up pagination with correct first page of results' do
@@ -63,9 +65,10 @@ RSpec.describe LearningsController, type: :controller do
 
     context 'with search query parameter' do
       it 'paginates only the filtered search results' do
+        Prosopite.pause
         11.times { |i| create(:learning, lesson: "New learning test #{i + 1}", creator: user) }
         5.times { |i| create(:learning, lesson: "Different topic #{i + 1}", creator: user) }
-
+        Prosopite.resume
         get :index, params: { query: 'New learning', page: 1 }
 
         expect(assigns(:pagy).count).to eq(11)
@@ -145,9 +148,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to view another users learning' do
-      let(:alice) { create(:user, :with_organization_and_membership) }
-      let(:bob) { create(:user) }
-      let(:alice_learning) { create(:learning, creator: alice) }
+      include_context 'with learning owner and other user'
 
       before do
         sign_in bob
@@ -205,9 +206,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to destroy another users learning' do
-      let(:alice) { create(:user, :with_organization_and_membership) }
-      let(:bob) { create(:user) }
-      let(:alice_learning) { create(:learning, creator: alice) }
+      include_context 'with learning owner and other user'
 
       before do
         sign_in bob
@@ -242,9 +241,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to edit another users learning' do
-      let(:alice) { create(:user, :with_organization_and_membership) }
-      let(:bob) { create(:user) }
-      let(:alice_learning) { create(:learning, creator: alice) }
+      include_context 'with learning owner and other user'
 
       before do
         sign_in bob
@@ -317,9 +314,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to update another users learning' do
-      let(:alice) { create(:user, :with_organization_and_membership) }
-      let(:bob) { create(:user) }
-      let(:alice_learning) { create(:learning, creator: alice) }
+      include_context 'with learning owner and other user'
 
       before do
         sign_in bob
@@ -368,9 +363,7 @@ RSpec.describe LearningsController, type: :controller do
     end
 
     context 'when user tries to cancel another users learning' do
-      let(:alice) { create(:user, :with_organization_and_membership) }
-      let(:bob) { create(:user) }
-      let(:alice_learning) { create(:learning, creator: alice) }
+      include_context 'with learning owner and other user'
 
       before do
         sign_in bob

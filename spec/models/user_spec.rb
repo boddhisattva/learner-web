@@ -60,58 +60,15 @@ RSpec.describe User, type: :model do
   end
 
   describe '#generate_unique_organization_name' do
-    let(:user) { build(:user, first_name: 'John', last_name: 'Smith') }
+    it 'delegates to OrganizationNameGenerator service' do
+      user = build(:user, first_name: 'John', last_name: 'Smith')
+      generator = instance_double(OrganizationNameGenerator, generate_unique_name: 'John Smith')
 
-    context 'when organization name is unique' do
-      it 'returns the user name without suffix' do
-        expect(user.generate_unique_organization_name).to eq('John Smith')
-      end
-    end
+      allow(OrganizationNameGenerator).to receive(:new).with('John Smith').and_return(generator)
 
-    context 'when organization name already exists' do
-      before do
-        # Create user without factory callback to control organization creation
-        existing_user = described_class.create!(
-          first_name: 'John',
-          last_name: 'Smith',
-          email: 'john1@test.com',
-          password: 'password123'
-        )
-        organization = Organization.create!(name: 'John Smith', owner: existing_user)
-        existing_user.update!(personal_organization: organization)
-      end
-
-      it 'returns name with sequential number suffix' do
-        expect(user.generate_unique_organization_name).to eq('John Smith 2')
-      end
-
-      context 'when multiple duplicates exist' do
-        before do
-          # Create John Smith 2
-          second_user = described_class.create!(
-            first_name: 'John',
-            last_name: 'Smith',
-            email: 'john2@test.com',
-            password: 'password123'
-          )
-          organization = Organization.create!(name: 'John Smith 2', owner: second_user)
-          second_user.update!(personal_organization: organization)
-
-          # Create John Smith 3
-          third_user = described_class.create!(
-            first_name: 'John',
-            last_name: 'Smith',
-            email: 'john3@test.com',
-            password: 'password123'
-          )
-          organization = Organization.create!(name: 'John Smith 3', owner: third_user)
-          third_user.update!(personal_organization: organization)
-        end
-
-        it 'continues finding next available sequential number' do
-          expect(user.generate_unique_organization_name).to eq('John Smith 4')
-        end
-      end
+      expect(user.generate_unique_organization_name).to eq('John Smith')
+      expect(OrganizationNameGenerator).to have_received(:new).with('John Smith')
+      expect(generator).to have_received(:generate_unique_name)
     end
   end
 

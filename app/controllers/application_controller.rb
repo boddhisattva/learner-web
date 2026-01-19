@@ -37,23 +37,11 @@ class ApplicationController < ActionController::Base
   private
 
     def current_organization
-      @current_organization ||= find_current_organization
+      @current_organization ||= CurrentOrganizationResolver.new(current_user, session).resolve
     end
 
     def current_membership
       @current_membership ||= find_current_membership
-    end
-
-    def find_current_organization
-      return nil unless current_user
-
-      if session[:current_organization_id]
-        org = current_user.organizations.find_by(id: session[:current_organization_id])
-        return org if org.present?
-      end
-
-      org = current_user.personal_organization
-      org.presence
     end
 
     def find_current_membership

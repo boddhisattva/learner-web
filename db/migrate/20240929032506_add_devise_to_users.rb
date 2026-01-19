@@ -6,7 +6,7 @@ class AddDeviseToUsers < ActiveRecord::Migration[7.2]
       # rubocop:disable Rails/BulkChangeTable
       change_table :users do |t|
         ## Database authenticatable
-        # t.string :email, null: false, default: "" # TODO: need to add null: false related separate migration
+        # t.string :email, null: false, default: "" # null: false constraint added in migration 20241008193016
         t.string :encrypted_password, null: false, default: ''
 
         ## Recoverable

@@ -70,15 +70,19 @@ RSpec.describe UserRegistration do
       end
 
       it 'does not create user, organization, or membership and returns false' do
-        expect do
-          result = described_class.new(user).call
-          expect(result).to be false
-        end.to change(User, :count).by(0)
-           .and change(Organization, :count).by(0)
-           .and change(Membership, :count).by(0)
+        user_count_before = User.count
+        organization_count_before = Organization.count
+        membership_count_before = Membership.count
 
+        result = described_class.new(user).call
+
+        expect(result).to be false
+        expect(User.count).to eq(user_count_before)
+        expect(Organization.count).to eq(organization_count_before)
+        expect(Membership.count).to eq(membership_count_before)
         expect(user.errors[:password]).to be_present
-        expect(user.errors.full_messages).to include("Password #{I18n.t('activerecord.errors.models.user.attributes.password.too_short')}")
+        error_message = "Password #{I18n.t('activerecord.errors.models.user.attributes.password.too_short')}"
+        expect(user.errors.full_messages).to include(error_message)
       end
     end
 
@@ -90,13 +94,16 @@ RSpec.describe UserRegistration do
       end
 
       it 'rolls back user creation, adds error to user, and returns false' do
-        expect do
-          result = described_class.new(user).call
-          expect(result).to be false
-        end.to change(User, :count).by(0)
-           .and change(Organization, :count).by(0)
-           .and change(Membership, :count).by(0)
+        user_count_before = User.count
+        organization_count_before = Organization.count
+        membership_count_before = Membership.count
 
+        result = described_class.new(user).call
+
+        expect(result).to be false
+        expect(User.count).to eq(user_count_before)
+        expect(Organization.count).to eq(organization_count_before)
+        expect(Membership.count).to eq(membership_count_before)
         expect(user.errors[:base]).to be_present
         expect(user.errors[:base].first).to include('Organization failed:')
       end
@@ -110,12 +117,16 @@ RSpec.describe UserRegistration do
       end
 
       it 'rolls back all changes and returns false' do
-        expect do
-          result = described_class.new(user).call
-          expect(result).to be false
-        end.to change(User, :count).by(0)
-           .and change(Organization, :count).by(0)
-           .and change(Membership, :count).by(0)
+        user_count_before = User.count
+        organization_count_before = Organization.count
+        membership_count_before = Membership.count
+
+        result = described_class.new(user).call
+
+        expect(result).to be false
+        expect(User.count).to eq(user_count_before)
+        expect(Organization.count).to eq(organization_count_before)
+        expect(Membership.count).to eq(membership_count_before)
       end
     end
   end

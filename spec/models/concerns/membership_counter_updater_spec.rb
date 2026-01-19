@@ -10,7 +10,7 @@ RSpec.describe MembershipCounterUpdater do
     let(:organization) { user.personal_organization }
     let(:membership) { Membership.find_by(member: user, organization: organization) }
 
-    context 'on create' do
+    context 'with create action' do
       it 'increments membership counter by 1' do
         expect do
           create(:learning, creator: user, organization: organization)
@@ -18,7 +18,7 @@ RSpec.describe MembershipCounterUpdater do
       end
     end
 
-    context 'on destroy' do
+    context 'with destroy action' do
       it 'decrements membership counter by 1' do
         learning = create(:learning, creator: user, organization: organization)
 
@@ -28,7 +28,7 @@ RSpec.describe MembershipCounterUpdater do
       end
     end
 
-    context 'on restore (paranoia)' do
+    context 'with restore action (paranoia)' do
       it 'increments membership counter by 1' do
         learning = create(:learning, creator: user, organization: organization)
         learning.destroy
@@ -39,7 +39,7 @@ RSpec.describe MembershipCounterUpdater do
       end
     end
 
-    context 'on real_destroy (paranoia)' do
+    context 'with real_destroy action (paranoia)' do
       it 'does not decrement counter when destroying already soft-deleted record' do
         learning = create(:learning, creator: user, organization: organization)
         # Soft-delete first (counter already decremented)

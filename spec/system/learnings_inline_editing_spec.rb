@@ -86,15 +86,27 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
   end
 
   describe 'canceling inline edit' do
-    it 'discards changes & returns to display view without saving', :js do
+    before do
       learning
       visit learnings_path
-
       page.current_window.resize_to(1200, 815)
+    end
 
-      expect(page).to have_content('Original Lesson')
-      expect(page).not_to have_field('Lesson')
+    it 'discards changes & returns to display view without saving', :js do
+      expect(page).to have_content('Original Lesson').and have_no_field('Lesson')
 
+      open_edit_form_and_make_changes
+      click_link 'Cancel'
+
+      verify_changes_were_discarded
+    end
+
+    def open_edit_form_and_make_changes
+      open_edit_form
+      make_changes_to_learning
+    end
+
+    def open_edit_form
       within("turbo-frame##{dom_id(learning)}") do
         find('a.button.is-warning').click
       end
@@ -102,18 +114,31 @@ RSpec.describe 'Learnings Inline Editing', type: :system do
       expect(page).to have_field('Lesson', with: 'Original Lesson')
       expect(page).to have_field('Description', with: 'Original Description')
       expect(page).to have_button('Update Learning')
+    end
 
+    def make_changes_to_learning
       fill_in 'Lesson', with: 'Changed Lesson'
       fill_in 'Description', with: 'Changed Description'
-      click_link 'Cancel'
+    end
 
+    def verify_changes_were_discarded
+      verify_form_is_closed
+      verify_original_content_displayed
+      verify_learning_not_updated
+    end
+
+    def verify_form_is_closed
       expect(page).not_to have_field('Lesson')
       expect(page).not_to have_button('Update Learning')
       expect(page).not_to have_link('Cancel')
+    end
 
+    def verify_original_content_displayed
       expect(page).to have_content('Original Lesson')
       expect(page).not_to have_content('Changed Lesson')
+    end
 
+    def verify_learning_not_updated
       learning.reload
       expect(learning.lesson).to eq('Original Lesson')
       expect(learning.description).to eq('Original Description')

@@ -54,19 +54,19 @@ RSpec.describe CurrentOrganizationResolver do
       end
 
       context 'when session has multiple organizations and user belongs to all' do
-        let(:org1) { create(:organization, owner: create(:user)) }
-        let(:org2) { create(:organization, owner: create(:user)) }
-        let(:session) { { current_organization_id: org1.id } }
+        let(:first_organization) { create(:organization, owner: create(:user)) }
+        let(:second_organization) { create(:organization, owner: create(:user)) }
+        let(:session) { { current_organization_id: first_organization.id } }
 
         before do
-          create(:membership, member: user, organization: org1)
-          create(:membership, member: user, organization: org2)
+          create(:membership, member: user, organization: first_organization)
+          create(:membership, member: user, organization: second_organization)
         end
 
         it 'returns the organization specified in session' do
           resolver = described_class.new(user, session)
 
-          expect(resolver.resolve).to eq(org1)
+          expect(resolver.resolve).to eq(first_organization)
         end
       end
     end

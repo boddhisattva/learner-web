@@ -11,41 +11,52 @@ RSpec.describe 'Inline Learning Creation', type: :system do
   end
 
   describe 'successful inline creation flow' do
-    it 'creates a learning inline without page navigation and updates the list', :js do
+    before do
       Prosopite.pause
       create_list(:learning, 2, creator: user, last_modifier: user, organization: organization)
       Prosopite.resume
       visit learnings_path
-
-      # Ensure desktop viewport (in case previous mobile tests changed it)
       page.current_window.resize_to(1200, 815)
+    end
 
-      expect(page).to have_text('(2 total)')
-      expect(page).not_to have_selector('#new_learning_form form')
+    it 'creates a learning inline without page navigation and updates the list', :js do
+      expect(page).to have_text('(2 total)').and have_no_selector('#new_learning_form form')
 
       click_link 'New Learning'
-
       expect(page).to have_selector('#new_learning_form form')
-      expect(current_path).to eq(learnings_path) # No page navigation
+      expect(current_path).to eq(learnings_path)
 
+      submit_new_learning_form
+
+      sleep 0.025 # Wait for Turbo Stream updates
+
+      verify_learning_created_and_ui_updated
+    end
+
+    def submit_new_learning_form
       within('#new_learning_form') do
         fill_in 'Lesson', with: 'My First Inline Learning'
         fill_in 'Description', with: 'Created without leaving the page'
         click_button 'Create Learning'
       end
+    end
 
-      sleep 0.025 # Wait for Turbo Stream updates
+    def verify_learning_created_and_ui_updated
+      verify_learning_was_created
+      verify_ui_was_updated
+    end
 
+    def verify_learning_was_created
       expect(Learning.count).to eq(3)
-      expect(Learning.last.lesson).to eq('My First Inline Learning')
-      expect(Learning.last.creator).to eq(user)
+      new_learning = Learning.last
+      expect(new_learning.lesson).to eq('My First Inline Learning')
+      expect(new_learning.creator).to eq(user)
+    end
 
+    def verify_ui_was_updated
       expect(page).to have_text('(3 total)')
-
       expect(page).to have_content(I18n.t('learnings.create.success', lesson: 'My First Inline Learning'))
-
       expect(page).to have_content('My First Inline Learning')
-
       expect(page).not_to have_selector('#new_learning_form form')
     end
   end

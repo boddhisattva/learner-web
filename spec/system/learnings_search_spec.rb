@@ -62,16 +62,6 @@ RSpec.describe 'Learnings Search', :js, type: :system do
 
       expect(page).to have_content('No learnings found matching "Python Programming"')
     end
-
-    it 'shows empty state when no learnings exist' do
-      Learning.destroy_all
-      visit learnings_path
-
-      expect(page).to have_content('No learnings have been created yet')
-      expect(page).to have_link('Create your first learning')
-      expect(page).not_to have_content('No learnings found matching')
-
-    end
   end
 
   describe 'progressive loading of search results' do

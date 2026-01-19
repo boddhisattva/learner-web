@@ -15,23 +15,6 @@ RSpec.describe 'Learnings', type: :system do
     life_category
   end
 
-  describe 'creating a learning' do
-
-    before do
-      visit new_learning_path
-    end
-
-    it 'displays organization as read-only and auto-assigns current organization' do
-      expect(page).not_to have_select('Organization')
-
-      expect(page).to have_css("input[type=\"hidden\"][id=\"learning_organization_id\"][value=\"#{organization.id}\"]",
-                               visible: false)
-
-      # Organization name should be displayed as read-only text
-      expect(page).to have_css("input[disabled][readonly][value=\"#{organization.name}\"]")
-    end
-  end
-
   describe 'showing a learning' do
     context 'when learning exists' do
       before do

@@ -58,4 +58,27 @@ RSpec.describe Learning, type: :model do
       expect(membership.reload.learnings_count).to eq(0)
     end
   end
+
+  describe '#same_organization_as?' do
+    let(:user) { create(:user, :with_organization_and_membership) }
+    let(:organization) { user.personal_organization }
+    let(:learning) { create(:learning, creator: user, organization: organization) }
+
+    context 'when other has the same organization_id' do
+      it 'returns true' do
+        category = create(:learning_category, creator: user, organization: organization)
+
+        expect(learning.same_organization_as?(category)).to be true
+      end
+    end
+
+    context 'when other has a different organization_id' do
+      it 'returns false' do
+        other_organization = create(:organization, owner: create(:user))
+        category = create(:learning_category, creator: create(:user), organization: other_organization)
+
+        expect(learning.same_organization_as?(category)).to be false
+      end
+    end
+  end
 end

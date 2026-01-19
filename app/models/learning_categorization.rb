@@ -44,8 +44,7 @@ class LearningCategorization < ApplicationRecord
 
     def category_belongs_to_same_organization
       return unless learning.present? && category.present?
-
-      return unless learning.organization_id != category.organization_id
+      return if learning.same_organization_as?(category)
 
       errors.add(:category, 'must belong to the same organization as the learning')
     end

@@ -47,4 +47,8 @@ class Learning < ApplicationRecord
   def self.search(query)
     where('lower(lesson) LIKE lower(?)', "%#{sanitize_sql_like(query)}%")
   end
+
+  def same_organization_as?(other)
+    organization_id == other.organization_id
+  end
 end

@@ -91,8 +91,8 @@ class LearningsController < ApplicationController
       params.require(:learning).permit(:lesson, :description, category_ids: [])
     end
 
-    def load_paginated_learnings(page = 1)
-      @pagy, @learnings = pagy(user_learnings_in_current_organization.order(created_at: :desc), page: page)
+    def load_paginated_learnings
+      @pagy, @learnings = pagy(user_learnings_in_current_organization.order(created_at: :desc))
     end
 
     def load_learning_categories
@@ -118,9 +118,9 @@ class LearningsController < ApplicationController
       end
     end
 
-    def handle_success_with_learnings_list(status:, template:, page: nil)
+    def handle_success_with_learnings_list(status:, template:)
       flash.now[:success] = t('.success', lesson: @learning.lesson)
-      load_paginated_learnings(page)
+      load_paginated_learnings
 
       respond_to do |format|
         format.turbo_stream { render template, status: status }

@@ -26,9 +26,8 @@
 </div>
 
 <div class="field mb-4">
-  <%= f.label :organization_id, "Organization", class: "label" %>
+  <%= label_tag :organization_name, "Organization", class: "label" %>
   <div class="control">
-    <%= f.hidden_field :organization_id, value: current_organization.id %>
     <%= text_field_tag :organization_name, current_organization.name, class: "input", disabled: true, readonly: true %>
   </div>
 </div>

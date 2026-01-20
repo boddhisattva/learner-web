@@ -18,3 +18,6 @@ application.register("flash-notification", FlashNotificationController)
 
 import SearchController from "./search_controller"
 application.register("search", SearchController)
+
+import ScrollToTopController from "./scroll_to_top_controller"
+application.register("scroll-to-top", ScrollToTopController)

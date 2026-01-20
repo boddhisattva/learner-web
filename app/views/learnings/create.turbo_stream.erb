@@ -21,9 +21,8 @@
   <% end %>
 <% end %>
 
-<%# Scroll to top to show the new learning %>
-<turbo-stream action="invoke" target="body">
-  <template>
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  </template>
-</turbo-stream>
+<%# Scroll to top when controller connects %>
+<%= turbo_stream.append "body" do %>
+  <div data-controller="scroll-to-top"></div>
+<% end %>
+

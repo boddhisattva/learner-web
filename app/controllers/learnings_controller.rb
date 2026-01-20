@@ -32,7 +32,7 @@ class LearningsController < ApplicationController
     @learning.organization_id = current_organization.id
 
     if @learning.save
-      render_success_with_learnings_list(page: 1, status: :created, template: :create)
+      handle_success_with_learnings_list(page: 1, status: :created, template: :create)
     else
       render_failure(template: :new)
     end
@@ -66,7 +66,7 @@ class LearningsController < ApplicationController
 
   def destroy
     if @learning.destroy
-      render_success_with_learnings_list(status: :see_other, template: :destroy)
+      handle_success_with_learnings_list(status: :see_other, template: :destroy)
     else
       load_paginated_learnings
       flash.now[:error] = @learning.errors.full_messages
@@ -118,7 +118,7 @@ class LearningsController < ApplicationController
       end
     end
 
-    def render_success_with_learnings_list(status:, template:, page: nil)
+    def handle_success_with_learnings_list(status:, template:, page: nil)
       flash.now[:success] = t('.success', lesson: @learning.lesson)
       load_paginated_learnings(page)
 

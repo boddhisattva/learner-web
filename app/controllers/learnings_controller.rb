@@ -32,7 +32,7 @@ class LearningsController < ApplicationController
     @learning.organization_id = current_organization.id
 
     if @learning.save
-      handle_success_with_learnings_list(page: 1, status: :created, template: :create)
+      handle_success_with_learnings_list(status: :created, template: :create)
     else
       render_failure(template: :new)
     end

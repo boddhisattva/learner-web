@@ -1,6 +1,6 @@
 <!-- Inline form for creating new learning (displayed in collapsible container) -->
 <div data-controller="form-reset">
-  <div class="box p-5">
+  <div class="box p-5" data-form-reset-target="container">
     <div class="is-flex is-justify-content-space-between is-align-items-center mb-5">
       <h2 class="title mb-0">Create New Learning</h2>
     </div>
@@ -13,7 +13,7 @@
         <%= f.submit "Create Learning", class: "button is-primary is-medium px-5" %>
       </div>
       <div class="control">
-        <button type="button" class="button is-light is-medium" data-action="click->form-reset#clear">
+        <button type="button" class="button is-light is-medium" data-action="click->form-reset#clear" data-form-reset-scroll-target-param="#new_learning_button">
           Cancel
         </button>
       </div>

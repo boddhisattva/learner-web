@@ -2,7 +2,7 @@
   <div class="container">
     <div class="columns is-centered">
       <div class="column is-10">
-        <div class="content">
+        <div class="content" data-controller="form-reset">
           <!-- Modified header for better mobile layout -->
           <div class="mb-4">
             <h1 class="title has-text-centered is-flex is-flex-wrap-wrap is-justify-content-center is-align-items-center mb-2">
@@ -16,7 +16,7 @@
               </small>
             </h1>
             <div class="has-text-centered">
-              <%= link_to new_learning_path, id: :new_learning_button, class: "button is-primary", data: { turbo_stream: true } do %>
+              <%= link_to new_learning_path, id: :new_learning_button, class: "button is-primary", data: { turbo_stream: true, form_reset_target: "destination" } do %>
               <span class="icon">
                 <i class="fas fa-plus"></i>
               </span>
@@ -52,7 +52,7 @@
           <% end %>
 
           <!-- Collapsible inline form container -->
-          <div id="new_learning_form" class="mt-4"></div>
+          <div id="new_learning_form" class="mt-4" data-form-reset-target="container"></div>
 
           <!-- Turbo Frame wraps the results that will update -->
           <%= render 'learnings_list', learnings: @learnings, pagy: @pagy %>

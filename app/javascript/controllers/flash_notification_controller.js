@@ -13,16 +13,15 @@ export default class extends Controller {
   }
 
   disconnect() {
-    if (this.dismissTimeout) {
-      clearTimeout(this.dismissTimeout)
-    }
+    clearTimeout(this.dismissTimeout)
+    clearTimeout(this.animationTimeout)
   }
 
   dismiss() {
     this.element.style.transition = 'opacity 0.5s ease-out'
     this.element.style.opacity = '0'
 
-    setTimeout(() => {
+    this.animationTimeout = setTimeout(() => {
       this.element.remove()
     }, this.animationDelayValue)
   }

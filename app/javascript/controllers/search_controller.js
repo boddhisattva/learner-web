@@ -15,12 +15,12 @@ export default class extends Controller {
 
   connect() {
     // Show/hide clear button on page load based on input value
-    this.toggleClearButton()
+    this.#toggleClearButton()
   }
 
   // Called when user types in the search field
   input() {
-    this.toggleClearButton()
+    this.#toggleClearButton()
 
     // Auto-close mobile menu when searching
     if (this.hasNavbarOutlet) {
@@ -41,13 +41,13 @@ export default class extends Controller {
   clear(event) {
     event.preventDefault()
     this.learningSearchInputTarget.value = ""
-    this.toggleClearButton()
+    this.#toggleClearButton()
     // Submit to show all results
     this.learningSearchInputTarget.form.requestSubmit()
   }
 
   // Show/hide clear button based on whether input has a value
-  toggleClearButton() {
+  #toggleClearButton() {
     if (this.hasClearButtonTarget) {
       if (this.learningSearchInputTarget.value.length > 0) {
         this.clearButtonTarget.style.display = ''  // Remove inline style, show element

@@ -3,6 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="search"
 export default class extends Controller {
   static targets = ["learningSearchInput", "clearButton"]
+  static outlets = ["navbar"]
 
   connect() {
     // Show/hide clear button on page load based on input value
@@ -12,6 +13,12 @@ export default class extends Controller {
   // Called when user types in the search field
   input() {
     this.toggleClearButton()
+
+    // Auto-close mobile menu when searching
+    if (this.hasNavbarOutlet) {
+      this.navbarOutlet.close()
+    }
+
     // Auto-submit the form as user types a character in the search input field
     this.learningSearchInputTarget.form.requestSubmit()
   }

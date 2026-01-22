@@ -8,4 +8,9 @@ export default class extends Controller {
     this.burgerTarget.classList.toggle("is-active")
     this.menuTarget.classList.toggle("is-active")
   }
+
+  close() {
+    this.burgerTarget.classList.remove("is-active")
+    this.menuTarget.classList.remove("is-active")
+  }
 }

@@ -1,28 +1,28 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  static values = {
+    duration: { type: Number, default: 4000 },
+    animationDelay: { type: Number, default: 500 }
+  }
+
   connect() {
-    // Auto-dismiss after 4 seconds
     this.dismissTimeout = setTimeout(() => {
       this.dismiss()
-    }, 4000)
+    }, this.durationValue)
   }
 
   disconnect() {
-    // Clear timeout if element is removed before auto-dismiss
-    if (this.dismissTimeout) {
-      clearTimeout(this.dismissTimeout)
-    }
+    clearTimeout(this.dismissTimeout)
+    clearTimeout(this.animationTimeout)
   }
 
   dismiss() {
-    // Fade out animation
     this.element.style.transition = 'opacity 0.5s ease-out'
     this.element.style.opacity = '0'
 
-    // Remove from DOM after fade out
-    setTimeout(() => {
+    this.animationTimeout = setTimeout(() => {
       this.element.remove()
-    }, 500)
+    }, this.animationDelayValue)
   }
 }
